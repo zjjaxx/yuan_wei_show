@@ -1,17 +1,15 @@
-import React, { useCallback, useContext } from "react"
+import React, { useCallback } from "react"
 import {View,Button} from "react-native"
-import {setLocalStorage} from "../../utils/common"
-import {AppContext} from "../../context/context"
-export default function Login({navigation}){
-    const {$login}=useContext(AppContext)
-    const setLogin=useCallback(async ()=>{
-        await setLocalStorage("token","i have token")
-        $login("i have token")
-    },[])
-   
+import {connect} from "react-redux"
+import {login} from "../../store/action"
+ function Login({dispatch}){
+    const setLogin=useCallback(()=>{
+        dispatch(login("token"+Math.random()))
+    },[dispatch])
     return (
         <View>
             <Button onPress={setLogin} title="login in"></Button>
         </View>
     )
 }
+export default connect(state=>state,dispatch=>({dispatch}))(Login)

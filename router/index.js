@@ -2,13 +2,15 @@ import React, { useEffect, useReducer, useMemo } from 'react';
 import { Image, StyleSheet } from "react-native"
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from "@react-navigation/stack"
-import HomeScreen from "../pages/home/home"
-import PersonScreen from "../pages/person/person"
 import { scaleSize, setSpText2 } from "../utils/ScreenUtil"
 import { getLocalStorage } from "../utils/common"
+import HomeScreen from "../pages/home/home"
+import PersonScreen from "../pages/person/person"
 import LoginScreen from "../pages/login/login"
 import FlashScreen from "../pages/flash/flash"
 import {AppContext} from "../context/context"
+import {connect} from "react-redux"
+import {asyncToken} from "../store/action"
 //tab 路由容器
 const Tab = createBottomTabNavigator();
 function TabContainer() {
@@ -40,43 +42,11 @@ function TabContainer() {
 //app路由
 const AppStack = createStackNavigator()
 
-export default function AppStackScreen() {
-    const [state,dispatch]=useReducer((state,action)=>{
-        switch(action.type){
-            case "LOGIN":
-                return {
-                    ...state,
-                    token:action.token,
-                    isLogin:true
-                }
-            case "LOGOUT":
-                return {
-                    ...state,
-                    isLogin:false,
-                    token:""
-                }
-            case "RESTORE_TOKEN":
-                return {
-                    ...state,
-                    isLoading:false,
-                    token:action.token,
-                    isLogin:action.isLogin
-                }
-        }
-    },{isLoading:true,isLogin:false,token:""})
-    const appContext=useMemo(()=>({
-        $login:(token)=>{
-            dispatch({type:"LOGIN",token})
-        },
-        $logout:()=>{
-            dispatch({type:"LOGOUT"})
-        }
-    }))
-    useEffect(async () => {
-        let token = await getLocalStorage("token")
-        dispatch({type:"RESTORE_TOKEN",token,isLogin:token?true:false})
-    }, [])
-    if(state.isLoading){
+function AppStackScreen({isLoading,isLogin,dispatch}) {
+    useEffect(()=>{
+        dispatch(asyncToken())
+    },[dispatch])
+    if(isLoading){
         return (
             <AppStack.Navigator>
                 <AppStack.Screen name="flash" component={FlashScreen}></AppStack.Screen>
@@ -84,10 +54,10 @@ export default function AppStackScreen() {
         )
     }
     return (
-        <AppContext.Provider value={appContext}>
+        // <AppContext.Provider value={appContext}>
             <AppStack.Navigator>
             {
-                state.isLogin ? (
+                isLogin ? (
                     <>
                         <AppStack.Screen name="tabContainer" options={{ headerShown: false }} component={TabContainer}></AppStack.Screen>
                     </>
@@ -98,7 +68,7 @@ export default function AppStackScreen() {
                     )
             }
         </AppStack.Navigator>
-        </AppContext.Provider>
+        // </AppContext.Provider>
     )
 }
 
@@ -108,3 +78,5 @@ const style = StyleSheet.create({
         width: scaleSize(24)
     }
 })
+
+export default connect(state=>state,dispatch=>({dispatch}))(AppStackScreen)

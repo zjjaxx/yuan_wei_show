@@ -27,3 +27,5 @@ export const getLocalStorage = async (key) => {
     } catch (error) {
     }
 }
+
+export const TOKEN_KEY="TOKEN"
