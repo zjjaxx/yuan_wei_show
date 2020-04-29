@@ -63,7 +63,7 @@ function AppStackScreen({isLoading,isLogin,dispatch}) {
                     </>
                 ) : (
                         <>
-                            <AppStack.Screen name="login" component={LoginScreen}></AppStack.Screen>
+                            <AppStack.Screen name="login" options={{ headerShown: false }} component={LoginScreen}></AppStack.Screen>
                         </>
                     )
             }
