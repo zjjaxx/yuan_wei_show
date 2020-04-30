@@ -40,13 +40,16 @@ export function login(token) {
 }
 export function logout() {
     return (dispatch, getState) => {
-        dispatch({
-            type: SET_LOGIN,
-            payload: false
-        })
-        dispatch({
-            type: SET_TOKEN,
-            payload: ""
+        setLocalStorage(TOKEN_KEY, "").then(res => {
+            dispatch({
+                type: SET_LOGIN,
+                payload: false
+            })
+            dispatch({
+                type: SET_TOKEN,
+                payload: ""
+            })
         })
     }
+
 }
