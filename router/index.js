@@ -8,6 +8,7 @@ import HomeScreen from "../pages/home/home"
 import PersonScreen from "../pages/person/person"
 import LoginScreen from "../pages/login/login"
 import FlashScreen from "../pages/flash/flash"
+import RegisterScreen from "../pages/register/register"
 import {AppContext} from "../context/context"
 import {connect} from "react-redux"
 import {asyncToken} from "../store/action"
@@ -64,6 +65,7 @@ function AppStackScreen({isLoading,isLogin,dispatch}) {
                 ) : (
                         <>
                             <AppStack.Screen name="login" options={{ headerShown: false }} component={LoginScreen}></AppStack.Screen>
+                            <AppStack.Screen name="register" options={{ headerShown: false }} component={RegisterScreen}></AppStack.Screen>
                         </>
                     )
             }
