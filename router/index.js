@@ -9,6 +9,7 @@ import PersonScreen from "../pages/person/person"
 import LoginScreen from "../pages/login/login"
 import FlashScreen from "../pages/flash/flash"
 import RegisterScreen from "../pages/register/register"
+import CommentScreen from "../pages/comment/comment"
 import {AppContext} from "../context/context"
 import {connect} from "react-redux"
 import {asyncToken} from "../store/action"
@@ -61,6 +62,7 @@ function AppStackScreen({isLoading,isLogin,dispatch}) {
                 isLogin ? (
                     <>
                         <AppStack.Screen name="tabContainer" options={{ headerShown: false }} component={TabContainer}></AppStack.Screen>
+                        <AppStack.Screen name="comment" component={CommentScreen} ></AppStack.Screen>
                     </>
                 ) : (
                         <>

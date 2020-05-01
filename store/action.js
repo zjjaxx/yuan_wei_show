@@ -10,17 +10,19 @@ export function asyncToken() {
             type: SET_LOADING,
             payload: true
         })
-        setTimeout(() => {
-            getLocalStorage(TOKEN_KEY).then(token => {
-                token && dispatch(login(token))
-            })
-                .finally(res => {
+
+        getLocalStorage(TOKEN_KEY).then(token => {
+            token && dispatch(login(token))
+        })
+            .finally(res => {
+                setTimeout(() => {
                     dispatch({
                         type: SET_LOADING,
                         payload: false
                     })
-                })
-        }, 3000)
+                }, 1000)
+            })
+
 
     }
 }

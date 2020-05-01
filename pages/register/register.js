@@ -15,7 +15,18 @@ function Login({ dispatch, navigation }) {
         dispatch(login("token" + Math.random()))
     }, [dispatch])
     const _handleSubmit = useCallback((values, errors, handleSubmit) => {
-        if (!(values.phone && values.password)) {
+        if (!(values.phone && values.password&&values.confirmPassword)) {
+            return
+        }
+        if(values.password!=values.confirmPassword){
+            Alert.alert(
+                '提示',
+                "2次输入密码不一致",
+                [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ],
+
+            )
             return
         }
         for (let [key, value] of Object.entries(errors)) {
@@ -91,12 +102,11 @@ function Login({ dispatch, navigation }) {
                             />
                             {values.confirmPassword ? <Image style={style.tipIcon} source={errors.confirmPassword ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
                         </View>
-                        <Text style={style.forget}>忘记密码?</Text>
                         <View style={style.submitWrap}>
-                            <Text style={style.loginTitle}>登录</Text>
+                            <Text style={style.loginTitle}>注册</Text>
                             <BoxShadow setting={shadowLogin}>
                                 <TouchableHighlight underlayColor="#fff" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
-                                    <View style={[style.enabledBtn, values.password && values.phone && style.activeBtn]}>
+                                    <View style={[style.enabledBtn, values.confirmPassword&& values.password && values.phone && style.activeBtn]}>
                                         <Image style={style.arrowRight} source={require("../../assets/imgs/arrow_right.png")}></Image>
                                     </View>
                                 </TouchableHighlight>
@@ -105,10 +115,10 @@ function Login({ dispatch, navigation }) {
                     </View>
                 )}
             </Formik>
-            <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate("register")}>
+            <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate("login")}>
                 <View style={style.registerWrap} >
-                    <Text style={style.noAccount}>暂无账号?</Text>
-                    <Text style={style.register}>注册</Text>
+                    <Text style={style.noAccount}>已有账号?</Text>
+                    <Text style={style.register}>登录</Text>
                 </View>
             </TouchableHighlight>
 
