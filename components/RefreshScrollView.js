@@ -1,7 +1,7 @@
 import React,{ useState, useCallback } from "react"
 import {ScrollView,RefreshControl} from "react-native"
 export function RefreshScrollView(props) {
-    const {scrollEnd,onRefresh,refreshing,isSticky=false,stickyIndex=-1}=props
+    const {scrollEnd=()=>{},onRefresh=()=>{},refreshing=false,isSticky=false,stickyIndex=-1}=props
     const _onRefresh = () => {
         onRefresh()
     }

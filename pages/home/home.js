@@ -115,7 +115,9 @@ const RecommandProductItem = memo((props) => {
         <View>
             <RecommandHeader></RecommandHeader>
             <Text style={style.comment}>已入手一双,钱包已掏空</Text>
-            <ImgList imgList={index % 3 == 1 ? [1] : index % 3 == 2 ? [1, 2] : [1, 2, 3]}></ImgList>
+            <TouchableHighlight underlayColor="#fff" onPress={toProductDetail}>
+                <ImgList imgList={index % 3 == 1 ? [1] : index % 3 == 2 ? [1, 2] : [1, 2, 3]}></ImgList>
+            </TouchableHighlight>
             <View style={style.recommandBottomWrap}>
                 <TouchableHighlight underlayColor="#fff" onPress={() => { }}>
                     <View style={style.bottomOptionItem}>
