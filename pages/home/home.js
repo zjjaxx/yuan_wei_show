@@ -1,7 +1,7 @@
 import React, { useMemo, memo, useCallback, useState, useEffect, useRef } from "react"
-import { View, Text, StyleSheet, Image, FlatList, Modal } from "react-native"
+import { View, Text, StyleSheet, Image, FlatList } from "react-native"
 import { scaleSize, setSpText2 } from "../../utils/ScreenUtil"
-import { PupopLeft } from "../../components/PupopLeft"
+import { Popover } from '@ui-kitten/components';
 import { TouchableHighlight } from "react-native-gesture-handler"
 function Home({ navigation }) {
     //下拉刷新flag
@@ -17,9 +17,9 @@ function Home({ navigation }) {
     const _scrollEnd = useCallback(() => {
         console.log("loadmore")
     }, [])
-    //跳转品论
-    const _toComment = useCallback((id) => {
-        navigation.navigate("comment", { id })
+    //跳
+    const _toProductDetail = useCallback((id) => {
+        navigation.navigate("productDetail", { id })
     }, [])
 
     return (
@@ -34,14 +34,14 @@ function Home({ navigation }) {
                 refreshing={refreshing}
                 onRefresh={_onRefresh}
                 data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                renderItem={({ item, index }) => <RecommandProductItem toComment={_toComment} index={index} key={index}></RecommandProductItem>}
+                renderItem={({ item, index }) => <RecommandProductItem toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
             />
         </View>
     )
 }
 //推荐Item
 const RecommandProductItem = memo((props) => {
-    const { index, toComment } = props
+    const { index, toProductDetail } = props
     //推荐头部组件
     const RecommandHeader = memo((props) => {
         const [menuSelect, setMenuSelect] = useState(false)
@@ -59,24 +59,28 @@ const RecommandProductItem = memo((props) => {
                     <Text style={style.nick}>小可爱</Text>
                     <Text style={style.time}>17分钟前</Text>
                 </View>
-                {menuSelect ? <PupopLeft hidePopup={hidePopup}>
-                    <TouchableHighlight activeOpacity={1} underlayColor="rgba(0,0,0,0.7)" onPress={() => { console.log("press item") }}>
-                        <View style={style.optionItem}>
-                            <Image style={style.saveIcon} source={require("../../assets/imgs/save.png")}></Image>
-                            <Text style={style.save}>收藏</Text>
-                        </View>
-                    </TouchableHighlight>
-                    <TouchableHighlight activeOpacity={1} underlayColor="rgba(0,0,0,0.7)" onPress={() => { console.log("press item") }}>
-                        <View style={style.optionItem}>
-                            <Image style={style.reportIcon} source={require("../../assets/imgs/report.png")}></Image>
-                            <Text style={style.report}>举报</Text>
-                        </View>
-                    </TouchableHighlight>
-                </PupopLeft>
-                    : null}
-                <TouchableHighlight underlayColor="#fff" onPress={showPopup}>
-                    <Image style={style.more} source={require("../../assets/imgs/more.png")}></Image>
-                </TouchableHighlight>
+                <Popover
+                    placement="left"
+                    visible={menuSelect}
+                    anchor={() => <TouchableHighlight underlayColor="#fff" onPress={showPopup}>
+                        <Image style={style.more} source={require("../../assets/imgs/more.png")}></Image>
+                    </TouchableHighlight>}
+                    onBackdropPress={() => hidePopup(false)}>
+                    <View style={style.pupopWrap}>
+                        <TouchableHighlight activeOpacity={1} underlayColor="rgba(0,0,0,0.7)" onPress={() => { console.log("press item") }}>
+                            <View style={style.optionItem}>
+                                <Image style={style.saveIcon} source={require("../../assets/imgs/save.png")}></Image>
+                                <Text style={style.save}>收藏</Text>
+                            </View>
+                        </TouchableHighlight>
+                        <TouchableHighlight activeOpacity={1} underlayColor="rgba(0,0,0,0.7)" onPress={() => { console.log("press item") }}>
+                            <View style={style.optionItem}>
+                                <Image style={style.reportIcon} source={require("../../assets/imgs/report.png")}></Image>
+                                <Text style={style.report}>举报</Text>
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+                </Popover>
             </View>
         )
     })
@@ -113,14 +117,18 @@ const RecommandProductItem = memo((props) => {
             <Text style={style.comment}>已入手一双,钱包已掏空</Text>
             <ImgList imgList={index % 3 == 1 ? [1] : index % 3 == 2 ? [1, 2] : [1, 2, 3]}></ImgList>
             <View style={style.recommandBottomWrap}>
-                <View style={style.bottomOptionItem}>
-                    <Image style={style.loveIcon} source={require("../../assets/imgs/love.png")}></Image>
-                    <Text style={style.loveCount}>1245</Text>
-                </View>
-                <View style={style.bottomOptionItem}>
-                    <Image style={style.commentIcon} source={require("../../assets/imgs/comment.png")}></Image>
-                    <Text style={style.commentCount}>7245</Text>
-                </View>
+                <TouchableHighlight underlayColor="#fff" onPress={() => { }}>
+                    <View style={style.bottomOptionItem}>
+                        <Image style={style.loveIcon} source={require("../../assets/imgs/love.png")}></Image>
+                        <Text style={style.loveCount}>1245</Text>
+                    </View>
+                </TouchableHighlight>
+                <TouchableHighlight underlayColor="#fff" onPress={toProductDetail}>
+                    <View style={style.bottomOptionItem}>
+                        <Image style={style.commentIcon} source={require("../../assets/imgs/comment.png")}></Image>
+                        <Text style={style.commentCount}>7245</Text>
+                    </View>
+                </TouchableHighlight>
             </View>
         </View>
     )
@@ -229,7 +237,7 @@ const style = StyleSheet.create({
     },
     bottomOptionItem: {
         width: scaleSize(70),
-        height: "100%",
+        height: scaleSize(20),
         flexDirection: "row",
         alignItems: "center"
     },
@@ -251,10 +259,18 @@ const style = StyleSheet.create({
         color: "#999",
         fontSize: setSpText2(10)
     },
-    optionItem: {
-        height:"100%",
+    pupopWrap: {
+        marginRight: scaleSize(5),
         flexDirection: "row",
-        width:scaleSize(75),
+        width: scaleSize(150),
+        height: scaleSize(30),
+        backgroundColor: "rgba(0,0,0,0.7)",
+        borderRadius: scaleSize(4)
+    },
+    optionItem: {
+        height: "100%",
+        flexDirection: "row",
+        width: scaleSize(75),
         alignItems: "center",
         justifyContent: "center"
     },

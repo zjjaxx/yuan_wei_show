@@ -679,6 +679,21 @@
   dependencies:
     "@types/hammerjs" "^2.0.36"
 
+"@eva-design/dss@^2.0.0-alpha.1":
+  version "2.0.0-alpha.1"
+  resolved "https://registry.npm.taobao.org/@eva-design/dss/download/@eva-design/dss-2.0.0-alpha.1.tgz#15ce7b59c30fe3ccf184d74a62cff11a28244f4a"
+  integrity sha1-Fc57WcMP48zxhNdKYs/xGigkT0o=
+
+"@eva-design/eva@^2.0.0-alpha.1":
+  version "2.0.0-alpha.1"
+  resolved "https://registry.npm.taobao.org/@eva-design/eva/download/@eva-design/eva-2.0.0-alpha.1.tgz#69de246dd73750f89783a1658ad93ccca3bac99b"
+  integrity sha1-ad4kbdc3UPiXg6Flitk8zKO6yZs=
+
+"@eva-design/processor@^2.0.0-alpha.1":
+  version "2.0.0-alpha.1"
+  resolved "https://registry.npm.taobao.org/@eva-design/processor/download/@eva-design/processor-2.0.0-alpha.1.tgz#65643f914ba2b242408b4b08530582cdfe07856d"
+  integrity sha1-ZWQ/kUuiskJAi0sIUwWCzf4HhW0=
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.npm.taobao.org/@hapi/address/download/@hapi/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"
@@ -1164,6 +1179,17 @@
   dependencies:
     lodash.unescape "4.0.1"
     semver "5.5.0"
+
+"@ui-kitten/components@^5.0.0-alpha.1":
+  version "5.0.0-alpha.1"
+  resolved "https://registry.npm.taobao.org/@ui-kitten/components/download/@ui-kitten/components-5.0.0-alpha.1.tgz#9cc535c0c2cf0ec3b708421a286fcabe1e6100ff"
+  integrity sha1-nMU1wMLPDsO3CEIaKG/Kvh5hAP8=
+  dependencies:
+    "@eva-design/dss" "^2.0.0-alpha.1"
+    "@eva-design/processor" "^2.0.0-alpha.1"
+    fecha "3.0.3"
+    hoist-non-react-statics "^3.2.1"
+    lodash.merge "^4.6.1"
 
 abab@^2.0.0:
   version "2.0.3"
@@ -2784,6 +2810,11 @@ fbjs@^1.0.0:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.18"
 
+fecha@3.0.3:
+  version "3.0.3"
+  resolved "https://registry.npm.taobao.org/fecha/download/fecha-3.0.3.tgz?cache=0&sync_timestamp=1583206406295&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ffecha%2Fdownload%2Ffecha-3.0.3.tgz#fabbd416497649a42c24d34bfa726b579203a1e2"
+  integrity sha1-+rvUFkl2SaQsJNNL+nJrV5IDoeI=
+
 figures@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/figures/download/figures-2.0.0.tgz?cache=0&sync_timestamp=1581893111153&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ffigures%2Fdownload%2Ffigures-2.0.0.tgz#3ab1a2d2a62c8bfb431a0c94cb797a2fce27c962"
@@ -3127,7 +3158,7 @@ hoist-non-react-statics@^2.3.1:
   resolved "https://registry.npm.taobao.org/hoist-non-react-statics/download/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
   integrity sha1-xZA89AnA39kI84jmGdhrnBF0y0c=
 
-hoist-non-react-statics@^3.3.0:
+hoist-non-react-statics@^3.2.1, hoist-non-react-statics@^3.3.0:
   version "3.3.2"
   resolved "https://registry.npm.taobao.org/hoist-non-react-statics/download/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
   integrity sha1-7OCsr3HWLClpwuxZ/v9CpLGoW0U=
@@ -4153,6 +4184,11 @@ lodash-es@^4.17.11, lodash-es@^4.17.14:
   version "4.17.15"
   resolved "https://registry.npm.taobao.org/lodash-es/download/lodash-es-4.17.15.tgz#21bd96839354412f23d7a10340e5eac6ee455d78"
   integrity sha1-Ib2Wg5NUQS8j16EDQOXqxu5FXXg=
+
+lodash.merge@^4.6.1:
+  version "4.6.2"
+  resolved "https://registry.npm.taobao.org/lodash.merge/download/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
+  integrity sha1-VYqlO0O2YeGSWgr9+japoQhf5Xo=
 
 lodash.sortby@^4.7.0:
   version "4.7.0"
@@ -5242,7 +5278,7 @@ react-native-shadow@^1.2.2:
   resolved "https://registry.npm.taobao.org/react-native-shadow/download/react-native-shadow-1.2.2.tgz#08991cd14b71e32f2fc6363911c139d231949a66"
   integrity sha1-CJkc0Utx4y8vxjY5EcE50jGUmmY=
 
-react-native-svg@X.X.X:
+react-native-svg@^12.1.0:
   version "12.1.0"
   resolved "https://registry.npm.taobao.org/react-native-svg/download/react-native-svg-12.1.0.tgz#acfe48c35cd5fca3d5fd767abae0560c36cfc03d"
   integrity sha1-rP5Iw1zV/KPV/XZ6uuBWDDbPwD0=

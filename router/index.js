@@ -3,16 +3,14 @@ import { Image, StyleSheet } from "react-native"
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from "@react-navigation/stack"
 import { scaleSize, setSpText2 } from "../utils/ScreenUtil"
-import { getLocalStorage } from "../utils/common"
 import HomeScreen from "../pages/home/home"
 import PersonScreen from "../pages/person/person"
 import LoginScreen from "../pages/login/login"
 import FlashScreen from "../pages/flash/flash"
 import RegisterScreen from "../pages/register/register"
-import CommentScreen from "../pages/comment/comment"
-import {AppContext} from "../context/context"
-import {connect} from "react-redux"
-import {asyncToken} from "../store/action"
+import ProductDetailScreen from "../pages/productDetail/productDetail"
+import { connect } from "react-redux"
+import { asyncToken } from "../store/action"
 //tab 路由容器
 const Tab = createBottomTabNavigator();
 function TabContainer() {
@@ -44,11 +42,11 @@ function TabContainer() {
 //app路由
 const AppStack = createStackNavigator()
 
-function AppStackScreen({isLoading,isLogin,dispatch}) {
-    useEffect(()=>{
+function AppStackScreen({ isLoading, isLogin, dispatch }) {
+    useEffect(() => {
         dispatch(asyncToken())
-    },[dispatch])
-    if(isLoading){
+    }, [dispatch])
+    if (isLoading) {
         return (
             <AppStack.Navigator>
                 <AppStack.Screen name="flash" component={FlashScreen}></AppStack.Screen>
@@ -56,23 +54,21 @@ function AppStackScreen({isLoading,isLogin,dispatch}) {
         )
     }
     return (
-        // <AppContext.Provider value={appContext}>
-            <AppStack.Navigator>
+        <AppStack.Navigator screenOptions={{ headerBackTitle: "返回", headerShown: false }}>
             {
                 isLogin ? (
                     <>
-                        <AppStack.Screen name="tabContainer" options={{ headerShown: false }} component={TabContainer}></AppStack.Screen>
-                        <AppStack.Screen name="comment" component={CommentScreen} ></AppStack.Screen>
+                        <AppStack.Screen name="tabContainer" component={TabContainer}></AppStack.Screen>
+                        <AppStack.Screen name="productDetail" component={ProductDetailScreen}  ></AppStack.Screen>
                     </>
                 ) : (
                         <>
-                            <AppStack.Screen name="login" options={{ headerShown: false }} component={LoginScreen}></AppStack.Screen>
-                            <AppStack.Screen name="register" options={{ headerShown: false }} component={RegisterScreen}></AppStack.Screen>
+                            <AppStack.Screen name="login" component={LoginScreen}></AppStack.Screen>
+                            <AppStack.Screen name="register" component={RegisterScreen}></AppStack.Screen>
                         </>
                     )
             }
         </AppStack.Navigator>
-        // </AppContext.Provider>
     )
 }
 
@@ -83,4 +79,4 @@ const style = StyleSheet.create({
     }
 })
 
-export default connect(state=>state,dispatch=>({dispatch}))(AppStackScreen)
+export default connect(state => state, dispatch => ({ dispatch }))(AppStackScreen)

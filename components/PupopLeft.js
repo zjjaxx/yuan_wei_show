@@ -12,7 +12,7 @@ export function PupopLeft(props) {
             widthAnimate,                       // 动画中的变量值
             {
                 toValue: scaleSize(150),                   // 透明度最终变为1，即完全不透明
-                duration: 400,              // 让动画持续一段时间
+                duration: 10000          // 让动画持续一段时间
             }
         ).start();                        // 开始执行动画
     }, [])
