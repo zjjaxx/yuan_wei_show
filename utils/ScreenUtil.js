@@ -42,9 +42,9 @@ const X_HEIGHT = 812;
  * @param size 设计图的尺寸
  * @returns {number}
  */
-// export function scaleSize(size: Number) {
-//     return size * _scaleWidth;
-// }
+export function scaleSize(size: Number) {
+    return size * _scaleWidth;
+}
 
 /**
  * 屏幕适配 , 纵向的尺寸使用此方法应该会更趋近于设计稿
@@ -52,18 +52,18 @@ const X_HEIGHT = 812;
  * @param size 设计图的尺寸
  * @returns {number}
  */
-// export function scaleHeight(size: Number) {
-//     return size * _scaleHeight;
-// }
+export function scaleHeight(size: Number) {
+    return size * _scaleHeight;
+}
 
 // 最初版本尺寸适配方案 也许你会更喜欢这个
-export function scaleSize(size: Number) {
-    let scaleWidth = screenW / w2;
-    let scaleHeight = screenH / h2;
-    let scale = Math.min(scaleWidth, scaleHeight);
-    size = Math.round((size * scale + 0.5));
-    return size / DEFAULT_DENSITY;
-}
+// export function scaleSize(size: Number) {
+//     let scaleWidth = screenW / w2;
+//     let scaleHeight = screenH / h2;
+//     let scale = Math.min(scaleWidth, scaleHeight);
+//     size = Math.round((size * scale + 0.5));
+//     return size / DEFAULT_DENSITY;
+// }
 
 /**
  * 设置字体的size（单位px）

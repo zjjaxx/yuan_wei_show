@@ -1,6 +1,6 @@
 import React, { useCallback } from "react"
 import { View, Text, StyleSheet, Image, TouchableHighlight } from "react-native"
-import { scaleSize, setSpText2 } from "../utils/ScreenUtil"
+import { scaleSize, setSpText2 ,scaleHeight} from "../utils/ScreenUtil"
 
 function Header(props) {
     const { left = "", right = "", center = "", title = "HHH", leftEvent = () => { }, rightEvent = () => { console.log("enter right") } } = props
@@ -24,13 +24,13 @@ function Header(props) {
 export default Header
 const style = StyleSheet.create({
     headerWrap: {
-        height: scaleSize(45),
+        height: scaleHeight(45),
     },
     headerLeftWrap: {
         position: "absolute",
         left: 0,
         top: 0,
-        height: scaleSize(45),
+        height: scaleHeight(45),
         minWidth: scaleSize(45),
         flexDirection: "row",
         alignItems: "center",
@@ -40,7 +40,7 @@ const style = StyleSheet.create({
         position: "absolute",
         right: 0,
         top: 0,
-        height: scaleSize(45),
+        height: scaleHeight(45),
         minWidth: scaleSize(45),
         flexDirection: "row",
         alignItems: "center",

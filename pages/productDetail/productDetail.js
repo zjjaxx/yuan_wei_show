@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react"
 import { Text, View, StyleSheet, Image, ScrollView, TouchableHighlight, SafeAreaView } from "react-native"
 import Header from "../../components/Header"
-import { scaleSize, setSpText2 } from "../../utils/ScreenUtil"
+import { scaleSize, setSpText2 ,scaleHeight} from "../../utils/ScreenUtil"
 import Carousel from 'react-native-snap-carousel';
 import { sliderWidth, itemWidth } from '../../swiperLib/SliderEntry.style';
 
@@ -73,7 +73,7 @@ const style = StyleSheet.create({
         flex: 1
     },
     share: {
-        height: scaleSize(20),
+        height: scaleHeight(20),
         width: scaleSize(20)
     },
     swiperWrapper: {
@@ -87,7 +87,7 @@ const style = StyleSheet.create({
     },
     productImg: {
         borderRadius: scaleSize(5),
-        height: scaleSize(220),
+        height: scaleHeight(220),
         width: scaleSize(330)
     },
     productName: {
@@ -107,12 +107,12 @@ const style = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         paddingHorizontal: scaleSize(10),
-        height: scaleSize(50),
+        height: scaleHeight(50),
         alignItems: "center"
     },
     saveWrap: {
         width: scaleSize(70),
-        height: scaleSize(40),
+        height: scaleHeight(40),
         backgroundColor: "#f6f6f6",
         borderRadius: scaleSize(5),
         justifyContent: "center",

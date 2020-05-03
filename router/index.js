@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useMemo } from 'react';
 import { Image, StyleSheet } from "react-native"
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from "@react-navigation/stack"
-import { scaleSize, setSpText2 } from "../utils/ScreenUtil"
+import { scaleSize, setSpText2 ,scaleHeight} from "../utils/ScreenUtil"
 import HomeScreen from "../pages/home/home"
 import PersonScreen from "../pages/person/person"
 import LoginScreen from "../pages/login/login"

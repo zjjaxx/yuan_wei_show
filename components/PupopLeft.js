@@ -28,7 +28,7 @@ const style = StyleSheet.create({
         marginRight:scaleSize(5),
         flexDirection: "row",
         width: 0,
-        height: scaleSize(30),
+        height: scaleHeight(30),
         backgroundColor: "rgba(0,0,0,0.7)",
         borderRadius: scaleSize(4)
     }

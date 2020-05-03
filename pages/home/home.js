@@ -1,6 +1,6 @@
 import React, { useMemo, memo, useCallback, useState, useEffect, useRef } from "react"
 import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight } from "react-native"
-import { scaleSize, setSpText2 } from "../../utils/ScreenUtil"
+import { scaleSize, setSpText2 ,scaleHeight} from "../../utils/ScreenUtil"
 import { Popover } from '@ui-kitten/components';
 
 function Home({ navigation }) {
@@ -145,7 +145,7 @@ const style = StyleSheet.create({
         backgroundColor: "#fff",
     },
     headerWrap: {
-        height: scaleSize(50),
+        height: scaleHeight(50),
         paddingHorizontal: scaleSize(15)
     },
     headerTitle: {
@@ -158,17 +158,17 @@ const style = StyleSheet.create({
         paddingHorizontal: scaleSize(15)
     },
     listHeader: {
-        height: scaleSize(40),
+        height: scaleHeight(40),
         alignItems: "center",
         justifyContent: "center"
     },
     listHeaderImage: {
-        height: scaleSize(40),
+        height: scaleHeight(40),
         width: scaleSize(40),
         borderRadius: scaleSize(20)
     },
     recommonHeaderWrap: {
-        height: scaleSize(80),
+        height: scaleHeight(80),
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between"
@@ -193,7 +193,7 @@ const style = StyleSheet.create({
     },
     more: {
         width: scaleSize(25),
-        height: scaleSize(25)
+        height: scaleHeight(25)
     },
     comment: {
         fontSize: setSpText2(14),
@@ -204,13 +204,13 @@ const style = StyleSheet.create({
         flexDirection: "row"
     },
     pic1: {
-        height: scaleSize(200),
+        height: scaleHeight(180),
         width: "100%",
         borderRadius: scaleSize(15)
     },
     pic2: {
         flex: 1,
-        height: scaleSize(200),
+        height: scaleHeight(180),
         borderRadius: scaleSize(15)
     },
     mr10: {
@@ -219,12 +219,12 @@ const style = StyleSheet.create({
     pic3_1: {
         marginRight: scaleSize(10),
         flex: 2,
-        height: scaleSize(200),
+        height: scaleHeight(180),
         borderRadius: scaleSize(15)
     },
     rightWrap: {
         flex: 1,
-        height: scaleSize(200),
+        height: scaleHeight(180),
     },
     pic3_2: {
         flex: 1,
@@ -241,7 +241,7 @@ const style = StyleSheet.create({
     },
     bottomOptionItem: {
         width: scaleSize(70),
-        height: scaleSize(20),
+        height: scaleHeight(20),
         flexDirection: "row",
         alignItems: "center"
     },
@@ -267,7 +267,7 @@ const style = StyleSheet.create({
         marginRight: scaleSize(5),
         flexDirection: "row",
         width: scaleSize(150),
-        height: scaleSize(30),
+        height: scaleHeight(30),
         backgroundColor: "rgba(0,0,0,0.7)",
         borderRadius: scaleSize(4)
     },

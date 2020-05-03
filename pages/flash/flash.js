@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import {View,Text,Image,StyleSheet,StatusBar} from "react-native"
 import {connect} from "react-redux"
-
+import {scaleSize,scaleHeight} from "../../utils/ScreenUtil"
 function Flash(props){
     return (
         <View style={style.container}>
@@ -17,4 +17,5 @@ const style=StyleSheet.create({
         flex:1
     }
 })
+
 export default connect(state=>state,dispatch=>({dispatch}))(Flash)

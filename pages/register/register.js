@@ -3,7 +3,7 @@ import { View, Button, StyleSheet, Image, TextInput, Text, Alert, TouchableOpaci
 import { connect } from "react-redux"
 import { Formik } from 'formik';
 import { login } from "../../store/action"
-import { scaleSize, setSpText2 } from "../../utils/ScreenUtil"
+import { scaleSize, setSpText2 ,scaleHeight} from "../../utils/ScreenUtil"
 import * as yup from "yup"
 //阴影
 import { BoxShadow } from 'react-native-shadow'
@@ -180,7 +180,7 @@ const style = StyleSheet.create({
     },
     logo: {
         width: scaleSize(90),
-        height: scaleSize(100),
+        height: scaleHeight(90),
         borderRadius: scaleSize(15)
     },
     formWrap: {
@@ -199,7 +199,7 @@ const style = StyleSheet.create({
     },
     input: {
         flex: 1,
-        height: scaleSize(40),
+        height: scaleHeight(40),
         width: "100%",
         fontSize: setSpText2(14)
     },
@@ -208,7 +208,7 @@ const style = StyleSheet.create({
     },
     tipIcon: {
         width: scaleSize(15),
-        height: scaleSize(15)
+        height: scaleHeight(15)
     },
     forget: {
         marginTop: scaleSize(12),
@@ -217,7 +217,7 @@ const style = StyleSheet.create({
         fontSize: setSpText2(12)
     },
     submitWrap: {
-        marginTop: scaleSize(100),
+        marginTop: scaleSize(50),
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between"
@@ -244,7 +244,7 @@ const style = StyleSheet.create({
     },
     arrowRight: {
         width: scaleSize(20),
-        height: scaleSize(10)
+        height: scaleHeight(10)
     },
     registerWrap: {
         marginTop: scaleSize(40),
@@ -266,7 +266,7 @@ const style = StyleSheet.create({
 })
 const shadowOpt = {
     width: scaleSize(80),
-    height: scaleSize(100),
+    height: scaleHeight(100),
     color: "#A2A2A2",
     border: scaleSize(3),
     radius: scaleSize(8),
@@ -274,12 +274,12 @@ const shadowOpt = {
     x: scaleSize(3),
     y: scaleSize(3),
     style: {
-        marginTop: scaleSize(60)
+        marginTop: scaleSize(40)
     }
 }
 const shadowLogin = {
     width: scaleSize(50),
-    height: scaleSize(50),
+    height: scaleHeight(50),
     color: "#A2A2A2",
     border: scaleSize(3),
     radius: scaleSize(24),
