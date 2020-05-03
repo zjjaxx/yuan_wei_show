@@ -150,7 +150,7 @@ const style = StyleSheet.create({
     },
     headerTitle: {
         fontSize: setSpText2(16),
-        lineHeight: scaleSize(50),
+        lineHeight: setSpText2(50),
         fontWeight: "500"
     },
     flatList: {
@@ -197,7 +197,7 @@ const style = StyleSheet.create({
     },
     comment: {
         fontSize: setSpText2(14),
-        lineHeight: scaleSize(18)
+        lineHeight: setSpText2(18)
     },
     picWrap: {
         marginTop: scaleSize(8),

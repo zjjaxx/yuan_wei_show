@@ -56,7 +56,7 @@ const style = StyleSheet.create({
     headerTitle: {
         fontSize: setSpText2(16),
         fontWeight: "500",
-        lineHeight: scaleSize(45),
+        lineHeight: setSpText2(45),
         textAlign: "center"
     }
 })
