@@ -1,12 +1,13 @@
 import React, { useCallback, useState, useRef, useEffect } from "react"
-import { View, Button, StyleSheet, Image, TextInput, Text, Alert, TouchableOpacity, TouchableHighlight, SafeAreaView } from "react-native"
+import { View, Button, StyleSheet, Image, TextInput, Text, Alert,ScrollView, TouchableOpacity, TouchableHighlight, SafeAreaView, KeyboardAvoidingView } from "react-native"
 import { connect } from "react-redux"
 import { Formik } from 'formik';
 import { login } from "../../store/action"
-import { scaleSize, setSpText2 ,scaleHeight} from "../../utils/ScreenUtil"
+import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import * as yup from "yup"
 //阴影
 import { BoxShadow } from 'react-native-shadow'
+
 
 const phoneRegExp = /^1[3456789]\d{9}$/
 const passwordRegExp = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
@@ -76,7 +77,7 @@ function Login({ dispatch, navigation }) {
     }, [timerRef])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-            <View style={style.container}>
+            <ScrollView style={style.container}>
                 <BoxShadow setting={shadowOpt}>
                     <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/yuanwei.png")}></Image>
                 </BoxShadow>
@@ -125,29 +126,33 @@ function Login({ dispatch, navigation }) {
                                 {values.password ? <Image style={style.tipIcon} source={errors.password ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
                             </View>
                             <Text style={[style.inputTitle, style.mt10]}>请再次输入密码</Text>
-                            <View style={style.inputWrap}>
-                                <TextInput
-                                    style={style.input}
-                                    onChangeText={handleChange('confirmPassword')}
-                                    onBlur={handleBlur('confirmPassword')}
-                                    value={values.confirmPassword}
-                                    secureTextEntry={true}
-                                />
-                                {values.confirmPassword ? <Image style={style.tipIcon} source={errors.confirmPassword ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
-                            </View>
+                            <KeyboardAvoidingView behavior="padding" enabled >
+                                <View style={style.inputWrap}>
+                                    <TextInput
+                                        style={style.input}
+                                        onChangeText={handleChange('confirmPassword')}
+                                        onBlur={handleBlur('confirmPassword')}
+                                        value={values.confirmPassword}
+                                        secureTextEntry={true}
+                                    />
+                                    {values.confirmPassword ? <Image style={style.tipIcon} source={errors.confirmPassword ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
+                                </View>
+                            </KeyboardAvoidingView>
                             <Text style={[style.inputTitle, style.mt10]}>短信验证码</Text>
-                            <View style={style.inputWrap}>
-                                <TextInput
-                                    style={style.input}
-                                    onChangeText={handleChange('password')}
-                                    onBlur={handleBlur('password')}
-                                    value={values.password}
-                                    secureTextEntry={true}
-                                />
-                                <TouchableOpacity onPress={getCode}>
-                                    <Text style={style.qcode}>{codeState}</Text>
-                                </TouchableOpacity>
-                            </View>
+                            <KeyboardAvoidingView behavior="padding" enabled >
+                                <View style={style.inputWrap}>
+                                    <TextInput
+                                        style={style.input}
+                                        onChangeText={handleChange('password')}
+                                        onBlur={handleBlur('password')}
+                                        value={values.password}
+                                        secureTextEntry={true}
+                                    />
+                                    <TouchableOpacity onPress={getCode}>
+                                        <Text style={style.qcode}>{codeState}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </KeyboardAvoidingView>
                             <View style={style.submitWrap}>
                                 <Text style={style.loginTitle}>注册</Text>
                                 <BoxShadow setting={shadowLogin}>
@@ -167,7 +172,7 @@ function Login({ dispatch, navigation }) {
                         <Text style={style.register}>登录</Text>
                     </View>
                 </TouchableHighlight>
-            </View>
+            </ScrollView>
         </SafeAreaView>
 
     )
@@ -191,7 +196,7 @@ const style = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         borderBottomWidth: scaleSize(0.5),
-        borderBottomColor: "#f6f6f6",
+        borderBottomColor: "#e6e6e6",
     },
     inputTitle: {
         fontSize: setSpText2(14),
@@ -199,12 +204,12 @@ const style = StyleSheet.create({
     },
     input: {
         flex: 1,
-        height: scaleHeight(40),
+        height: scaleHeight(30),
         width: "100%",
         fontSize: setSpText2(14)
     },
     mt10: {
-        marginTop: scaleSize(10)
+        marginTop: scaleSize(30)
     },
     tipIcon: {
         width: scaleSize(15),

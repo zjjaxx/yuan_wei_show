@@ -5,6 +5,7 @@ import { Formik } from 'formik';
 import { login } from "../../store/action"
 import { scaleSize, setSpText2 ,scaleHeight} from "../../utils/ScreenUtil"
 import * as yup from "yup"
+
 //阴影
 import { BoxShadow } from 'react-native-shadow'
 
@@ -120,8 +121,8 @@ const style = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        borderBottomWidth: scaleSize(1),
-        borderBottomColor: "#f6f6f6",
+        borderBottomWidth: scaleSize(0.5),
+        borderBottomColor: "#e6e6e6",
     },
     inputTitle: {
         fontSize: setSpText2(14),
@@ -129,12 +130,12 @@ const style = StyleSheet.create({
     },
     input: {
         flex: 1,
-        height: scaleHeight(40),
+        height: scaleHeight(30),
         width: "100%",
         fontSize: setSpText2(14)
     },
     mt10: {
-        marginTop: scaleSize(10)
+        marginTop: scaleSize(30)
     },
     tipIcon: {
         width: scaleSize(15),
