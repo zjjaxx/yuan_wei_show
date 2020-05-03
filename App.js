@@ -16,9 +16,7 @@ export default function App() {
       <Provider store={store}>
         <NavigationContainer>
           <StatusBar backgroundColor={background} barStyle='dark-content' />
-          <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-            <AppRouter></AppRouter>
-          </SafeAreaView>
+          <AppRouter></AppRouter>
         </NavigationContainer>
       </Provider>
     </ApplicationProvider>

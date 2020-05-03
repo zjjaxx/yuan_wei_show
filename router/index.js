@@ -29,8 +29,7 @@ function TabContainer() {
             inactiveTintColor: '#000',
             labelStyle: { fontSize: setSpText2(10) },
             style: {
-                height: scaleSize(50),
-                paddingBottom: 0
+
             }
         }} >
             <Tab.Screen name="home" component={HomeScreen} options={{ headerShown: false }} />
@@ -49,7 +48,7 @@ function AppStackScreen({ isLoading, isLogin, dispatch }) {
     if (isLoading) {
         return (
             <AppStack.Navigator>
-                <AppStack.Screen name="flash" component={FlashScreen}></AppStack.Screen>
+                <AppStack.Screen name="flash" component={FlashScreen} options={{ headerShown: false }}></AppStack.Screen>
             </AppStack.Navigator>
         )
     }

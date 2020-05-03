@@ -1,5 +1,5 @@
 import React, { useCallback } from "react"
-import { View, Text, Button } from "react-native"
+import { View, Text, Button, SafeAreaView } from "react-native"
 import { connect } from "react-redux"
 import { logout } from "../../store/action"
 function Person({ dispatch }) {
@@ -7,10 +7,12 @@ function Person({ dispatch }) {
         dispatch(logout())
     }, [dispatch])
     return (
-        <View>
-            <Text>Person</Text>
-            <Button title="logout" onPress={_logout}></Button>
-        </View>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+            <View>
+                <Text>Person</Text>
+                <Button title="logout" onPress={_logout}></Button>
+            </View>
+        </SafeAreaView>
     )
 }
 

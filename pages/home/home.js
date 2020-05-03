@@ -1,8 +1,8 @@
 import React, { useMemo, memo, useCallback, useState, useEffect, useRef } from "react"
-import { View, Text, StyleSheet, Image, FlatList } from "react-native"
+import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight } from "react-native"
 import { scaleSize, setSpText2 } from "../../utils/ScreenUtil"
 import { Popover } from '@ui-kitten/components';
-import { TouchableHighlight } from "react-native-gesture-handler"
+
 function Home({ navigation }) {
     //下拉刷新flag
     const [refreshing, setRefreshing] = useState(false)
@@ -23,20 +23,22 @@ function Home({ navigation }) {
     }, [])
 
     return (
-        <View style={style.container}>
-            <View style={style.headerWrap}>
-                <Text style={style.headerTitle}>首页</Text>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+            <View style={style.container}>
+                <View style={style.headerWrap}>
+                    <Text style={style.headerTitle}>首页</Text>
+                </View>
+                <FlatList
+                    style={style.flatList}
+                    onEndReached={_scrollEnd}
+                    onEndReachedThreshold={0.1}
+                    refreshing={refreshing}
+                    onRefresh={_onRefresh}
+                    data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                    renderItem={({ item, index }) => <RecommandProductItem toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
+                />
             </View>
-            <FlatList
-                style={style.flatList}
-                onEndReached={_scrollEnd}
-                onEndReachedThreshold={0.1}
-                refreshing={refreshing}
-                onRefresh={_onRefresh}
-                data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                renderItem={({ item, index }) => <RecommandProductItem toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
-            />
-        </View>
+        </SafeAreaView>
     )
 }
 //推荐Item

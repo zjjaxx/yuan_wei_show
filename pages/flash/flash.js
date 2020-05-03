@@ -1,12 +1,20 @@
-import React from "react"
-import {View,Text} from "react-native"
+import React, { useEffect } from "react"
+import {View,Text,Image,StyleSheet,StatusBar} from "react-native"
+import {connect} from "react-redux"
 
-function Flash(){
+function Flash(props){
     return (
-        <View>
-            <Text>Flash</Text>
+        <View style={style.container}>
+           <Image style={style.flashImg} source={require("../../assets/imgs/flash.jpg")}></Image>
         </View>
     )
 }
-
-export default Flash
+const style=StyleSheet.create({
+    container:{
+        flex:1
+    },
+    flashImg:{
+        flex:1
+    }
+})
+export default connect(state=>state,dispatch=>({dispatch}))(Flash)

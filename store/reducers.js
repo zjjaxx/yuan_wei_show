@@ -5,7 +5,7 @@ import {
 } from "./action"
 
 export default {
-    isLogin(state=false, action) {
+    isLogin(state = false, action) {
         const { type, payload } = action
         switch (type) {
             case SET_LOGIN:
@@ -14,7 +14,7 @@ export default {
                 return state
         }
     },
-    isLoading(state=false, action) {
+    isLoading(state = false, action) {
         const { type, payload } = action
         switch (type) {
             case SET_LOADING:
@@ -23,7 +23,7 @@ export default {
                 return state
         }
     },
-    token(state="", action) {
+    token(state = "", action) {
         const { type, payload } = action
         switch (type) {
             case SET_TOKEN:
@@ -31,5 +31,5 @@ export default {
             default:
                 return state
         }
-    },
+    }
 }

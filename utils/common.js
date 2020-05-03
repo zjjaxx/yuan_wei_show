@@ -1,6 +1,6 @@
 
 import { findNodeHandle, UIManager } from "react-native"
-import { AsyncStorage } from "react-native"
+import AsyncStorage  from "@react-native-community/async-storage"
 export function getNodeInfo(ref) {
     return new Promise((resolve, reject) => {
         UIManager.measure(findNodeHandle(ref), (x, y, width, height, pageX, pageY) => {

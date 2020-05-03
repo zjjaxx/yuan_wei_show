@@ -4,6 +4,7 @@ export const SET_LOADING = "SET_LOADING"
 export const SET_TOKEN = "SET_TOKEN"
 
 
+
 export function asyncToken() {
     return (dispatch, getState) => {
         dispatch({
@@ -20,7 +21,7 @@ export function asyncToken() {
                         type: SET_LOADING,
                         payload: false
                     })
-                }, 1000)
+                }, 3000)
             })
 
 
