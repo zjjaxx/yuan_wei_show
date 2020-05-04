@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import * as yup from "yup"
 import { login } from "../../store/action"
 import { scaleSize, setSpText2 ,scaleHeight} from "../../utils/ScreenUtil"
-x
+
 //阴影
 import { BoxShadow } from 'react-native-shadow'
 
