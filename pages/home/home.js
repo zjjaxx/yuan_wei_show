@@ -1,7 +1,8 @@
 import React, { useMemo, memo, useCallback, useState, useEffect, useRef } from "react"
 import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight } from "react-native"
-import { scaleSize, setSpText2 ,scaleHeight} from "../../utils/ScreenUtil"
+import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import { Popover } from '@ui-kitten/components';
+import toDate from "../../utils/toDate"
 
 function Home({ navigation }) {
     //下拉刷新flag
@@ -17,16 +18,22 @@ function Home({ navigation }) {
     const _scrollEnd = useCallback(() => {
         console.log("loadmore")
     }, [])
-    //跳
+    //跳转产品详情页
     const _toProductDetail = useCallback((id) => {
         navigation.navigate("productDetail", { id })
     }, [])
-
+    //跳转发布页
+    const _toPublish = useCallback(() => {
+        navigation.navigate("publish")
+    }, [])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
                 <View style={style.headerWrap}>
                     <Text style={style.headerTitle}>首页</Text>
+                    <TouchableHighlight underlayColor="#fff" onPress={_toPublish}>
+                        <Image style={style.camera} source={require("../../assets/imgs/camera.png")}></Image>
+                    </TouchableHighlight>
                 </View>
                 <FlatList
                     style={style.flatList}
@@ -58,8 +65,8 @@ const RecommandProductItem = memo((props) => {
             <View style={style.recommonHeaderWrap}>
                 <Image source={require("../../assets/imgs/avatar.jpeg")} style={style.avatar}></Image>
                 <View style={style.nickerWrap}>
-                    <Text style={style.nick}>小可爱</Text>
-                    <Text style={style.time}>17分钟前</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={style.nick}>小可爱</Text>
+                    <Text style={style.time}>{toDate("2020-05-02 15:20:45")}</Text>
                 </View>
                 <Popover
                     placement="left"
@@ -145,6 +152,9 @@ const style = StyleSheet.create({
         backgroundColor: "#fff",
     },
     headerWrap: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
         height: scaleHeight(50),
         paddingHorizontal: scaleSize(15)
     },
@@ -152,6 +162,10 @@ const style = StyleSheet.create({
         fontSize: setSpText2(16),
         lineHeight: setSpText2(50),
         fontWeight: "500"
+    },
+    camera: {
+        width: scaleSize(20),
+        height: scaleSize(20)
     },
     flatList: {
         flex: 1,
@@ -180,7 +194,8 @@ const style = StyleSheet.create({
         borderRadius: scaleSize(20)
     },
     nickerWrap: {
-        marginRight: "auto"
+        flex: 1,
+        marginRight: scaleSize(20)
     },
     nick: {
         fontSize: setSpText2(14),
