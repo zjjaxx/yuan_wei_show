@@ -10,6 +10,7 @@ import FlashScreen from "../pages/flash/flash"
 import RegisterScreen from "../pages/register/register"
 import ProductDetailScreen from "../pages/productDetail/productDetail"
 import PublishScreen from "../pages/publish/publish"
+import CategoriesScreen from "../pages/publish/categories"
 import { connect } from "react-redux"
 import { asyncToken } from "../store/action"
 //tab 路由容器
@@ -60,8 +61,8 @@ function AppStackScreen({ isLoading, isLogin, dispatch }) {
                     <>
                         <AppStack.Screen name="tabContainer" component={TabContainer}></AppStack.Screen>
                         <AppStack.Screen name="productDetail" component={ProductDetailScreen}  ></AppStack.Screen>
-                        <AppStack.Screen name="publish" component={PublishScreen}  ></AppStack.Screen>
-                        
+                        <AppStack.Screen name="publish" component={PublishScreen} ></AppStack.Screen>
+                        <AppStack.Screen name="categories" component={CategoriesScreen} ></AppStack.Screen>
                     </>
                 ) : (
                         <>

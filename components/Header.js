@@ -16,7 +16,7 @@ function Header(props) {
                 {left ? left : <Image style={style.backIcon} source={require("../assets/imgs/arrow-left.png")}></Image>}
             </TouchableHighlight>
             <TouchableHighlight style={style.headerRightWrap} underlayColor="#fff" onPress={rightEvent}>
-                {right ? right : null}
+                {right ? right : <View></View>}
             </TouchableHighlight>
         </View>
     )

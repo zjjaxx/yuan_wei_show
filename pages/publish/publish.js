@@ -1,22 +1,47 @@
 import React, { useState, useCallback } from "react"
-import { View, Text, SafeAreaView, StyleSheet, ScrollView,TextInput } from "react-native"
+import { View, Text, SafeAreaView, StyleSheet, ScrollView, TextInput, Button, Image, TouchableHighlight } from "react-native"
 import Header from "../../components/Header"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
+import ImageUpload from "../../components/ImageUpload"
+import { Formik } from 'formik';
+import * as yup from "yup"
 
-function Publish({navigation}) {
+function Publish({ navigation, route }) {
     //宝贝描述
     const [publishValue, setPublishValue] = useState("")
+    //图片数组
+    const [imageList, setImageList] = useState([])
+    //价格
+    const [price, setPrice] = useState()
+    //运费
+    const [deliverFee,setDeliverFee]=useState("包邮")
     //宝贝描述change事件
     const _setPublishValue = useCallback((value) => {
         setPublishValue(value)
     }, [])
     //返回事件
-    const _goBack=useCallback(()=>{
+    const _goBack = useCallback(() => {
         navigation.goBack()
+    }, [])
+    //跳转分类事件
+    const toCategories = useCallback(() => {
+        navigation.navigate("categories")
+    }, [])
+    //重置分类
+    const resetCategories = useCallback(() => {
+        navigation.setParams({ categories: "" })
+    }, [])
+    //价格change事件
+    const priceChange = useCallback((value) => {
+        setPrice(value)
+    }, [])
+    const changeDeliverFee=useCallback((value)=>{
+        setDeliverFee(value)
     },[])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
+                
                 <Header
                     leftEvent={_goBack}
                     wrapStyle={style.header}
@@ -34,8 +59,31 @@ function Publish({navigation}) {
                         numberOfLines={5}
                         maxLength={250}
                     />
+                    <ImageUpload imageList={imageList} setImageList={setImageList}></ImageUpload>
+                    <Text style={style.categoriesTitle}>分类</Text>
+                    {route.params && route.params.categories ? <View style={{ flexDirection: "row" }}>
+                        <View style={style.selectCategoriesWrap}>
+                            <Text style={style.categories}>{route.params.categories}</Text>
+                            <TouchableHighlight style={style.remove} underlayColor="#fca413" onPress={resetCategories}>
+                                <Image style={style.removeIcon} source={require("../../assets/imgs/removeCategories.png")}></Image>
+                            </TouchableHighlight>
+                        </View>
+                    </View> : <TouchableHighlight underlayColor="#fff" onPress={toCategories}>
+                            <View style={style.categoriesWrap}>
+                                <Text style={style.all}>全部  > </Text>
+                            </View>
+                        </TouchableHighlight>}
+                    <View style={style.priceWrap}>
+                        <Image style={style.priceIcon} source={require("../../assets/imgs/price.png")}></Image>
+                        <Text style={style.price}>价格</Text>
+                        <TextInput keyboardType="numeric" placeholder="请输入价格" style={style.priceValue} onChangeText={priceChange} value={price}></TextInput>
+                    </View>
+                    <View style={style.deliverWrap}>
+                        <Image style={style.deliveryIcon} source={require("../../assets/imgs/delivery.png")}></Image>
+                        <Text style={style.price}>运费</Text>
+                        <TextInput keyboardType="numeric" placeholder="请输入价格" style={style.deliverFeeValue} onChangeText={changeDeliverFee} value={deliverFee}></TextInput>
+                    </View>
                 </ScrollView>
-
             </View>
         </SafeAreaView>
     )
@@ -66,9 +114,86 @@ const style = StyleSheet.create({
         paddingHorizontal: scaleSize(20)
     },
     textArea: {
-        fontSize:setSpText2(16),
-        lineHeight:scaleHeight(24),
+        marginBottom: scaleSize(20),
+        borderBottomColor: "#eee",
+        borderBottomWidth: scaleSize(0.5),
+        fontSize: setSpText2(14),
         height: scaleHeight(150)
+    },
+    categoriesTitle: {
+        marginTop: scaleHeight(20),
+        fontSize: scaleSize(16)
+    },
+    categoriesWrap: {
+        marginTop: scaleHeight(20),
+        height: scaleHeight(25),
+        width: scaleSize(70),
+        backgroundColor: "#eee",
+        borderRadius: scaleSize(15),
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    all: {
+        fontSize: setSpText2(12)
+    },
+    selectCategoriesWrap: {
+        marginTop: scaleHeight(10),
+        borderRadius: scaleSize(15),
+        paddingHorizontal: scaleSize(20),
+        paddingVertical: scaleHeight(5),
+        backgroundColor: "#fca413",
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    categories: {
+        fontSize: setSpText2(14)
+    },
+    remove: {
+        marginLeft: scaleSize(10),
+        width: scaleSize(15),
+        height: scaleSize(15)
+    },
+    removeIcon: {
+        height: "100%",
+        width: "100%"
+    },
+    priceWrap: {
+        marginTop:scaleHeight(10),
+        borderBottomColor:"#eee",
+        borderBottomWidth:scaleSize(0.5),
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems:"center",
+        height:scaleHeight(40)
+    },
+    priceIcon:{
+        marginRight:scaleSize(10),
+        height:scaleSize(20),
+        width:scaleSize(20)
+    },
+    price:{
+        marginRight:"auto",
+        fontSize:setSpText2(14)
+    },
+    priceValue:{
+        textAlign:"right"
+    },
+    deliverWrap: {
+        marginTop:scaleHeight(10),
+        borderBottomColor:"#eee",
+        borderBottomWidth:scaleSize(0.5),
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems:"center",
+        height:scaleHeight(40)
+    },
+    deliveryIcon:{
+        marginRight:scaleSize(10),
+        height:scaleSize(20),
+        width:scaleSize(20)
+    },
+    deliverFeeValue:{
+        textAlign:"right"
     }
 })
 
