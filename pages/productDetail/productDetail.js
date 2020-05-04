@@ -34,6 +34,7 @@ function ProductDetail({ navigation }) {
                     </Header>
                     <ScrollView style={style.scrollView}>
                         <Swiper></Swiper>
+                        {/* {[1,2,3].map((item,index)=><Image resizeMode="cover" style={style.detailImg} source={require("../../assets/imgs/avatar.jpeg")}></Image>)} */}
                         <Text style={style.productName}>AIR JODOY DANCE</Text>
                         <Text style={style.price}>￥ 278.00</Text>
                         <Text style={style.discTitle}>介绍</Text>
@@ -165,6 +166,12 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#fff"
+    },
+    detailImg:{
+        marginLeft:scaleSize(12.5),
+        width:scaleSize(350),
+        borderRadius:scaleSize(5),
+        marginBottom:scaleHeight(20)
     },
     scrollView: {
         flex: 1

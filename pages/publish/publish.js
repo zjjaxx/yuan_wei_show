@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react"
-import { View, Text, SafeAreaView, Alert, StyleSheet, ScrollView, TextInput, Button, Image, TouchableHighlight } from "react-native"
+import { View, Text, SafeAreaView, Alert, StyleSheet, ScrollView, TextInput, Button, Image, TouchableHighlight,KeyboardAvoidingView } from "react-native"
 import Header from "../../components/Header"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import ImageUpload from "../../components/ImageUpload"
@@ -23,7 +23,7 @@ function Publish({ navigation, route }) {
     }, [])
     //发布事件
     const _handleSubmit = useCallback((values, errors, handleSubmit) => {
-        if (!(route.params&&route.params.categories)) {
+        if (!(route.params && route.params.categories)) {
             Alert.alert(
                 '提示',
                 "请选择分类~",
@@ -60,7 +60,7 @@ function Publish({ navigation, route }) {
             }
         }
         handleSubmit()
-    }, [route.params,imageList])
+    }, [route.params, imageList])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
@@ -86,8 +86,8 @@ function Publish({ navigation, route }) {
                                 leftEvent={_goBack}
                                 wrapStyle={style.header}
                                 title="发布"
-                                right={<TouchableHighlight style={style.publishBtn} underlayColor="#fca413" onPress={()=>_handleSubmit(values, errors, handleSubmit)}>
-                                        <Text style={style.publish}>发布</Text>
+                                right={<TouchableHighlight style={style.publishBtn} underlayColor="#fca413" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
+                                    <Text style={style.publish}>发布</Text>
                                 </TouchableHighlight>}
                                 left={<Text style={style.cancelPublish}>取消</Text>}
                             ></Header>
@@ -115,16 +115,20 @@ function Publish({ navigation, route }) {
                                             <Text style={style.all}>全部  > </Text>
                                         </View>
                                     </TouchableHighlight>}
-                                <View style={style.priceWrap}>
-                                    <Image style={style.priceIcon} source={require("../../assets/imgs/price.png")}></Image>
-                                    <Text style={style.price}>价格</Text>
-                                    <TextInput keyboardType="numeric" placeholder="请输入价格" style={style.priceValue} onChangeText={handleChange("price")} value={values.price}></TextInput>
-                                </View>
-                                <View style={style.deliverWrap}>
-                                    <Image style={style.deliveryIcon} source={require("../../assets/imgs/delivery.png")}></Image>
-                                    <Text style={style.price}>运费</Text>
-                                    <TextInput keyboardType="numeric" placeholder="请输入价格" style={style.deliverFeeValue} onChangeText={handleChange("deliverFee")} value={values.deliverFee}></TextInput>
-                                </View>
+                                <KeyboardAvoidingView behavior="padding" enabled >
+                                    <View style={style.priceWrap}>
+                                        <Image style={style.priceIcon} source={require("../../assets/imgs/price.png")}></Image>
+                                        <Text style={style.price}>价格</Text>
+                                        <TextInput keyboardType="numeric" placeholder="请输入价格" style={style.priceValue} onChangeText={handleChange("price")} value={values.price}></TextInput>
+                                    </View>
+                                </KeyboardAvoidingView>
+                                <KeyboardAvoidingView behavior="padding" enabled >
+                                    <View style={style.deliverWrap}>
+                                        <Image style={style.deliveryIcon} source={require("../../assets/imgs/delivery.png")}></Image>
+                                        <Text style={style.price}>运费</Text>
+                                        <TextInput keyboardType="numeric" placeholder="请输入价格" style={style.deliverFeeValue} onChangeText={handleChange("deliverFee")} value={values.deliverFee}></TextInput>
+                                    </View>
+                                </KeyboardAvoidingView>
                             </ScrollView>
                         </>
                         )}
