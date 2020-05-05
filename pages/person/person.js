@@ -1,5 +1,5 @@
 import React, { useCallback } from "react"
-import { View, Text, Button, SafeAreaView } from "react-native"
+import { View, Text, Button, SafeAreaView,StyleSheet } from "react-native"
 import { connect } from "react-redux"
 import { logout } from "../../store/action"
 function Person({ dispatch }) {
@@ -15,5 +15,8 @@ function Person({ dispatch }) {
         </SafeAreaView>
     )
 }
+const style=StyleSheet.create({
+
+})
 
 export default connect(state => state, dispatch => ({ dispatch }))(Person)
