@@ -1,8 +1,23 @@
-import React, {useCallback } from "react"
+import React, { useCallback, useState } from "react"
 import { View, Text, StyleSheet, SafeAreaView, } from "react-native"
 import Header from "../../components/Header"
-function MessageDetail({navigation}) {
-     //返回事件
+import { GiftedChat } from 'react-native-gifted-chat'
+function MessageDetail({ navigation }) {
+    const [messages, setMessages] = useState([{
+        _id: 1,
+        text: 'Hello developer',
+        createdAt: new Date(),
+        user: {
+            _id: 2,
+            name: 'React Native',
+            avatar: 'https://placeimg.com/140/140/any',
+        },
+    },])
+    const onSend = useCallback((_messages = []) => {
+        console.log("send")
+        setMessages([ ..._messages,...messages])
+    }, [messages])
+    //返回事件
     const leftEvent = useCallback(() => {
         navigation.goBack()
     }, [])
@@ -11,6 +26,13 @@ function MessageDetail({navigation}) {
             <View style={style.container}>
                 <Header title="小可爱" leftEvent={leftEvent}>
                 </Header>
+                <GiftedChat
+                    messages={messages}
+                    onSend={messages => onSend(messages)}
+                    user={{
+                        _id: 1,
+                    }}
+                />
             </View>
         </SafeAreaView>
 
