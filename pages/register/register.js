@@ -204,8 +204,6 @@ const style = StyleSheet.create({
     },
     input: {
         flex: 1,
-        height: scaleHeight(30),
-        width: "100%",
         fontSize: setSpText2(14)
     },
     mt10: {

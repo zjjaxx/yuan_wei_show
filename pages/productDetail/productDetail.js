@@ -93,7 +93,7 @@ const BottomBar = React.memo(function (props) {
     }, [])
     return (
         <>
-            {isShowLeaveMessage ? <KeyboardAvoidingView keyboardVerticalOffset={scaleHeight(30)} behavior="position" enabled contentContainerStyle={{backgroundColor:"#fff"}}>
+            {isShowLeaveMessage ? <KeyboardAvoidingView keyboardVerticalOffset={scaleHeight(30)} behavior={Platform.OS == "android"?'':'position'} enabled contentContainerStyle={{backgroundColor:"#fff"}}>
                 <View style={style.leaveInputWrap}>
                     <Image style={style.avatar} source={require("../../assets/imgs/avatar.jpeg")}></Image>
                     <TextInput
@@ -266,7 +266,7 @@ const style = StyleSheet.create({
     },
     leaveInputWrap: {
         paddingHorizontal: scaleSize(10),
-        height: scaleHeight(40),
+        
         flexDirection: "row",
         alignItems: "center"
     },
@@ -277,10 +277,11 @@ const style = StyleSheet.create({
         width: scaleSize(30)
     },
     leaveInput: {
+        paddingVertical:scaleHeight(5),
+        flex:1,
         paddingHorizontal: scaleSize(10),
         backgroundColor: "#eee",
-        flex: 1,
-        height: scaleHeight(30),
+        fontSize:setSpText2(14),
         borderRadius: scaleSize(4)
     },
     leaveTitleWrap: {

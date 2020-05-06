@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react"
 import { View, Text, StyleSheet, SafeAreaView,Button } from "react-native"
 import Header from "../../components/Header"
-import { GiftedChat } from 'react-native-gifted-chat'
+// import { GiftedChat } from 'react-native-gifted-chat'
 function MessageDetail({ navigation }) {
     const [messages, setMessages] = useState([{
         _id: 1,
@@ -58,13 +58,13 @@ function MessageDetail({ navigation }) {
                 <Header title="小可爱" leftEvent={leftEvent}>
                 </Header>
                 <Button onPress={receiveMessage} title="receive"></Button>
-                <GiftedChat
+                {/* <GiftedChat
                     messages={messages}
                     onSend={messages => onSend(messages)}
                     user={{
                         _id: 1,
                     }}
-                />
+                /> */}
             </View>
         </SafeAreaView>
 

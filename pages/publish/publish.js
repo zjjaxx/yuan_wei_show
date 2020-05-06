@@ -98,7 +98,7 @@ function Publish({ navigation, route }) {
                                     onChangeText={handleChange('publishValue')}
                                     value={values.publishValue}
                                     multiline
-                                    numberOfLines={5}
+                                    textAlignVertical= 'top'
                                     maxLength={250}
                                 />
                                 <ImageUpload imageList={imageList} setImageList={setImageList}></ImageUpload>
@@ -167,7 +167,7 @@ const style = StyleSheet.create({
         borderBottomColor: "#eee",
         borderBottomWidth: scaleSize(0.5),
         fontSize: setSpText2(14),
-        height: scaleHeight(150)
+        height:scaleHeight(150)
     },
     categoriesTitle: {
         marginTop: scaleHeight(20),

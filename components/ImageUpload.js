@@ -6,7 +6,7 @@ import Spinner from 'react-native-spinkit';
 const options = {
     title: '选择图片',
     cancelButtonTitle: "取消",
-    takePhotoButtonTitle: null,
+    takePhotoButtonTitle: "拍照",
     chooseFromLibraryButtonTitle: "本地相册",
     storageOptions: {
         skipBackup: true,
@@ -67,7 +67,6 @@ export default ImageUpload
 const style = StyleSheet.create({
     imageUploadWrap: {
         height: scaleSize(100),
-        overflow: "visible"
     },
     img: {
         borderRadius: scaleSize(5),
@@ -75,6 +74,7 @@ const style = StyleSheet.create({
         width: scaleSize(90),
     },
     imgWrap: {
+        marginTop:scaleHeight(10),
         marginRight: scaleSize(20),
         position: "relative",
         overflow: "visible"
@@ -94,6 +94,7 @@ const style = StyleSheet.create({
         width: "100%"
     },
     uploadWrap: {
+        marginTop:scaleHeight(10),
         borderRadius: scaleSize(5),
         height: scaleSize(90),
         width: scaleSize(90),

@@ -81,7 +81,6 @@ const style = StyleSheet.create({
         flexDirection: "row",
         alignItems: "flex-start",
         paddingVertical: scaleHeight(5),
-        height: scaleHeight(60),
         justifyContent: "space-between",
         borderBottomColor: "#eee",
         borderBottomWidth: scaleSize(0.5),

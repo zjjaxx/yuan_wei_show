@@ -129,9 +129,7 @@ const style = StyleSheet.create({
         color: "#999"
     },
     input: {
-        flex: 1,
-        height: scaleHeight(30),
-        width: "100%",
+        flex:1,
         fontSize: setSpText2(14)
     },
     mt10: {
