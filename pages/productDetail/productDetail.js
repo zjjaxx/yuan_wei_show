@@ -29,27 +29,29 @@ function ProductDetail({ navigation }) {
     }, [])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-                <View style={style.container}>
-                    <Header title="产品详情" leftEvent={leftEvent} right={<Image style={style.share} source={require("../../assets/imgs/share.png")}></Image>}>
-                    </Header>
-                    <ScrollView style={style.scrollView}>
-                        <Swiper></Swiper>
-                        {/* {[1,2,3].map((item,index)=><Image resizeMode="cover" style={style.detailImg} source={require("../../assets/imgs/avatar.jpeg")}></Image>)} */}
-                        <Text style={style.productName}>AIR JODOY DANCE</Text>
-                        <Text style={style.price}>￥ 278.00</Text>
-                        <Text style={style.discTitle}>介绍</Text>
-                        <Text style={style.productDisc}>SALEWA(沙乐华)1935年起源于德国 ，是欧洲著名的e68a84e8a2ad7a6431333433626539户外运动品牌。SA意为Saddler(制造马鞍的)、LE意为Leather(皮革)、WA意为Wares(制品)。SALEWA滑雪板及滑雪杆也在市场上取得成功，逐渐成为公司最主要的收入来源。适合各个年龄段的人群。</Text>
-                        <LeaveMessageList leaveMessageList={[[2, 4, 3], [3, 45, 5]]}></LeaveMessageList>
-                    </ScrollView>
-                    <BottomBar
-                        isSave={isSave}
-                        isShowLeaveMessage={isShowLeaveMessage}
-                        setIsShowLeaveMessage={setIsShowLeaveMessage}
-                        toggleSave={toggleSave}
-                        leaveMessage={leaveMessage}
-                        payConfirm={payConfirm}>
-                    </BottomBar>
-                </View>
+            <View style={style.container}>
+                <Header title="产品详情" leftEvent={leftEvent} right={<Image style={style.share} source={require("../../assets/imgs/share.png")}></Image>}>
+                </Header>
+                <ScrollView style={style.scrollView}>
+                    {/* <Swiper></Swiper> */}
+                    <Text style={style.discTitle}>介绍</Text>
+                    <Text style={style.productDisc}>SALEWA(沙乐华)1935年起源于德国 ，是欧洲著名的e68a84e8a2ad7a6431333433626539户外运动品牌。SA意为Saddler(制造马鞍的)、LE意为Leather(皮革)、WA意为Wares(制品)。SALEWA滑雪板及滑雪杆也在市场上取得成功，逐渐成为公司最主要的收入来源。适合各个年龄段的人群。</Text>
+                    <View style={style.imgList}>
+                        {[1, 2, 3].map((item, index) => <Image resizeMode="stretch" style={style.detailImg} source={require("../../assets/imgs/avatar.jpeg")}></Image>)}
+                    </View>
+                    <Text style={style.productName}>AIR JODOY DANCE</Text>
+                    <Text style={style.price}>￥ 278.00</Text>
+                    <LeaveMessageList leaveMessageList={[[2, 4, 3], [3, 45, 5]]}></LeaveMessageList>
+                </ScrollView>
+                <BottomBar
+                    isSave={isSave}
+                    isShowLeaveMessage={isShowLeaveMessage}
+                    setIsShowLeaveMessage={setIsShowLeaveMessage}
+                    toggleSave={toggleSave}
+                    leaveMessage={leaveMessage}
+                    payConfirm={payConfirm}>
+                </BottomBar>
+            </View>
         </SafeAreaView>
     )
 }
@@ -93,7 +95,7 @@ const BottomBar = React.memo(function (props) {
     }, [])
     return (
         <>
-            {isShowLeaveMessage ? <KeyboardAvoidingView keyboardVerticalOffset={scaleHeight(30)} behavior={Platform.OS == "android"?'':'position'} enabled contentContainerStyle={{backgroundColor:"#fff"}}>
+            {isShowLeaveMessage ? <KeyboardAvoidingView keyboardVerticalOffset={scaleHeight(30)} behavior={Platform.OS == "android" ? '' : 'position'} enabled contentContainerStyle={{ backgroundColor: "#fff" }}>
                 <View style={style.leaveInputWrap}>
                     <Image style={style.avatar} source={require("../../assets/imgs/avatar.jpeg")}></Image>
                     <TextInput
@@ -134,7 +136,7 @@ const LeaveMessageList = React.memo(function (props) {
             return (<View style={style.leaveMessageItemWrap}>
                 <View style={style.leaveMessageHeadWrap}>
                     <Image style={style.leaveItemAvatar} source={require("../../assets/imgs/avatar.jpeg")}></Image>
-                    <Text  numberOfLines={1} ellipsizeMode="tail"  style={[style.name, type == 1 ? { marginRight: "auto" } : {}]}>花花有期~纷纷尽我if</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={[style.name, type == 1 ? { marginRight: "auto" } : {}]}>花花有期~纷纷尽我if</Text>
                     {type == 2 ? <View style={style.sellerWrap}><Text style={style.seller}>主人</Text></View> : null}
                     <Image source={require("../../assets/imgs/thumbs-up.png")} style={style.thumbIcon}></Image>
                 </View>
@@ -167,11 +169,15 @@ const style = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff"
     },
-    detailImg:{
-        marginLeft:scaleSize(12.5),
-        width:scaleSize(350),
-        borderRadius:scaleSize(5),
-        marginBottom:scaleHeight(20)
+    imgList: {
+        marginTop:scaleHeight(20),
+        paddingHorizontal: scaleSize(15)
+    },
+    detailImg: {
+        width:"100%",
+        height: scaleSize(350),
+        borderRadius: scaleSize(5),
+        marginBottom: scaleHeight(20)
     },
     scrollView: {
         flex: 1
@@ -266,7 +272,7 @@ const style = StyleSheet.create({
     },
     leaveInputWrap: {
         paddingHorizontal: scaleSize(10),
-        
+
         flexDirection: "row",
         alignItems: "center"
     },
@@ -277,11 +283,11 @@ const style = StyleSheet.create({
         width: scaleSize(30)
     },
     leaveInput: {
-        paddingVertical:scaleHeight(5),
-        flex:1,
+        paddingVertical: scaleHeight(10),
+        flex: 1,
         paddingHorizontal: scaleSize(10),
         backgroundColor: "#eee",
-        fontSize:setSpText2(14),
+        fontSize: setSpText2(14),
         borderRadius: scaleSize(4)
     },
     leaveTitleWrap: {
@@ -313,7 +319,7 @@ const style = StyleSheet.create({
         borderRadius: scaleSize(4),
     },
     name: {
-        maxWidth:scaleSize(200),
+        maxWidth: scaleSize(200),
         fontSize: setSpText2(14),
         fontWeight: "500"
     },

@@ -233,8 +233,6 @@ PODS:
     - React-cxxreact (= 0.62.2)
     - React-jsi (= 0.62.2)
   - React-jsinspector (0.62.2)
-  - react-native-image-picker (2.3.1):
-    - React
   - react-native-safe-area-context (0.7.3):
     - React
   - react-native-spinkit (1.4.1):
@@ -304,12 +302,22 @@ PODS:
     - React
   - RNGestureHandler (1.6.1):
     - React
+  - RNImageCropPicker (0.30.0):
+    - React-Core
+    - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.30.0)
+    - RSKImageCropper
+  - RNImageCropPicker/QBImagePickerController (0.30.0):
+    - React-Core
+    - React-RCTImage
+    - RSKImageCropper
   - RNReanimated (1.8.0):
     - React
   - RNScreens (2.6.0):
     - React
   - RNSVG (12.1.0):
     - React
+  - RSKImageCropper (2.2.3)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -350,7 +358,6 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
-  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-spinkit (from `../node_modules/react-native-spinkit`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -367,6 +374,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -385,6 +393,7 @@ SPEC REPOS:
     - Flipper-RSocket
     - FlipperKit
     - OpenSSL-Universal
+    - RSKImageCropper
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -416,8 +425,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
-  react-native-image-picker:
-    :path: "../node_modules/react-native-image-picker"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-spinkit:
@@ -448,6 +455,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/masked-view"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -483,7 +492,6 @@ SPEC CHECKSUMS:
   React-jsi: b6dc94a6a12ff98e8877287a0b7620d365201161
   React-jsiexecutor: 1540d1c01bb493ae3124ed83351b1b6a155db7da
   React-jsinspector: 512e560d0e985d0e8c479a54a4e5c147a9c83493
-  react-native-image-picker: 6a850c41f57f0848d918c2a77aedd7aa272ffa30
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   React-RCTActionSheet: f41ea8a811aac770e0cc6e0ad6b270c644ea8b7c
@@ -499,12 +507,14 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 453cd7c335ec9ba3b877e27d02238956b76f3268
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
+  RNImageCropPicker: a606d65f71c6c05caa3c850c16fb1ba2a4718608
   RNReanimated: 955cf4068714003d2f1a6e2bae3fb1118f359aff
   RNScreens: 19fee34a46de81b66e26960f5ac14ea616a5d089
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
+  RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: ed8c8804fabfc96d70f35f3e869d4667a762db9a
+PODFILE CHECKSUM: 6b4d72d2483b2be51df8a92a44b302971c7d75c3
 
 COCOAPODS: 1.8.4

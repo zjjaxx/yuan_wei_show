@@ -126,10 +126,11 @@ const style = StyleSheet.create({
     },
     inputTitle: {
         fontSize: setSpText2(14),
-        color: "#999"
+        color: "#999",
     },
     input: {
         flex:1,
+        paddingVertical:scaleHeight(10),
         fontSize: setSpText2(14)
     },
     mt10: {

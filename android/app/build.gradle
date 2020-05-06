@@ -130,6 +130,7 @@ android {
 
     defaultConfig {
         applicationId "com.yuan_wei_show"
+        vectorDrawables.useSupportLibrary = true
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
