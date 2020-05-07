@@ -1,28 +1,31 @@
-import React, { useCallback, useState, useRef } from "react"
-import { View, Text, StyleSheet, SafeAreaView, Button, TouchableOpacity, PermissionsAndroid,Dimensions } from "react-native"
+import React, { useCallback, useState, useRef, memo } from "react"
+import { View, Text, StyleSheet, SafeAreaView, Button, TouchableOpacity, PermissionsAndroid, Dimensions } from "react-native"
 import Header from "../../components/Header"
 import FastImage from 'react-native-fast-image'
 import { ChatScreen } from 'react-native-easy-chat-ui'
 import { AudioRecorder, AudioUtils } from 'react-native-audio'
 import RNFS from 'react-native-fs'
 import Sound from 'react-native-sound'
+import { scaleSize, scaleHeight } from "../../utils/ScreenUtil"
 const { width, height } = Dimensions.get('window')
 function MessageDetail({ navigation }) {
+  //聊天句柄
   const chatRef = useRef()
   const timer = useRef()
+  //聊天数据
   const [messages, setMessages] = useState([
     {
-      id: `1`,
-      type: 'text',
+      id: `1`,//message id
+      type: 'text',//about message type: 'text', 'image', 'voice', 'video', 'location', 'share', 'videoCall', 'voiceCall', 'redEnvelope', 'file', 'system'
       content: 'hello world',
-      targetId: '12345678',
-      chatInfo: {
+      targetId: '12345678',//The id of the person who sent the message
+      chatInfo: {//The profile of the person you're chatting with
         avatar: require('../../assets/imgs/avatar.jpeg'),
         id: '12345678',
         nickName: 'Test'
       },
-      renderTime: true,
-      sendStatus: 0,
+      renderTime: true,//Whether to render time above message
+      sendStatus: 0,//发送方状态0 ---> sending, 1 ---> sendSuccess, -1 ---> You are deleted or on the blacklist, -2 ---> error
       time: '1542006036549'
     },
     {
@@ -67,7 +70,7 @@ function MessageDetail({ navigation }) {
         id: '12345678'
       },
       renderTime: true,
-      sendStatus: -2,
+      sendStatus: 0,
       time: '1542177036549'
     },
     {
@@ -105,31 +108,33 @@ function MessageDetail({ navigation }) {
     },
   ])
   const sound = useRef()
+  //当前激活语音ID
   const activeVoiceId = useRef(-1)
 
   const [info, setInfo] = useState({
-    chatBg: require('../../assets/imgs/pic1.jpg'),
-    inverted: false,
-    voiceHandle: true,
-    voicePlaying: false,
-    voiceLoading: false,
-    voiceVolume: 0,
-    currentTime: 0,
-    recording: false,
-    paused: false,
-    stoppedRecording: false,
-    finished: false,
-    audioPath: '',
-    panelSource: [
+    chatBg: require('../../assets/imgs/pic1.jpg'),//聊天背景
+    inverted: false,//When messageList exceeds the screen height, set it to true otherwise false 作用未知
+    voiceHandle: true,//Whether to get a recording handle
+    voicePlaying: false,//Playing voice or not
+    voiceLoading: false,//Loading voice or not
+    voiceVolume: 0,//音量Volume (0~10)
+    currentTime: 0,//audio length
+    recording: false,//未知
+    paused: false,//未知
+    stoppedRecording: false,//未知
+    finished: false,//未知
+    audioPath: '',	//File path to store voice
+    panelSource: [ //	Custom panel source
       {
-        icon: <FastImage source={require('../../assets/imgs/avatar.jpeg')} style={{ width: 30, height: 30 }} />,
+        icon: <FastImage source={require('../../assets/imgs/camera.png')} style={style.menuIcon} />,
         title: '照片',
       }, {
-        icon: <FastImage source={require('../../assets/imgs/avatar.jpeg')} style={{ width: 30, height: 30 }} />,
+        icon: <FastImage source={require('../../assets/imgs/camera.png')} style={style.menuIcon} />,
         title: '拍照'
       }
     ]
   })
+  //发送消息事件
   const sendMessage = useCallback((type, content, isInverted) => {
     console.log(type, content, isInverted, 'msg')
     setMessages([...messages, {
@@ -147,6 +152,7 @@ function MessageDetail({ navigation }) {
       time: `${new Date().getTime()}`
     }])
   }, [messages])
+  //Callback when check permission on android
   const _requestAndroidPermission = useCallback(async () => {
     try {
       const rationale = {
@@ -164,6 +170,7 @@ function MessageDetail({ navigation }) {
   const leftEvent = useCallback(() => {
     navigation.goBack()
   }, [])
+  //渲染底部菜单栏
   const renderPanelRow = (data, index) =>
     (<TouchableOpacity
       key={index}
@@ -177,11 +184,31 @@ function MessageDetail({ navigation }) {
       activeOpacity={0.7}
       onPress={() => console.log('press')}
     >
-      <View style={{ backgroundColor: '#fff', borderRadius: 8, padding: 15, borderColor: '#ccc', borderWidth:80 }}>
+      <View style={style.menuItemWrap}>
         {data.icon}
       </View>
-      <Text style={{ color: '#7a7a7a', marginTop: 10 }}>{data.title}</Text>
+      <Text style={style.menuTitle}>{data.title}</Text>
     </TouchableOpacity>)
+  //点击播放语音
+  const onPress = useCallback((type, index, content) => {
+    if (type === 'voice') {
+      const { voicePlaying } = info
+      if (voicePlaying) {
+        if (index === activeVoiceId.current) {
+          stopSound()
+        } else {
+          stopSound(true)
+          playSound(content, index)
+        }
+      } else {
+        if (index !== activeVoiceId) {
+          stopSound(true)
+        }
+        playSound(content, index)
+      }
+    }
+  }, [info])
+  //停止播放语音
   const stopSound = useCallback((remove = false) => {
     sound.current && sound.current.stop()
     setInfo({ ...info, voicePlaying: false })
@@ -189,6 +216,7 @@ function MessageDetail({ navigation }) {
       sound.current = null
     }
   }, [info])
+  //播放语音
   const playSound = useCallback((url, index) => {
     activeVoiceId.current = index
     if (sound.current === null) {
@@ -226,30 +254,14 @@ function MessageDetail({ navigation }) {
       });
     }
   }, [info])
+  //Callback when get handle or not
   const _setVoiceHandel = useCallback((status) => {
     setInfo({ ...info, voiceHandle: status })
   }, [info])
   const changeHeaderLeft = useCallback(() => {
     console.log("trigger changeHeaderLeft")
   }, [])
-  const onPress = useCallback((type, index, content) => {
-    if (type === 'voice') {
-      const { voicePlaying } = info
-      if (voicePlaying) {
-        if (index === activeVoiceId.current) {
-          stopSound()
-        } else {
-          stopSound(true)
-          playSound(content, index)
-        }
-      } else {
-        if (index !== activeVoiceId) {
-          stopSound(true)
-        }
-        playSound(content, index)
-      }
-    }
-  }, [info])
+  //	Callback when recording
   const audioProgress = useCallback(() => {
     AudioRecorder.onProgress = (data) => {
       if (data.currentTime === 0) {
@@ -262,6 +274,7 @@ function MessageDetail({ navigation }) {
       random()
     }
   }, [info])
+  //Callback when finish record
   const audioFinish = useCallback(() => {
     AudioRecorder.onFinished = (data) => _finishRecording(data.status === 'OK', data.audioFileURL)
   }, [])
@@ -274,12 +287,14 @@ function MessageDetail({ navigation }) {
       RNFS.mkdir(`${AudioUtils.DocumentDirectoryPath}/voice/`)
     }
   }, [])
+  //	Callback when init file path
   const initPath = useCallback(async () => {
     await checkDir()
     const nowPath = `${AudioUtils.DocumentDirectoryPath}/voice/voice${Date.now()}.aac`
     setInfo({ ...info, audioPath: nowPath, currentTime: 0 })
     prepareRecordingPath(nowPath)
   }, [info])
+  //Callback when start record
   const _record = useCallback(async () => {
     try {
       await AudioRecorder.startRecording()
@@ -287,10 +302,11 @@ function MessageDetail({ navigation }) {
       console.log(error)
     }
   }, [])
-
+  //Callback when stop record
   const _stop = useCallback(async () => {
     try {
       await AudioRecorder.stopRecording()
+      console.log("_stop")
       timer.current && clearInterval(timer.current)
       if (Platform.OS === 'android') {
         _finishRecording(true)
@@ -299,6 +315,7 @@ function MessageDetail({ navigation }) {
       console.log(error)
     }
   }, [])
+  //Callback when pause record
   const _pause = useCallback(async () => {
     try {
       await AudioRecorder.pauseRecording() // Android 由于API问题无法使用此方法
@@ -306,7 +323,7 @@ function MessageDetail({ navigation }) {
       console.log(e)
     }
   }, [])
-
+  //Callback when resume record
   const _resume = useCallback(async () => {
     try {
       await AudioRecorder.resumeRecording() // Android 由于API问题无法使用此方法
@@ -314,6 +331,7 @@ function MessageDetail({ navigation }) {
       console.log(e)
     }
   }, [])
+  //消息接收事件
   const receive = useCallback(() => {
     const newMsg = [...info.messages]
     newMsg.push(
@@ -412,6 +430,21 @@ function MessageDetail({ navigation }) {
 const style = StyleSheet.create({
   container: {
     flex: 1
+  },
+  menuIcon: {
+    width: scaleSize(20),
+    height: scaleSize(20)
+  },
+  menuItemWrap: {
+    backgroundColor: '#fff',
+    borderRadius: scaleSize(8),
+    padding: scaleSize(15),
+    borderColor: '#ccc',
+    borderWidth: scaleSize(0.5)
+  },
+  menuTitle: {
+    color: '#7a7a7a',
+    marginTop: scaleHeight(10)
   }
 })
 export default MessageDetail
