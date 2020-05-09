@@ -115,7 +115,18 @@ const RecommandProductItem = memo((props) => {
                         </View>
                     </View>)
                 default:
-                    return null
+                    return (<View style={style.picWrap}>
+                        <Image style={style.pic3_1} source={require("../../assets/imgs/pic3.jpg")}></Image>
+                        <View style={style.rightWrap}>
+                            <Image style={[style.pic3_2, style.mb10]} source={require("../../assets/imgs/pic2.jpg")}></Image>
+                            <View style={style.imgWrap}>
+                                <Image style={style.pic3_2} source={require("../../assets/imgs/pic1.jpg")}></Image>
+                                <View style={style.imgMask}>
+                                    <Text style={style.imgMore}>更多</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>)
             }
         }
         return _list()
@@ -125,7 +136,7 @@ const RecommandProductItem = memo((props) => {
             <RecommandHeader></RecommandHeader>
             <Text style={style.comment}>已入手一双,钱包已掏空</Text>
             <TouchableHighlight underlayColor="#fff" onPress={toProductDetail}>
-                <ImgList imgList={index % 3 == 1 ? [1] : index % 3 == 2 ? [1, 2] : [1, 2, 3]}></ImgList>
+                <ImgList imgList={index % 4 == 1 ? [1] : index % 4 == 2 ? [1, 2] :index % 4 == 3? [1, 2, 3]: [1, 2, 3,4]}></ImgList>
             </TouchableHighlight>
             <View style={style.recommandBottomWrap}>
                 <TouchableHighlight underlayColor="#fff" onPress={() => { }}>
@@ -240,6 +251,26 @@ const style = StyleSheet.create({
     rightWrap: {
         flex: 1,
         height: scaleHeight(180),
+    },
+    imgWrap:{
+        position:"relative",
+        flex: 1,
+        width: "100%",
+    },
+    imgMask:{
+        borderRadius: scaleSize(15),
+        position:"absolute",
+        left:0,
+        top:0,
+        width:"100%",
+        height:"100%",
+        backgroundColor:"rgba(0,0,0,0.5)",
+        justifyContent:"center",
+        alignItems:"center"
+    },
+    imgMore:{
+        fontSize:setSpText2(14),
+        color:"#fff"
     },
     pic3_2: {
         flex: 1,

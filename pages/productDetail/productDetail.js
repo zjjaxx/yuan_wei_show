@@ -4,7 +4,7 @@ import Header from "../../components/Header"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import Carousel from 'react-native-snap-carousel';
 import { sliderWidth, itemWidth } from '../../swiperLib/SliderEntry.style';
-
+import LoadMore from "../../components/LoadMore"
 const mockData = [0, 1, 2]
 function ProductDetail({ navigation }) {
     //是否收藏
@@ -33,14 +33,27 @@ function ProductDetail({ navigation }) {
                 <Header title="产品详情" leftEvent={leftEvent} right={<Image style={style.share} source={require("../../assets/imgs/share.png")}></Image>}>
                 </Header>
                 <ScrollView style={style.scrollView}>
-                    <Swiper></Swiper>
-                    <Text style={style.discTitle}>介绍</Text>
-                    <Text style={style.productDisc}>SALEWA(沙乐华)1935年起源于德国 ，是欧洲著名的e68a84e8a2ad7a6431333433626539户外运动品牌。SA意为Saddler(制造马鞍的)、LE意为Leather(皮革)、WA意为Wares(制品)。SALEWA滑雪板及滑雪杆也在市场上取得成功，逐渐成为公司最主要的收入来源。适合各个年龄段的人群。</Text>
-                    {/* <View style={style.imgList}>
-                        {[1, 2, 3].map((item, index) => <Image resizeMode="stretch" style={style.detailImg} source={require("../../assets/imgs/avatar.jpeg")}></Image>)}
-                    </View> */}
+                    {/* <Swiper></Swiper> */}
                     <Text style={style.productName}>AIR JODOY DANCE</Text>
                     <Text style={style.price}>￥ 278.00</Text>
+                    <Text style={style.discTitle}>介绍</Text>
+                    <Text style={style.productDisc}>SALEWA(沙乐华)1935年起源于德国 ，是欧洲著名的e68a84e8a2ad7a6431333433626539户外运动品牌。SA意为Saddler(制造马鞍的)、LE意为Leather(皮革)、WA意为Wares(制品)。SALEWA滑雪板及滑雪杆也在市场上取得成功，逐渐成为公司最主要的收入来源。适合各个年龄段的人群。</Text>
+                    <View style={style.imgList}>
+                        {[1, 2, 3].map((item, index) => {
+                            if(index==2){
+                                return <LoadMore>
+                                    <Image resizeMode="stretch" style={[style.detailImg,{marginBottom:0}]} source={require("../../assets/imgs/avatar.jpeg")}></Image>
+                                </LoadMore>
+                            }
+                            else{
+                               return <Image resizeMode="stretch" style={style.detailImg} source={require("../../assets/imgs/avatar.jpeg")}></Image>
+                            }
+                        })}
+                    </View>
+                    <View style={style.checkMoreWrap}>
+                        <Text style={style.checkMore}>查看更多</Text>
+                    </View>
+               
                     <LeaveMessageList leaveMessageList={[[2, 4, 3], [3, 45, 5]]}></LeaveMessageList>
                 </ScrollView>
                 <BottomBar
@@ -172,6 +185,20 @@ const style = StyleSheet.create({
     imgList: {
         marginTop:scaleHeight(20),
         paddingHorizontal: scaleSize(15)
+    },
+    checkMoreWrap:{
+        marginVertical:scaleHeight(10),
+        alignSelf:"center",
+        borderRadius:scaleSize(15),
+        width:scaleSize(100),
+        height:scaleHeight(30),
+        justifyContent:"center",
+        alignItems:"center",
+        backgroundColor:"#fca413"
+    },
+    checkMore:{
+        color:"#fff",
+        fontSize:setSpText2(14)
     },
     detailImg: {
         width:"100%",
