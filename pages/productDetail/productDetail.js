@@ -1,6 +1,7 @@
 import React, { useCallback, useState, memo } from "react"
-import { Text, View, StyleSheet, Image, ScrollView, TouchableHighlight, SafeAreaView, TextInput, KeyboardAvoidingView,Modal } from "react-native"
+import { Text, View, StyleSheet, Image, ScrollView, TouchableHighlight, SafeAreaView, TextInput, KeyboardAvoidingView, Modal } from "react-native"
 import Header from "../../components/Header"
+import CameraRoll from "@react-native-community/cameraroll";
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import Carousel from 'react-native-snap-carousel';
 import { sliderWidth, itemWidth } from '../../swiperLib/SliderEntry.style';
@@ -45,6 +46,27 @@ function ProductDetail({ navigation }) {
     const payConfirm = useCallback(() => {
 
     }, [])
+    //保存图片到本地
+    const _onSaveToCamera = useCallback((url) => {
+        console.log("url", url)
+        CameraRoll.saveToCameraRoll(url).then(path => {
+            console.log("path", path)
+        })
+    }, [imgList])
+    const toMessageDetail=useCallback(()=>{
+        navigation.navigate("messageDetail")
+    },[])
+    const CustomMenus = memo((props) => {
+        const { saveToLocal, cancel } = props
+        return <View style={style.customMenus}>
+            <TouchableHighlight style={[style.menuItem, style.bottomLine]} underlayColor="#fff" onPress={saveToLocal}>
+                <Text style={style.menuText}>保存相册</Text>
+            </TouchableHighlight>
+            <TouchableHighlight style={style.menuItem} underlayColor="#fff" onPress={cancel}>
+                <Text style={style.menuText}>取消</Text>
+            </TouchableHighlight>
+        </View>
+    })
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
@@ -52,28 +74,31 @@ function ProductDetail({ navigation }) {
                 </Header>
                 <ScrollView style={style.scrollView}>
                     {/* <Swiper></Swiper> */}
+                    <TouchableHighlight underlayColor="#fff" onPress={toMessageDetail}>
+                        <UserInfo></UserInfo>
+                    </TouchableHighlight>
                     <Text style={style.productName}>AIR JODOY DANCE</Text>
                     <Text style={style.price}>￥ 278.00</Text>
-                    <Text style={style.discTitle}>介绍</Text>
+                    {/* <Text style={style.discTitle}>介绍</Text> */}
                     <Text style={style.productDisc}>SALEWA(沙乐华)1935年起源于德国 ，是欧洲著名的e68a84e8a2ad7a6431333433626539户外运动品牌。SA意为Saddler(制造马鞍的)、LE意为Leather(皮革)、WA意为Wares(制品)。SALEWA滑雪板及滑雪杆也在市场上取得成功，逐渐成为公司最主要的收入来源。适合各个年龄段的人群。</Text>
                     <View style={style.imgList}>
                         {[1, 2, 3].map((item, index) => {
                             if (index == 2) {
                                 return <LoadMore>
-                                    <TouchableHighlight underlayColor="#fff" onPress={()=>setImgPreviewFlag(true)}>
+                                    <TouchableHighlight underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
                                         <Image resizeMode="stretch" style={[style.detailImg, { marginBottom: 0 }]} source={require("../../assets/imgs/avatar.jpeg")}></Image>
                                     </TouchableHighlight>
                                 </LoadMore>
                             }
                             else {
-                                return <TouchableHighlight underlayColor="#fff" onPress={()=>setImgPreviewFlag(true)}>
+                                return <TouchableHighlight underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
                                     <Image resizeMode="stretch" style={style.detailImg} source={require("../../assets/imgs/avatar.jpeg")}></Image>
                                 </TouchableHighlight>
                             }
                         })}
                     </View>
                     <Modal visible={imgPreviewFlag} transparent={true}>
-                        <ImageViewer imageUrls={imgList} />
+                        <ImageViewer onSave={_onSaveToCamera} menus={({ cancel, saveToLocal }) => <CustomMenus cancel={cancel} saveToLocal={saveToLocal}></CustomMenus>} onClick={() => setImgPreviewFlag(false)} imageUrls={imgList} />
                     </Modal>
                     <View style={style.checkMoreWrap}>
                         <Text style={style.checkMore}>查看更多</Text>
@@ -92,12 +117,22 @@ function ProductDetail({ navigation }) {
         </SafeAreaView>
     )
 }
+const UserInfo = memo((props) => {
+    return (
+        <View style={style.userWrap}>
+            <Image style={style.userAvatar} source={require("../../assets/imgs/avatar.jpeg")}></Image>
+            <View style={style.userMsg}>
+                <Text numberOfLines={1} ellipsizeMode="tail" style={style.userName}>小可爱</Text>
+                <Text style={style.time}>连续3天来过</Text>
+            </View>
+        </View>
+    )
+})
 //轮播图 画廊
 const Swiper = React.memo(function (props) {
     // const { banners } = props
     // const [slider, setSlider] = useState(0)
     const _renderItemWithParallax = function ({ item, index }, parallaxProps) {
-        console.log("index", index)
         return (
             <Image key={index} style={style.productImg} source={index % 2 ? require("../../assets/imgs/pic2.jpg") : require("../../assets/imgs/pic1.jpg")} />
         );
@@ -206,6 +241,29 @@ const style = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff"
     },
+    userWrap: {
+        flexDirection: "row",
+        paddingHorizontal: scaleSize(10),
+        paddingVertical: scaleHeight(4)
+    },
+    userAvatar: {
+        marginRight: scaleSize(10),
+        height: scaleSize(40),
+        width: scaleSize(40),
+        borderRadius: scaleSize(4)
+    },
+    userMsg: {
+        flex: 1
+    },
+    userName: {
+        fontSize: setSpText2(14),
+        fontWeight: "500"
+    },
+    time: {
+        marginTop: scaleHeight(4),
+        fontSize: setSpText2(12),
+        color: "#999"
+    },
     imgList: {
         marginTop: scaleHeight(20),
         paddingHorizontal: scaleSize(15)
@@ -253,7 +311,7 @@ const style = StyleSheet.create({
     },
     productName: {
         marginHorizontal: scaleSize(20),
-        marginTop: scaleSize(30),
+        marginTop: scaleSize(10),
         fontSize: setSpText2(16),
         fontWeight: "500"
     },
@@ -411,6 +469,28 @@ const style = StyleSheet.create({
         paddingLeft: scaleSize(40),
         fontSize: setSpText2(12),
         color: "#999"
+    },
+    customMenus: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        width: "100%",
+        height: scaleHeight(100),
+        backgroundColor: "#fff",
+        borderTopLeftRadius: scaleSize(15),
+        borderTopRightRadius: scaleSize(15)
+    },
+    menuItem: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    menuText: {
+        fontSize: setSpText2(14),
+    },
+    bottomLine: {
+        borderBottomWidth: scaleSize(0.5),
+        borderBottomColor: "#999"
     }
 
 })

@@ -1,12 +1,12 @@
 import React, { useCallback, useState, useRef, memo } from "react"
-import { View, Text, StyleSheet, SafeAreaView, Button, TouchableOpacity, PermissionsAndroid, Dimensions } from "react-native"
+import { View, Text, StyleSheet, SafeAreaView, Button, Image, TouchableOpacity, PermissionsAndroid, Dimensions } from "react-native"
 import Header from "../../components/Header"
 import FastImage from 'react-native-fast-image'
 import { ChatScreen } from 'react-native-easy-chat-ui'
 import { AudioRecorder, AudioUtils } from 'react-native-audio'
 import RNFS from 'react-native-fs'
 import Sound from 'react-native-sound'
-import { scaleSize, scaleHeight } from "../../utils/ScreenUtil"
+import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
 import chatBg from '../../assets/imgs/pic1.jpg'
 const { width, height } = Dimensions.get('window')
 function MessageDetail({ navigation }) {
@@ -124,13 +124,13 @@ function MessageDetail({ navigation }) {
   const [voiceVolume, setVoiceVolume] = useState(0)
   //audio length
   const [currentTime, setCurrentTime] = useState(0)
-  const [hasPermission,setHasPermission]=useState(false)
+  const [hasPermission, setHasPermission] = useState(false)
   //未知
   const [recording, setRecording] = useState(false)
   const [paused, setPaused] = useState(false)
   const [stoppedRecording, setStoppedRecording] = useState(false)
   const [finished, setFinished] = useState(false)
-  const [volume,setVolume]=useState(0)
+  const [volume, setVolume] = useState(0)
   //File path to store voice
   const [audioPath, setAudioPath] = useState("")
   //	Custom panel source
@@ -143,7 +143,6 @@ function MessageDetail({ navigation }) {
   }])
   //发送消息事件
   const sendMessage = useCallback((type, content, isInverted) => {
-    console.log(type, content, isInverted, 'msg')
     setMessages([...messages, {
       id: `${new Date().getTime()}`,
       type,
@@ -379,7 +378,9 @@ function MessageDetail({ navigation }) {
       <View style={style.container}>
         <Header title="小可爱" leftEvent={leftEvent}>
         </Header>
+        {/* <ProductInfo></ProductInfo> */}
         <ChatScreen
+        chatWindowStyle={{backgroundColor:"#ff0000"}}
           ref={(e) => chatRef.current = e}
           CustomImageComponent={FastImage}
           messageList={messages}
@@ -427,6 +428,21 @@ function MessageDetail({ navigation }) {
 
   )
 }
+const ProductInfo = memo((props) => {
+  return (
+    <View style={style.productInfoWrap}>
+      <Image style={style.productImg} source={require("../../assets/imgs/pic1.jpg")}></Image>
+      <View style={style.productInfo}>
+        <Text style={style.price}>￥19.90</Text>
+        <Text style={style.deliveryFee}>含运费0.00元</Text>
+        <Text style={style.tip}>交易前聊一聊</Text>
+      </View>
+      <View style={style.buyWrap}>
+        <Text style={style.buy}>立即购买</Text>
+      </View>
+    </View>
+  )
+})
 const style = StyleSheet.create({
   container: {
     flex: 1
@@ -445,6 +461,49 @@ const style = StyleSheet.create({
   menuTitle: {
     color: '#7a7a7a',
     marginTop: scaleHeight(10)
+  },
+  productInfoWrap: {
+    paddingVertical: scaleHeight(5),
+    paddingHorizontal: scaleSize(10),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  productImg: {
+    marginRight: scaleSize(10),
+    width: scaleSize(50),
+    height: scaleSize(50),
+    borderRadius: scaleSize(4)
+  },
+  productInfo: {
+    flex: 1
+  },
+  price: {
+    fontSize: setSpText2(14),
+    fontWeight: "500"
+  },
+  deliveryFee: {
+    marginTop: scaleHeight(2),
+    fontSize: setSpText2(12),
+    color: "#999"
+  },
+  tip: {
+    marginTop: scaleHeight(2),
+    fontSize: setSpText2(12),
+    color: "#999"
+  },
+  buyWrap: {
+    alignSelf: "flex-end",
+    width: scaleSize(80),
+    height: scaleHeight(25),
+    borderRadius: scaleSize(4),
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fca413"
+  },
+  buy: {
+    fontSize: setSpText2(14),
+    color: "#fff",
   }
 })
 export default MessageDetail

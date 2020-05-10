@@ -10,14 +10,14 @@ function LoadMore(props) {
     //popup 动画执行
     useEffect(() => {
         let sequence = Animated.sequence([
-            Animated.spring(                  // 随时间变化而执行动画
+            Animated.timing(                  // 随时间变化而执行动画
                 translateYAnimate,                       // 动画中的变量值
                 {
                     toValue: scaleSize(10),                   // 透明度最终变为1，即完全不透明
                     duration: 1000          // 让动画持续一段时间
                 }
             ),
-            Animated.spring(                  // 随时间变化而执行动画
+            Animated.timing(                  // 随时间变化而执行动画
                 translateYAnimate,                       // 动画中的变量值
                 {
                     toValue: scaleSize(0),                   // 透明度最终变为1，即完全不透明

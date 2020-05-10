@@ -21,12 +21,11 @@ function Login({ dispatch, navigation }) {
         }
         for (let [key, value] of Object.entries(errors)) {
             if (value) {
-                console.log("value", value)
                 Alert.alert(
                     '提示',
                     value,
                     [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        { text: 'OK', onPress: () => {} },
                     ],
 
                 )

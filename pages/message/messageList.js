@@ -15,7 +15,6 @@ function MessageList({ navigation }) {
     }, [refreshing])
     //上拉加载更多事件
     const _scrollEnd = useCallback(() => {
-        console.log("loadmore")
     }, [])
     //跳转聊天页面
     const toMessageDetail = useCallback(() => {

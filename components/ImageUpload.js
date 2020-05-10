@@ -14,7 +14,6 @@ function ImageUpload(props) {
         ImagePicker.openPicker({
             multiple: true
         }).then(images => {
-            console.log("images", images)
             let imgs = []
             for (let i = 0; i < images.length; i++) {
                 imgs.push({ uri: "https://cdn.weile999.com/upload/common/1588237007.png" })

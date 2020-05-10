@@ -16,7 +16,6 @@ function Home({ navigation }) {
     }, [refreshing])
     //上拉加载更多事件
     const _scrollEnd = useCallback(() => {
-        console.log("loadmore")
     }, [])
     //跳转产品详情页
     const _toProductDetail = useCallback((id) => {
@@ -76,13 +75,13 @@ const RecommandProductItem = memo((props) => {
                     </TouchableHighlight>}
                     onBackdropPress={() => hidePopup(false)}>
                     <View style={style.pupopWrap}>
-                        <TouchableHighlight activeOpacity={1} underlayColor="rgba(0,0,0,0.7)" onPress={() => { console.log("press item") }}>
+                        <TouchableHighlight activeOpacity={1} underlayColor="rgba(0,0,0,0.7)" onPress={() => {  }}>
                             <View style={style.optionItem}>
                                 <Image style={style.saveIcon} source={require("../../assets/imgs/save.png")}></Image>
                                 <Text style={style.save}>收藏</Text>
                             </View>
                         </TouchableHighlight>
-                        <TouchableHighlight activeOpacity={1} underlayColor="rgba(0,0,0,0.7)" onPress={() => { console.log("press item") }}>
+                        <TouchableHighlight activeOpacity={1} underlayColor="rgba(0,0,0,0.7)" onPress={() => {  }}>
                             <View style={style.optionItem}>
                                 <Image style={style.reportIcon} source={require("../../assets/imgs/report.png")}></Image>
                                 <Text style={style.report}>举报</Text>

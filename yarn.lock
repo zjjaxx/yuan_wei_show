@@ -891,6 +891,11 @@
   dependencies:
     deep-assign "^3.0.0"
 
+"@react-native-community/cameraroll@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.npm.taobao.org/@react-native-community/cameraroll/download/@react-native-community/cameraroll-1.6.1.tgz#686909f554f07d8dfe32b31bc95347a812c75b08"
+  integrity sha1-aGkJ9VTwfY3+MrMbyVNHqBLHWwg=
+
 "@react-native-community/cli-debugger-ui@^4.8.0":
   version "4.8.0"
   resolved "https://registry.npm.taobao.org/@react-native-community/cli-debugger-ui/download/@react-native-community/cli-debugger-ui-4.8.0.tgz?cache=0&sync_timestamp=1587749447003&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40react-native-community%2Fcli-debugger-ui%2Fdownload%2F%40react-native-community%2Fcli-debugger-ui-4.8.0.tgz#9a6419b29be69422e0056bbb1874775750351d22"

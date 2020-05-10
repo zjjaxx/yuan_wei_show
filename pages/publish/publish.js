@@ -28,7 +28,7 @@ function Publish({ navigation, route }) {
                 '提示',
                 "请选择分类~",
                 [
-                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    { text: 'OK', onPress: () =>{} },
                 ],
 
             )
@@ -39,7 +39,7 @@ function Publish({ navigation, route }) {
                 '提示',
                 "请上传图片~",
                 [
-                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    { text: 'OK', onPress: () => {} },
                 ],
 
             )
@@ -47,12 +47,11 @@ function Publish({ navigation, route }) {
         }
         for (let [key, value] of Object.entries(errors)) {
             if (value) {
-                console.log("value", value)
                 Alert.alert(
                     '提示',
                     value,
                     [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        { text: 'OK', onPress: () => {} },
                     ],
 
                 )

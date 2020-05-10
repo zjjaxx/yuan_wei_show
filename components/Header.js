@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableHighlight } from "react-native"
 import { scaleSize, setSpText2 ,scaleHeight} from "../utils/ScreenUtil"
 
 function Header(props) {
-    const {wrapStyle={}, left = "", right = "", center = "", title = "HHH", leftEvent = () => { }, rightEvent = () => { console.log("enter right") } } = props
+    const {wrapStyle={}, left = "", right = "", center = "", title = "HHH", leftEvent = () => { }, rightEvent = () => {  } } = props
     return (
         <View style={[style.headerWrap,wrapStyle]}>
             {/* view元素一定要放在前面，不然TouchableHighlight如果是absolute定位的话，点击事件会无效 */}
