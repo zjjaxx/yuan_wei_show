@@ -9,7 +9,9 @@ import LoadMore from "../../components/LoadMore"
 import ImageViewer from 'react-native-image-zoom-viewer'
 const mockData = [0, 1, 2]
 function ProductDetail({ navigation }) {
+    //是否预览
     const [imgPreviewFlag, setImgPreviewFlag] = useState(false)
+    //产品图片
     const [imgList, setImgList] = useState([
         {
             url: "https://cdn.weile999.com/upload/common/1587452044.jpg",
@@ -44,7 +46,7 @@ function ProductDetail({ navigation }) {
     }, [])
     //点击购买事件
     const payConfirm = useCallback(() => {
-
+        navigation.navigate("messageDetail")
     }, [])
     //保存图片到本地
     const _onSaveToCamera = useCallback((url) => {
@@ -53,8 +55,8 @@ function ProductDetail({ navigation }) {
             console.log("path", path)
         })
     }, [imgList])
-    const toMessageDetail=useCallback(()=>{
-        navigation.navigate("messageDetail")
+    const toInfo=useCallback(()=>{
+        navigation.navigate("info")
     },[])
     const CustomMenus = memo((props) => {
         const { saveToLocal, cancel } = props
@@ -74,7 +76,7 @@ function ProductDetail({ navigation }) {
                 </Header>
                 <ScrollView style={style.scrollView}>
                     {/* <Swiper></Swiper> */}
-                    <TouchableHighlight underlayColor="#fff" onPress={toMessageDetail}>
+                    <TouchableHighlight underlayColor="#fff" onPress={toInfo}>
                         <UserInfo></UserInfo>
                     </TouchableHighlight>
                     <Text style={style.productName}>AIR JODOY DANCE</Text>
@@ -84,14 +86,14 @@ function ProductDetail({ navigation }) {
                     <View style={style.imgList}>
                         {[1, 2, 3].map((item, index) => {
                             if (index == 2) {
-                                return <LoadMore>
+                                return <LoadMore key={index}>
                                     <TouchableHighlight underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
                                         <Image resizeMode="stretch" style={[style.detailImg, { marginBottom: 0 }]} source={require("../../assets/imgs/avatar.jpeg")}></Image>
                                     </TouchableHighlight>
                                 </LoadMore>
                             }
                             else {
-                                return <TouchableHighlight underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
+                                return <TouchableHighlight key={index} underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
                                     <Image resizeMode="stretch" style={style.detailImg} source={require("../../assets/imgs/avatar.jpeg")}></Image>
                                 </TouchableHighlight>
                             }
@@ -344,7 +346,7 @@ const style = StyleSheet.create({
     },
     saveWrap: {
         width: scaleSize(70),
-        height: scaleHeight(40),
+        height: scaleHeight(35),
         backgroundColor: "#f6f6f6",
         borderRadius: scaleSize(5),
         justifyContent: "center",
@@ -354,7 +356,7 @@ const style = StyleSheet.create({
         marginRight: scaleSize(20),
         marginLeft: scaleSize(10),
         width: scaleSize(70),
-        height: scaleHeight(40),
+        height: scaleHeight(35),
         backgroundColor: "#f6f6f6",
         borderRadius: scaleSize(5),
         justifyContent: "center",
@@ -365,7 +367,7 @@ const style = StyleSheet.create({
     },
     payWrap: {
         width: scaleSize(140),
-        height: scaleHeight(40),
+        height: scaleHeight(35),
         backgroundColor: "#fca413",
         borderRadius: scaleSize(5),
         justifyContent: "center",
@@ -381,7 +383,6 @@ const style = StyleSheet.create({
     },
     leaveInputWrap: {
         paddingHorizontal: scaleSize(10),
-
         flexDirection: "row",
         alignItems: "center"
     },

@@ -6,6 +6,7 @@ import { ChatScreen } from 'react-native-easy-chat-ui'
 import { AudioRecorder, AudioUtils } from 'react-native-audio'
 import RNFS from 'react-native-fs'
 import Sound from 'react-native-sound'
+import ImagePicker from 'react-native-image-crop-picker';
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
 import chatBg from '../../assets/imgs/pic1.jpg'
 const { width, height } = Dimensions.get('window')
@@ -176,6 +177,23 @@ function MessageDetail({ navigation }) {
   const leftEvent = useCallback(() => {
     navigation.goBack()
   }, [])
+  //选取相册
+  const PanelMenuEvent = useCallback((index) => {
+    switch (index) {
+      case 0:
+        ImagePicker.openPicker({}).then(image => {
+          console.log(" openPicker image", image)
+        })
+        break
+      case 1:
+        ImagePicker.openCamera({}).then(image => {
+          console.log(" openPicker image",image);
+        });
+      default:
+        break
+    }
+
+  }, [])
   //渲染底部菜单栏
   const renderPanelRow = (data, index) =>
     (<TouchableOpacity
@@ -188,7 +206,7 @@ function MessageDetail({ navigation }) {
         marginBottom: 20
       }}
       activeOpacity={0.7}
-      onPress={() => console.log('press')}
+      onPress={() => PanelMenuEvent(index)}
     >
       <View style={style.menuItemWrap}>
         {data.icon}
@@ -378,9 +396,9 @@ function MessageDetail({ navigation }) {
       <View style={style.container}>
         <Header title="小可爱" leftEvent={leftEvent}>
         </Header>
-        {/* <ProductInfo></ProductInfo> */}
+        <ProductInfo></ProductInfo>
         <ChatScreen
-        chatWindowStyle={{backgroundColor:"#ff0000"}}
+          chatWindowStyle={{ paddingTop: scaleHeight(50) }}
           ref={(e) => chatRef.current = e}
           CustomImageComponent={FastImage}
           messageList={messages}
@@ -445,6 +463,7 @@ const ProductInfo = memo((props) => {
 })
 const style = StyleSheet.create({
   container: {
+    position: "relative",
     flex: 1
   },
   menuIcon: {
@@ -463,11 +482,16 @@ const style = StyleSheet.create({
     marginTop: scaleHeight(10)
   },
   productInfoWrap: {
+    position: "absolute",
+    top: scaleHeight(45),
+    left: 0,
     paddingVertical: scaleHeight(5),
     paddingHorizontal: scaleSize(10),
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    zIndex: 100,
+    backgroundColor: "#fff"
   },
   productImg: {
     marginRight: scaleSize(10),
