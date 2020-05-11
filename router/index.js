@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from "@react-navigation/stack"
 import { scaleSize, setSpText2, scaleHeight } from "../utils/ScreenUtil"
 import HomeScreen from "../pages/home/home"
+import OrderScreen from "../pages/order/order"
 import MessageScreen from "../pages/message/messageList"
 import PersonScreen from "../pages/person/person"
 import LoginScreen from "../pages/login/login"
@@ -13,6 +14,7 @@ import ProductDetailScreen from "../pages/productDetail/productDetail"
 import MessageDetailScreen from "../pages/message/messageDetail"
 import PublishScreen from "../pages/publish/publish"
 import CategoriesScreen from "../pages/publish/categories"
+import AddressListScreen from "../pages/address/addressList"
 import { connect } from "react-redux"
 import { asyncToken } from "../store/action"
 //tab 路由容器
@@ -69,6 +71,8 @@ function AppStackScreen({ isLoading, isLogin, dispatch }) {
                         <AppStack.Screen name="publish" component={PublishScreen} ></AppStack.Screen>
                         <AppStack.Screen name="categories" component={CategoriesScreen} ></AppStack.Screen>
                         <AppStack.Screen name="messageDetail" component={MessageDetailScreen} ></AppStack.Screen>
+                        <AppStack.Screen name="order" component={OrderScreen} ></AppStack.Screen>
+                        <AppStack.Screen name="addressList" component={AddressListScreen} ></AppStack.Screen>
                     </>
                 ) : (
                         <>

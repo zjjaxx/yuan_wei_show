@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useRef, memo } from "react"
-import { View, Text, StyleSheet, SafeAreaView, Button, Image, TouchableOpacity, PermissionsAndroid, Dimensions } from "react-native"
+import { View, Text, StyleSheet, SafeAreaView, Button, Image, TouchableOpacity, PermissionsAndroid, Dimensions, TouchableHighlight } from "react-native"
 import Header from "../../components/Header"
 import FastImage from 'react-native-fast-image'
 import { ChatScreen } from 'react-native-easy-chat-ui'
@@ -187,7 +187,7 @@ function MessageDetail({ navigation }) {
         break
       case 1:
         ImagePicker.openCamera({}).then(image => {
-          console.log(" openPicker image",image);
+          console.log(" openPicker image", image);
         });
       default:
         break
@@ -391,12 +391,16 @@ function MessageDetail({ navigation }) {
       setVoiceVolume(num)
     }, 500)
   }, [])
+  //立即购买
+  const orderConfirm = useCallback(() => {
+    navigation.navigate("order")
+  }, [])
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={style.container}>
         <Header title="小可爱" leftEvent={leftEvent}>
         </Header>
-        <ProductInfo></ProductInfo>
+        <ProductInfo orderConfirm={orderConfirm}></ProductInfo>
         <ChatScreen
           chatWindowStyle={{ paddingTop: scaleHeight(50) }}
           ref={(e) => chatRef.current = e}
@@ -447,6 +451,7 @@ function MessageDetail({ navigation }) {
   )
 }
 const ProductInfo = memo((props) => {
+  const { orderConfirm } = props
   return (
     <View style={style.productInfoWrap}>
       <Image style={style.productImg} source={require("../../assets/imgs/pic1.jpg")}></Image>
@@ -455,9 +460,11 @@ const ProductInfo = memo((props) => {
         <Text style={style.deliveryFee}>含运费0.00元</Text>
         <Text style={style.tip}>交易前聊一聊</Text>
       </View>
-      <View style={style.buyWrap}>
-        <Text style={style.buy}>立即购买</Text>
-      </View>
+      <TouchableHighlight underlayColor="#fff" onPress={orderConfirm}>
+        <View style={style.buyWrap}>
+          <Text style={style.buy}>立即购买</Text>
+        </View>
+      </TouchableHighlight>
     </View>
   )
 })
