@@ -81,13 +81,11 @@ function Login({ dispatch, navigation }) {
                             <Text style={style.forget}>忘记密码?</Text>
                             <View style={style.submitWrap}>
                                 <Text style={style.loginTitle}>登录</Text>
-                                <BoxShadow setting={shadowLogin}>
                                     <TouchableHighlight underlayColor="#fff" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
                                         <View style={[style.enabledBtn, values.password && values.phone && style.activeBtn]}>
                                             <Image style={style.arrowRight} source={require("../../assets/imgs/arrow_right.png")}></Image>
                                         </View>
                                     </TouchableHighlight>
-                                </BoxShadow>
                             </View>
                         </View>
                     )}
@@ -147,7 +145,7 @@ const style = StyleSheet.create({
         fontSize: setSpText2(12)
     },
     submitWrap: {
-        marginTop: scaleSize(100),
+        marginTop: scaleSize(60),
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between"
@@ -203,17 +201,5 @@ const shadowOpt = {
         marginTop: scaleSize(60)
     }
 }
-const shadowLogin = {
-    width: scaleSize(50),
-    height: scaleHeight(50),
-    color: "#A2A2A2",
-    border: scaleSize(3),
-    radius: scaleSize(24),
-    opacity: 0.19,
-    x: scaleSize(1),
-    y: scaleSize(1),
-    style: {
 
-    }
-}
 export default connect(state => state, dispatch => ({ dispatch }))(Login)

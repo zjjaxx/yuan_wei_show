@@ -1,21 +1,21 @@
-import React, { useCallback } from "react"
-import { View, Text, SafeAreaView, Image, StyleSheet, ScrollView, Switch } from "react-native"
+import React, { useCallback, useState } from "react"
+import { View, Text, SafeAreaView, Image, StyleSheet, ScrollView, Switch, TouchableHighlight, Alert, Modal } from "react-native"
 import Header from "../../components/Header"
 import { TextInput } from "react-native-gesture-handler"
 import { Formik } from 'formik';
 import * as yup from "yup"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
+import AddressPopup from "../../components/AddressPopup"
 const phoneRegExp = /^1[3456789]\d{9}$/
 
 function NewAddress({ navigation }) {
+    const [addressPopupFlag, setAddressPopupFlag] = useState(false)
     const leftEvent = useCallback(() => {
         navigation.goBack()
     }, [])
+    const [isDefault, setIsDefault] = useState(false)
     //提交
     const _handleSubmit = useCallback((values, errors, handleSubmit) => {
-        if (!(values.phone && values.name && values.addressDetail)) {
-            return
-        }
         for (let [key, value] of Object.entries(errors)) {
             if (value) {
                 Alert.alert(
@@ -36,20 +36,21 @@ function NewAddress({ navigation }) {
             <View style={style.container}>
                 <Header leftEvent={leftEvent} title="新建收货地址"></Header>
                 <Formik
-                    initialValues={{ phone: '', name: "", addressDetail: "", isDefault: false }}
+                    style={{ flex: 1 }}
+                    initialValues={{ phone: '', name: "", addressDetail: "" }}
                     onSubmit={values => setLogin(values)}
                     validationSchema={
                         yup.object().shape({
                             phone: yup
                                 .string()
                                 .matches(phoneRegExp, '手机格式有误')
-                                .required(),
+                                .required("请输入手机号"),
                             name: yup
                                 .string()
-                                .required(),
+                                .required("请输入姓名"),
                             addressDetail: yup
                                 .string()
-                                .required()
+                                .required("请输入详细地址")
                         })}
                 >
                     {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
@@ -64,7 +65,9 @@ function NewAddress({ navigation }) {
                             </View>
                             <View style={style.formItemWrap}>
                                 <Text style={style.label}>所在地区</Text>
-                                <Text style={style.areTitle}>省市区县、乡镇等</Text>
+                                <TouchableHighlight style={{flex:1}} underlayColor="#fff" onPress={() => setAddressPopupFlag(true)}>
+                                    <Text style={style.areTitle}>省市区县、乡镇等</Text>
+                                </TouchableHighlight>
                                 <Image style={style.locationIcon} source={require("../../assets/imgs/location.png")}></Image>
                                 <Text style={style.locationTitle}>定位</Text>
                             </View>
@@ -77,11 +80,19 @@ function NewAddress({ navigation }) {
                                     <Text style={style.defaultLabel}>设置默认地址</Text>
                                     <Text style={style.tip}>提醒：每次下单会默认推荐使用该地址</Text>
                                 </View>
-                                <Switch value={values.isDefault} ios_backgroundColor="#eee" onValueChange={handleChange("isDefault")} trackColor="#f2140c"></Switch>
+                                <Switch value={isDefault} ios_backgroundColor="#eee" onValueChange={() => setIsDefault(isDefault => !isDefault)} trackColor={{ false: '#eee', true: '#f2140c' }}></Switch>
                             </View>
+                            <TouchableHighlight underlayColor="#fff" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
+                                <View style={style.saveWrap}>
+                                    <Text style={style.saveTitle}>保存</Text>
+                                </View>
+                            </TouchableHighlight>
                         </ScrollView>
                     )}
                 </Formik>
+                <Modal visible={addressPopupFlag} animationType="fade" transparent={true}>
+                    <AddressPopup setAddressPopupFlag={setAddressPopupFlag}></AddressPopup>
+                </Modal>
             </View>
         </SafeAreaView>
     )
@@ -96,56 +107,72 @@ const style = StyleSheet.create({
         flex: 1
     },
     scrollView: {
+        position: "relative",
+        flex: 1,
+    },
+    formItemWrap: {
+        paddingHorizontal: scaleSize(10),
+        paddingVertical: scaleHeight(15),
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        borderBottomColor: "#eee",
+        borderBottomWidth: scaleSize(0.5)
+    },
+    label: {
+        width: scaleSize(80),
+        fontSize: setSpText2(14)
+    },
+    nameInput: {
+        marginRight: scaleSize(20),
+        paddingVertical: 0,
         flex: 1
     },
-    formItemWrap:{
-        paddingHorizontal:scaleSize(10),
-        paddingVertical:scaleHeight(10),
-        flexDirection:"row",
-        justifyContent:"space-between",
-        alignItems:"center",
-        borderBottomColor:"#eee",
-        borderBottomWidth:scaleSize(0.5)
+    phoneInput: {
+        marginRight: scaleSize(20),
+        paddingVertical: 0,
+        flex: 1
     },
-    label:{
-        width:scaleSize(80),
-        fontSize:setSpText2(14)
+    areTitle: {
+        flex: 1,
+        fontSize: setSpText2(14),
+        color: "#999"
     },
-    nameInput:{
-        marginRight:scaleSize(20),
-        paddingVertical:0,
-        flex:1
+    locationIcon: {
+        width: scaleSize(15),
+        height: scaleSize(15)
     },
-    phoneInput:{
-        marginRight:scaleSize(20),
-        paddingVertical:0,
-        flex:1
+    locationTitle: {
+        fontSize: setSpText2(14)
     },
-    areTitle:{
-        fontSize:setSpText2(14),
-        color:"#999"
+    addressDetailInput: {
+        marginRight: scaleSize(20),
+        paddingVertical: 0,
+        flex: 1
     },
-    locationIcon:{
-        width:scaleSize(15),
-        height:scaleSize(15)
+    defaultLabelWrap: {
+        marginRight: scaleSize(30),
+        flex: 1
     },
-    locationTitle:{
-        fontSize:setSpText2(14)
+    defaultLabel: {
+        fontSize: scaleSize(14)
     },
-    addressDetailInput:{
-        marginRight:scaleSize(20),
-        paddingVertical:0,
-        flex:1
+    tip: {
+        marginTop: scaleHeight(4),
+        fontSize: scaleSize(12)
     },
-    defaultLabelWrap:{
-        marginRight:scaleSize(30),
-        flex:1
+    saveWrap: {
+        marginTop: scaleHeight(270),
+        width: scaleSize(340),
+        backgroundColor: "#f2140c",
+        height: scaleHeight(25),
+        borderRadius: scaleSize(15),
+        alignSelf: "center",
+        alignItems: "center",
+        justifyContent: "center"
     },
-    defaultLabel:{
-        fontSize:scaleSize(14)
-    },
-    tip:{
-        marginTop:scaleHeight(4),
-        fontSize:scaleSize(12)
+    saveTitle: {
+        fontSize: setSpText2(12),
+        color: "#fff"
     }
 })

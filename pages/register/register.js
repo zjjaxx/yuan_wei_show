@@ -155,13 +155,11 @@ function Login({ dispatch, navigation }) {
                             </KeyboardAvoidingView>
                             <View style={style.submitWrap}>
                                 <Text style={style.loginTitle}>注册</Text>
-                                <BoxShadow setting={shadowLogin}>
                                     <TouchableHighlight underlayColor="#fff" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
                                         <View style={[style.enabledBtn, values.qcode && values.confirmPassword && values.password && values.phone && style.activeBtn]}>
                                             <Image style={style.arrowRight} source={require("../../assets/imgs/arrow_right.png")}></Image>
                                         </View>
                                     </TouchableHighlight>
-                                </BoxShadow>
                             </View>
                         </View>
                     )}
@@ -189,7 +187,7 @@ const style = StyleSheet.create({
         borderRadius: scaleSize(15)
     },
     formWrap: {
-        marginTop: scaleSize(50)
+        marginTop: scaleSize(30)
     },
     inputWrap: {
         flexDirection: "row",
@@ -203,11 +201,12 @@ const style = StyleSheet.create({
         color: "#999"
     },
     input: {
+        paddingVertical:scaleHeight(5),
         flex: 1,
         fontSize: setSpText2(14)
     },
     mt10: {
-        marginTop: scaleSize(30)
+        marginTop: scaleHeight(25)
     },
     tipIcon: {
         width: scaleSize(15),
@@ -277,20 +276,8 @@ const shadowOpt = {
     x: scaleSize(3),
     y: scaleSize(3),
     style: {
-        marginTop: scaleSize(40)
+        marginTop: scaleSize(20)
     }
 }
-const shadowLogin = {
-    width: scaleSize(50),
-    height: scaleHeight(50),
-    color: "#A2A2A2",
-    border: scaleSize(3),
-    radius: scaleSize(24),
-    opacity: 0.19,
-    x: scaleSize(1),
-    y: scaleSize(1),
-    style: {
 
-    }
-}
 export default connect(state => state, dispatch => ({ dispatch }))(Login)
