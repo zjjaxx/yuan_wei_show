@@ -144,7 +144,7 @@ function MessageDetail({ navigation }) {
   }])
   //发送消息事件
   const sendMessage = useCallback((type, content, isInverted) => {
-    setMessages([...messages, {
+    setMessages(messages=>[...messages, {
       id: `${new Date().getTime()}`,
       type,
       content,
@@ -158,7 +158,7 @@ function MessageDetail({ navigation }) {
       sendStatus: 1,
       time: `${new Date().getTime()}`
     }])
-  }, [messages])
+  }, [])
   //Callback when check permission on android
   const _requestAndroidPermission = useCallback(async () => {
     try {
@@ -356,7 +356,7 @@ function MessageDetail({ navigation }) {
   }, [])
   //消息接收事件
   const receive = useCallback(() => {
-    setMessages([...messages, {
+    setMessages(messages=>([...messages, {
       id: `${new Date().getTime()}`,
       type: 'text',
       content: '收到一条消息' + new Date().getTime(),
@@ -369,8 +369,8 @@ function MessageDetail({ navigation }) {
       renderTime: true,
       sendStatus: 1,
       time: `${new Date().getTime()}`
-    }])
-  }, [messages])
+    }]))
+  }, [])
 
   const prepareRecordingPath = useCallback((audioPath) => {
     AudioRecorder.prepareRecordingAtPath(audioPath, {

@@ -12,6 +12,7 @@ import FlashScreen from "../pages/flash/flash"
 import RegisterScreen from "../pages/register/register"
 import ProductDetailScreen from "../pages/productDetail/productDetail"
 import MessageDetailScreen from "../pages/message/messageDetail"
+import NewAddressScreen from "../pages/address/newAddress"
 import PublishScreen from "../pages/publish/publish"
 import CategoriesScreen from "../pages/publish/categories"
 import AddressListScreen from "../pages/address/addressList"
@@ -73,6 +74,7 @@ function AppStackScreen({ isLoading, isLogin, dispatch }) {
                         <AppStack.Screen name="messageDetail" component={MessageDetailScreen} ></AppStack.Screen>
                         <AppStack.Screen name="order" component={OrderScreen} ></AppStack.Screen>
                         <AppStack.Screen name="addressList" component={AddressListScreen} ></AppStack.Screen>
+                        <AppStack.Screen name="newAddress" component={NewAddressScreen} ></AppStack.Screen>
                     </>
                 ) : (
                         <>

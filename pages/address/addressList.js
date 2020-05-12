@@ -25,6 +25,14 @@ function AddressList({ navigation }) {
     const toggleBatchOperation = useCallback(() => {
         setIsBatchOperation(!isBatchOperation)
     }, [isBatchOperation])
+    const bottomPress=useCallback(()=>{
+        if(isBatchOperation){
+
+        }
+        else{
+            navigation.navigate("newAddress")
+        }
+    },[isBatchOperation])
     return (
         <SafeAreaView style={style.safeAreaView}>
             <View style={style.container}>
@@ -47,10 +55,11 @@ function AddressList({ navigation }) {
                         </View>
                     )}>
                 </SwipeListView>
-
-                <View style={style.addAddress}>
-                    <Text style={style.addAddressTitle}>{isBatchOperation ? '删除' : '+ 新建收货地址'}</Text>
-                </View>
+                <TouchableHighlight underlayColor="#fff" onPress={bottomPress}>
+                    <View style={style.addAddress}>
+                        <Text style={style.addAddressTitle}>{isBatchOperation ? '删除' : '+ 新建收货地址'}</Text>
+                    </View>
+                </TouchableHighlight>
             </View>
         </SafeAreaView>
 
@@ -197,7 +206,7 @@ const style = StyleSheet.create({
         justifyContent: "center",
         backgroundColor: "#eee",
     },
-    defaultTitle:{
+    defaultTitle: {
         color: "#333",
         fontSize: setSpText2(12),
     },
@@ -208,7 +217,7 @@ const style = StyleSheet.create({
         justifyContent: "center",
         backgroundColor: "#f2140c",
     },
-    delTitle:{
+    delTitle: {
         color: "#fff",
         fontSize: setSpText2(12)
     }

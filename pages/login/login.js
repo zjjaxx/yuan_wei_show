@@ -12,6 +12,7 @@ import { BoxShadow } from 'react-native-shadow'
 const phoneRegExp = /^1[3456789]\d{9}$/
 const passwordRegExp = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
 function Login({ dispatch, navigation }) {
+    //登入
     const setLogin = useCallback((values) => {
         dispatch(login("token" + Math.random()))
     }, [dispatch])
