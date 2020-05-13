@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useState, useEffect } from "react"
 import { View, Text, SafeAreaView, Image, StyleSheet, ScrollView, Switch, TouchableHighlight, Alert, Modal } from "react-native"
 import Header from "../../components/Header"
 import { TextInput } from "react-native-gesture-handler"
@@ -6,10 +6,13 @@ import { Formik } from 'formik';
 import * as yup from "yup"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import AddressPopup from "../../components/AddressPopup"
+import useAddressData from "../../customUse/addressData";
+
 const phoneRegExp = /^1[3456789]\d{9}$/
 
 function NewAddress({ navigation }) {
     const [addressPopupFlag, setAddressPopupFlag] = useState(false)
+    const addressData=useAddressData()
     const leftEvent = useCallback(() => {
         navigation.goBack()
     }, [])
@@ -91,7 +94,7 @@ function NewAddress({ navigation }) {
                     )}
                 </Formik>
                 <Modal visible={addressPopupFlag} animationType="fade" transparent={true}>
-                    <AddressPopup setAddressPopupFlag={setAddressPopupFlag}></AddressPopup>
+                    <AddressPopup addressData={addressData} setAddressPopupFlag={setAddressPopupFlag}></AddressPopup>
                 </Modal>
             </View>
         </SafeAreaView>
