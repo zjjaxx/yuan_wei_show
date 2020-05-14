@@ -5,7 +5,10 @@ import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import useAddressData from "../../customUse/addressData";
 import AddressComponent from "./addressComponent"
 
-function NewAddress({ navigation }) {
+function EditAddress({ navigation }) {
+    const [phone,setPhone]=useState("17855827436")
+    const [name,setName]=useState("绿灯")
+    const [addressDetail,setAddressDetail]=useState("兰江街道 水东村")
     //选择地址模态框
     const [addressPopupFlag, setAddressPopupFlag] = useState(false)
     //地址数据
@@ -13,9 +16,9 @@ function NewAddress({ navigation }) {
     const leftEvent = useCallback(() => {
         navigation.goBack()
     }, [])
-    const [isDefault, setIsDefault] = useState(false)
+    const [isDefault, setIsDefault] = useState(true)
     //地址ID数组
-    const [addressSelectItem, setAddressSelectItem] = useState([])
+    const [addressSelectItem, setAddressSelectItem] = useState([{ value: 1, text: "北京市" }, { value: 1, text: "北京市" }, { value: 390, text: "丰台区" }])
     const addressText = () => {
         return addressSelectItem.map(item => item.text).join(" ") || "省市区县、乡镇等"
     }
@@ -38,7 +41,7 @@ function NewAddress({ navigation }) {
     return (
         <SafeAreaView style={style.safeAreaView}>
             <View style={style.container}>
-                <Header leftEvent={leftEvent} title="新建收货地址"></Header>
+                <Header leftEvent={leftEvent} title="编辑收货地址"></Header>
                 <AddressComponent
                     addressPopupFlag={addressPopupFlag}
                     setAddressPopupFlag={setAddressPopupFlag}
@@ -49,12 +52,15 @@ function NewAddress({ navigation }) {
                     addressData={addressData}
                     addressText={addressText}
                     _handleSubmit={_handleSubmit}
+                    phone={phone}
+                    name={name}
+                    addressDetail={addressDetail}
                 ></AddressComponent>
             </View>
         </SafeAreaView>
     )
 }
-export default NewAddress
+export default EditAddress
 const style = StyleSheet.create({
     safeAreaView: {
         flex: 1,

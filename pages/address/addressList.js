@@ -1,5 +1,5 @@
 import React, { useCallback, useState, memo, useMemo } from "react"
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableHighlight } from "react-native"
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableHighlight, TouchableOpacity } from "react-native"
 import Header from "../../components/Header"
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -25,14 +25,29 @@ function AddressList({ navigation }) {
     const toggleBatchOperation = useCallback(() => {
         setIsBatchOperation(!isBatchOperation)
     }, [isBatchOperation])
-    const bottomPress=useCallback(()=>{
-        if(isBatchOperation){
+    const bottomPress = useCallback(() => {
+        if (isBatchOperation) {
 
         }
-        else{
+        else {
             navigation.navigate("newAddress")
         }
-    },[isBatchOperation])
+    }, [isBatchOperation])
+    const toEditAddress = useCallback(() => {
+        navigation.navigate("editAddress")
+    }, [])
+    //设为默认
+    const setDefault=useCallback((rowMap, rowKey)=>{
+        if (rowMap[rowKey]) {
+            rowMap[rowKey].closeRow();
+        }
+    },[])
+    //删除地址
+    const delAddress=useCallback((rowMap, rowKey)=>{
+        if (rowMap[rowKey]) {
+            rowMap[rowKey].closeRow();
+        }
+    },[])
     return (
         <SafeAreaView style={style.safeAreaView}>
             <View style={style.container}>
@@ -40,18 +55,18 @@ function AddressList({ navigation }) {
                 <SwipeListView
                     style={style.scrollView}
                     rightOpenValue={-scaleSize(140)}
-                    data={[1, 2, 3, 4, 5]}
+                    data={[{key:1},{key:2},{key:3},{key:4},{key:5}]}
                     renderItem={(data, rowMap) => (
-                        <AddressItem id={data.index} isBatchOperation={isBatchOperation} removeBatchAddressList={removeBatchAddressList} addBatchAddressList={addBatchAddressList}></AddressItem>
+                        <AddressItem id={data.index} toEditAddress={toEditAddress} isBatchOperation={isBatchOperation} removeBatchAddressList={removeBatchAddressList} addBatchAddressList={addBatchAddressList}></AddressItem>
                     )}
                     renderHiddenItem={(data, rowMap) => (
                         <View style={style.addressOptionMenu}>
-                            <View style={style.defaultOption}>
+                            <TouchableHighlight style={style.defaultOption} underlayColor="#fff" onPress={() => setDefault(rowMap, data.item.key)}>
                                 <Text style={style.defaultTitle}>设为默认</Text>
-                            </View>
-                            <View style={style.delOption}>
+                            </TouchableHighlight>
+                            <TouchableHighlight style={style.delOption} underlayColor="#fff" onPress={()=>delAddress(rowMap, data.item.key)}>
                                 <Text style={style.delTitle}>删除</Text>
-                            </View>
+                            </TouchableHighlight>
                         </View>
                     )}>
                 </SwipeListView>
@@ -66,7 +81,7 @@ function AddressList({ navigation }) {
     )
 }
 const AddressItem = memo((props) => {
-    const { isBatchOperation, id, removeBatchAddressList, addBatchAddressList } = props
+    const { isBatchOperation, id, removeBatchAddressList, addBatchAddressList, toEditAddress } = props
     const [isSelect, setIsSelect] = useState(false)
     //取消选中
     const cancelSelect = useCallback(() => {
@@ -80,30 +95,34 @@ const AddressItem = memo((props) => {
     })
 
     return (
-        <View style={style.addressItemOptionWrap}>
-            {isBatchOperation ? isSelect ?
-                <TouchableHighlight underlayColor="#fff" onPress={cancelSelect} style={{ marginHorizontal: scaleSize(10) }}>
-                    <Image style={style.selected} source={require("../../assets/imgs/selected.png")}></Image>
-                </TouchableHighlight>
-                :
-                <TouchableHighlight underlayColor="#fff" onPress={addSelect} style={{ marginHorizontal: scaleSize(10) }}>
-                    <View style={style.unselect}></View>
-                </TouchableHighlight>
-                : null}
-            <View style={style.addressItem}>
-                <View style={style.userInfoWrap}>
-                    <Text style={style.userName}>路灯</Text>
-                    <Text style={style.phone}>17855827436</Text>
-                    <View style={style.defaultWrap}>
-                        <Text style={style.default}>默认</Text>
+        <TouchableHighlight underlayColor="#fff" onPress={()=>{}}>
+            <View style={style.addressItemOptionWrap}>
+                {isBatchOperation ? isSelect ?
+                    <TouchableHighlight underlayColor="#fff" onPress={cancelSelect} style={{ marginHorizontal: scaleSize(10) }}>
+                        <Image style={style.selected} source={require("../../assets/imgs/selected.png")}></Image>
+                    </TouchableHighlight>
+                    :
+                    <TouchableHighlight underlayColor="#fff" onPress={addSelect} style={{ marginHorizontal: scaleSize(10) }}>
+                        <View style={style.unselect}></View>
+                    </TouchableHighlight>
+                    : null}
+                <View style={style.addressItem}>
+                    <View style={style.userInfoWrap}>
+                        <Text style={style.userName}>路灯</Text>
+                        <Text style={style.phone}>17855827436</Text>
+                        <View style={style.defaultWrap}>
+                            <Text style={style.default}>默认</Text>
+                        </View>
+                    </View>
+                    <View style={style.addressDetailWrap}>
+                        <Text style={style.addressDetail}>浙江省金华市婺城区罗布镇下郑村后后溪路一号</Text>
+                        <TouchableHighlight underlayColor="#fff" onPress={toEditAddress}>
+                            <Image style={style.editIcon} source={require('../../assets/imgs/edit.png')}></Image>
+                        </TouchableHighlight>
                     </View>
                 </View>
-                <View style={style.addressDetailWrap}>
-                    <Text style={style.addressDetail}>浙江省金华市婺城区罗布镇下郑村后后溪路一号</Text>
-                    <Image style={style.editIcon} source={require('../../assets/imgs/edit.png')}></Image>
-                </View>
             </View>
-        </View>
+        </TouchableHighlight>
     )
 })
 export default AddressList
@@ -117,6 +136,9 @@ const style = StyleSheet.create({
     },
     batchTitle: {
         marginRight: scaleSize(10)
+    },
+    scrollView:{
+        flex:1
     },
     addressItem: {
         flex: 1,

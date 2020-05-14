@@ -13,6 +13,7 @@ import RegisterScreen from "../pages/register/register"
 import ProductDetailScreen from "../pages/productDetail/productDetail"
 import MessageDetailScreen from "../pages/message/messageDetail"
 import NewAddressScreen from "../pages/address/newAddress"
+import EditAddressScreen from "../pages/address/editAddress"
 import PublishScreen from "../pages/publish/publish"
 import CategoriesScreen from "../pages/publish/categories"
 import AddressListScreen from "../pages/address/addressList"
@@ -38,12 +39,11 @@ function TabContainer() {
             inactiveTintColor: '#000',
             labelStyle: { fontSize: setSpText2(10) },
             style: {
-
             }
         }} >
-            <Tab.Screen name="home" component={HomeScreen} options={{ headerShown: false }} />
-            <Tab.Screen name="message" component={MessageScreen} options={{ headerShown: false }} />
-            <Tab.Screen name="person" component={PersonScreen} options={{ headerShown: false }} />
+            <Tab.Screen name="home" component={HomeScreen} options={{ headerShown: false ,title:"爆款推荐"}} />
+            <Tab.Screen name="message" component={MessageScreen} options={{ headerShown: false,title:"消息中心" }} />
+            <Tab.Screen name="person" component={PersonScreen} options={{ headerShown: false,title:"个人中心"}} />
         </Tab.Navigator>
     )
 }
@@ -75,6 +75,7 @@ function AppStackScreen({ isLoading, isLogin, dispatch }) {
                         <AppStack.Screen name="order" component={OrderScreen} ></AppStack.Screen>
                         <AppStack.Screen name="addressList" component={AddressListScreen} ></AppStack.Screen>
                         <AppStack.Screen name="newAddress" component={NewAddressScreen} ></AppStack.Screen>
+                        <AppStack.Screen name="editAddress" component={EditAddressScreen} ></AppStack.Screen>
                     </>
                 ) : (
                         <>

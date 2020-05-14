@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react"
 import { View, Text, ScrollView, FlatList, SafeAreaView, StyleSheet, Image, TouchableHighlight } from "react-native"
 import { scaleHeight, scaleSize, setSpText2 } from "../../utils/ScreenUtil"
 import toDate from "../../utils/toDate"
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 function MessageList({ navigation }) {
     //下拉刷新flag
@@ -20,28 +21,40 @@ function MessageList({ navigation }) {
     const toMessageDetail = useCallback(() => {
         navigation.navigate("messageDetail")
     }, [])
+    //删除地址
+    const delAddress = useCallback((rowMap, rowKey) => {
+        if (rowMap[rowKey]) {
+            rowMap[rowKey].closeRow();
+        }
+    }, [])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
                 <View style={style.headerWrap}>
                     <Text style={style.headerTitle}>消息</Text>
                 </View>
-                <FlatList
-                    style={style.flatList}
-                    onEndReached={_scrollEnd}
-                    onEndReachedThreshold={0.1}
-                    refreshing={refreshing}
-                    onRefresh={_onRefresh}
-                    data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                    renderItem={({ item, index }) => <MessageItem toMessageDetail={toMessageDetail} index={index} key={index}></MessageItem>}
-                />
+                    <SwipeListView
+                        style={style.scrollView}
+                        rightOpenValue={-scaleSize(70)}
+                        data={[{ key: 1 }, { key: 2 }, { key: 3 }, { key: 4 }, { key: 5 }]}
+                        renderItem={(data, rowMap) => (
+                            <MessageItem toMessageDetail={toMessageDetail}></MessageItem>
+                        )}
+                        renderHiddenItem={(data, rowMap) => (
+                            <View style={style.addressOptionMenu}>
+                                <TouchableHighlight style={style.delOption} underlayColor="#fff" onPress={() => delAddress(rowMap, data.item.key)}>
+                                    <Text style={style.delTitle}>删除</Text>
+                                </TouchableHighlight>
+                            </View>
+                        )}>
+                    </SwipeListView>
             </View>
         </SafeAreaView>
     )
 }
 //消息item
 const MessageItem = function (props) {
-    const { toMessageDetail, index } = props
+    const { toMessageDetail } = props
     return (
         <TouchableHighlight underlayColor="#fff" onPress={toMessageDetail}>
             <View style={style.messageItem}>
@@ -72,11 +85,11 @@ const style = StyleSheet.create({
         lineHeight: setSpText2(50),
         fontWeight: "500"
     },
-    flatList: {
+    scrollView: {
         flex: 1,
-        paddingHorizontal: scaleSize(15)
     },
     messageItem: {
+        backgroundColor: "#fff",
         flexDirection: "row",
         alignItems: "flex-start",
         paddingVertical: scaleHeight(5),
@@ -85,6 +98,7 @@ const style = StyleSheet.create({
         borderBottomWidth: scaleSize(0.5),
     },
     avatar: {
+        marginLeft:scaleSize(15),
         marginRight: scaleSize(10),
         height: scaleSize(30),
         width: scaleSize(30),
@@ -109,9 +123,39 @@ const style = StyleSheet.create({
         color: "#999"
     },
     pic: {
+        marginRight:scaleSize(15),
         height: scaleSize(50),
         width: scaleSize(50),
         borderRadius: scaleSize(4)
+    },
+    addressOptionMenu: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        flexDirection: "row"
+    },
+    defaultOption: {
+        height: "100%",
+        width: scaleSize(70),
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#eee",
+    },
+    defaultTitle: {
+        color: "#333",
+        fontSize: setSpText2(12),
+    },
+    delOption: {
+        height: "100%",
+        width: scaleSize(70),
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f2140c",
+    },
+    delTitle: {
+        color: "#fff",
+        fontSize: setSpText2(12)
     }
 })
 export default MessageList
