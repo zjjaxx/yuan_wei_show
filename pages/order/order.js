@@ -185,7 +185,7 @@ const style = StyleSheet.create({
     bottomBar: {
         paddingHorizontal: scaleSize(20),
         position: "absolute",
-        bottom: 0,
+        bottom: scaleHeight(20),
         left: 0,
         width: "100%",
         height: scaleHeight(30),

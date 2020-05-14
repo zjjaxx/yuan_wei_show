@@ -138,7 +138,7 @@ const style = StyleSheet.create({
         marginRight: scaleSize(10)
     },
     scrollView:{
-        flex:1
+        flex:1,
     },
     addressItem: {
         flex: 1,
@@ -199,6 +199,7 @@ const style = StyleSheet.create({
         borderColor: "#333"
     },
     addAddress: {
+        marginBottom:scaleHeight(20),
         marginHorizontal: scaleSize(30),
         height: scaleHeight(28),
         borderRadius: scaleSize(15),
