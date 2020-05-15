@@ -346,7 +346,7 @@ const style = StyleSheet.create({
     },
     saveWrap: {
         width: scaleSize(70),
-        height: scaleHeight(35),
+        height: scaleHeight(40),
         backgroundColor: "#f6f6f6",
         borderRadius: scaleSize(5),
         justifyContent: "center",
@@ -356,7 +356,7 @@ const style = StyleSheet.create({
         marginRight: scaleSize(20),
         marginLeft: scaleSize(10),
         width: scaleSize(70),
-        height: scaleHeight(35),
+        height: scaleHeight(40),
         backgroundColor: "#f6f6f6",
         borderRadius: scaleSize(5),
         justifyContent: "center",
@@ -367,7 +367,7 @@ const style = StyleSheet.create({
     },
     payWrap: {
         width: scaleSize(140),
-        height: scaleHeight(35),
+        height: scaleHeight(40),
         backgroundColor: "#fca413",
         borderRadius: scaleSize(5),
         justifyContent: "center",

@@ -1,9 +1,9 @@
 import React, { useCallback } from "react"
-import { View, Text, Button, SafeAreaView,StyleSheet, Image } from "react-native"
+import { View, Text, Button, SafeAreaView, StyleSheet, Image, TouchableHighlight } from "react-native"
 import { connect } from "react-redux"
 import { logout } from "../../store/action"
-import {scaleHeight,scaleSize,setSpText2} from "../../utils/ScreenUtil"
-function Person({ dispatch }) {
+import { scaleHeight, scaleSize, setSpText2 } from "../../utils/ScreenUtil"
+function Person({ dispatch,navigation }) {
     const _logout = useCallback(() => {
         dispatch(logout())
     }, [dispatch])
@@ -16,8 +16,8 @@ function Person({ dispatch }) {
                 <View style={style.userInfoWrap}>
                     <Image source={require("../../assets/imgs/avatar.jpeg")} style={style.avatar}></Image>
                     <View style={style.userInfo}>
-                         <Text style={style.name}>Hello DENG</Text>
-                         <Text style={style.phone}>17855827456</Text>
+                        <Text style={style.name}>Hello DENG</Text>
+                        <Text style={style.phone}>17855827456</Text>
                     </View>
                 </View>
                 <View style={style.menuWrap}>
@@ -38,14 +38,39 @@ function Person({ dispatch }) {
                         <Text style={style.menuTitle}>卡券</Text>
                     </View>
                 </View>
-                <Button title="logout" onPress={_logout}></Button>
+                <TouchableHighlight underlayColor="#fff"  onPress={() => navigation.navigate("orderList")}>
+                    <View style={style.menuListItem}>
+                        <Image style={style.menuListIcon} source={require("../../assets/imgs/order.png")}></Image>
+                        <Text style={style.menuListText}>我的订单</Text>
+                        <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right.png")}></Image>
+                    </View>
+                </TouchableHighlight>
+                <View style={style.menuListItem}>
+                    <Image style={style.menuListIcon} source={require("../../assets/imgs/love.png")}></Image>
+                    <Text style={style.menuListText}>我的收藏</Text>
+                    <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right.png")}></Image>
+                </View>
+                <View style={style.menuListItem}>
+                    <Image style={style.menuListIcon} source={require("../../assets/imgs/icon_seller.png")}></Image>
+                    <Text style={style.menuListText}>我的出售</Text>
+                    <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right.png")}></Image>
+                </View>
+                <View style={style.menuListItem}>
+                    <Image style={style.menuListIcon} source={require("../../assets/imgs/location.png")}></Image>
+                    <Text style={style.menuListText}>地址管理</Text>
+                    <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right.png")}></Image>
+                </View>
+                <TouchableHighlight style={style.logout} underlayColor="#fca413" onPress={_logout}>
+                    <Text style={style.logoutText}>退出登录</Text>
+                </TouchableHighlight>
             </View>
         </SafeAreaView>
     )
 }
-const style=StyleSheet.create({
-    container:{
-        flex:1
+const style = StyleSheet.create({
+    container: {
+        flex: 1,
+        position: "relative"
     },
     headerWrap: {
         flexDirection: "row",
@@ -58,45 +83,79 @@ const style=StyleSheet.create({
         lineHeight: setSpText2(50),
         fontWeight: "500"
     },
-    userInfoWrap:{
-        paddingHorizontal:scaleSize(15),
-        flexDirection:"row",
+    userInfoWrap: {
+        paddingHorizontal: scaleSize(15),
+        flexDirection: "row",
     },
-    userInfo:{
-        marginLeft:scaleSize(20)
+    userInfo: {
+        marginLeft: scaleSize(20)
     },
-    name:{
-        fontSize:setSpText2(16),
-        fontWeight:"bold"
+    name: {
+        fontSize: setSpText2(16),
+        fontWeight: "bold"
     },
-    phone:{
-        marginTop:scaleHeight(8),
-        fontSize:setSpText2(12),
-        color:"#999"
+    phone: {
+        marginTop: scaleHeight(8),
+        fontSize: setSpText2(12),
+        color: "#999"
     },
-    avatar:{
-        width:scaleSize(50),
-        height:scaleSize(50),
-        borderRadius:scaleSize(25)
+    avatar: {
+        width: scaleSize(50),
+        height: scaleSize(50),
+        borderRadius: scaleSize(25)
     },
-    menuWrap:{
-        flexDirection:"row",
-        paddingVertical:scaleHeight(10)
+    menuWrap: {
+        flexDirection: "row",
+        paddingVertical: scaleHeight(10)
     },
-    menuItem:{
-        flex:1,
-        paddingVertical:scaleHeight(10),
-        alignItems:"center",
-        justifyContent:"center"
+    menuItem: {
+        flex: 1,
+        paddingVertical: scaleHeight(10),
+        alignItems: "center",
+        justifyContent: "center"
     },
-    num:{
-        fontSize:setSpText2(16),
-        fontWeight:"500"
+    num: {
+        fontSize: setSpText2(16),
+        fontWeight: "500"
     },
-    menuTitle:{
-        marginTop:scaleHeight(8),
-        color:"#999",
-        fontSize:setSpText2(12)
+    menuTitle: {
+        marginTop: scaleHeight(8),
+        color: "#999",
+        fontSize: setSpText2(12)
+    },
+    menuListItem: {
+        paddingVertical: scaleHeight(15),
+        paddingHorizontal: scaleSize(20),
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    menuListIcon: {
+        marginRight: scaleSize(10),
+        width: scaleSize(20),
+        height: scaleSize(20)
+    },
+    menuListText: {
+        marginRight: "auto",
+        fontSize: setSpText2(14)
+    },
+    arrowRight: {
+        width: scaleSize(15),
+        height: scaleSize(15)
+    },
+    logout: {
+        position: "absolute",
+        bottom: scaleHeight(20),
+        left: scaleSize(20),
+        right: scaleSize(20),
+        height: scaleHeight(40),
+        backgroundColor: "#fca413",
+        borderRadius: scaleSize(10),
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    logoutText: {
+        fontSize: setSpText2(16),
+        color: "#fff"
     }
 })
 

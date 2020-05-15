@@ -157,14 +157,14 @@ const style = StyleSheet.create({
         marginTop: scaleHeight(270),
         width: scaleSize(340),
         backgroundColor: "#f2140c",
-        height: scaleHeight(25),
+        height: scaleHeight(30),
         borderRadius: scaleSize(15),
         alignSelf: "center",
         alignItems: "center",
         justifyContent: "center"
     },
     saveTitle: {
-        fontSize: setSpText2(12),
+        fontSize: setSpText2(14),
         color: "#fff"
     }
 })
