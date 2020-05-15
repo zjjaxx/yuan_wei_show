@@ -21,8 +21,26 @@ function Order({ navigation }) {
     return (
         <SafeAreaView style={style.safeAreaView}>
             <View style={style.container}>
-                <Header title="购买宝贝" leftEvent={leftEvent}></Header>
-                <BoxShadow setting={productBoxShadow}>
+                <Header wrapStyle={{backgroundColor:"#fff"}} title="填写订单" leftEvent={leftEvent}></Header>
+                <TouchableHighlight underlayColor="#fff" onPress={toAddressList}>
+                    <View style={style.addressWrap}>
+                        <View style={style.addressInfoWrap}>
+                            <Text style={style.address}>浙江省 金华市 婺城区</Text>
+                            <Text numberOfLines={1} ellipsizeMode="tail" style={style.addressDetail}>罗布镇下郑村后溪路一号</Text>
+                            <Text style={style.userInfo}>绿灯 17855845874</Text>
+                        </View>
+                        <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right-gray.png")}></Image>
+                    </View>
+                </TouchableHighlight>
+                {/* <View style={style.deliverWrap}>
+                    <Text style={style.deliverTip}>运费</Text>
+                    <View style={style.deliverFeeWrap}>
+                        <Text style={style.deliverFee}>￥0</Text>
+                        <Text style={style.deliverFeeTail}>.00</Text>
+                    </View>
+                </View> */}
+
+                {/* <BoxShadow setting={productBoxShadow}>
                     <View style={style.productWrap}>
                         <Image style={style.productImg} source={require("../../assets/imgs/pic3.jpg")}></Image>
                         <View style={style.productInfoWrap}>
@@ -33,29 +51,7 @@ function Order({ navigation }) {
                             </View>
                         </View>
                     </View>
-                </BoxShadow>
-
-                <BoxShadow setting={addressBoxShadow}>
-                    <View style={style.addressWrap}>
-                        <TouchableHighlight underlayColor="#fff" onPress={toAddressList}>
-                            <View style={style.addressInfoWrap}>
-                                <Text style={style.addressTip}>收货地址</Text>
-                                <View style={style.info}>
-                                    <Text style={style.userInfo}>绿灯 17855845874</Text>
-                                    <Text numberOfLines={2} ellipsizeMode="tail" style={style.address}>浙江省金华市婺城区罗布镇下郑村后溪路一号</Text>
-                                </View>
-                                <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right-gray.png")}></Image>
-                            </View>
-                        </TouchableHighlight>
-                        <View style={style.deliverWrap}>
-                            <Text style={style.deliverTip}>运费</Text>
-                            <View style={style.deliverFeeWrap}>
-                                <Text style={style.deliverFee}>￥0</Text>
-                                <Text style={style.deliverFeeTail}>.00</Text>
-                            </View>
-                        </View>
-                    </View>
-                </BoxShadow>
+                </BoxShadow> */}
                 <View style={style.bottomBar}>
                     <Text style={style.buyTip}>实际付款</Text>
                     <Text style={style.price}>￥19</Text>
@@ -80,7 +76,8 @@ const style = StyleSheet.create({
     },
     container: {
         position: "relative",
-        flex: 1
+        flex: 1,
+        backgroundColor: "#eee"
     },
 
     productWrap: {
@@ -122,20 +119,27 @@ const style = StyleSheet.create({
         color: "#f2140c",
     },
     addressWrap: {
-        paddingHorizontal: scaleSize(5),
-        paddingTop: scaleHeight(10),
-        width: scaleSize(335),
-        height: scaleHeight(100),
-        borderRadius: scaleSize(15),
-        backgroundColor: "#fff"
+        paddingHorizontal: scaleSize(10),
+        paddingVertical: scaleHeight(20),
+        backgroundColor: "#fff",
+        flexDirection:"row",
+        alignItems:"center"
     },
     addressInfoWrap: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        borderBottomColor: "#eee",
-        borderBottomWidth: scaleSize(0.5),
-        paddingBottom: scaleHeight(10)
+        marginRight:scaleSize(20),
+        flex: 1
+    },
+    address:{
+        fontSize:setSpText2(12)
+    },
+    addressDetail:{
+        marginTop:scaleHeight(6),
+        fontSize:setSpText2(14),
+        fontWeight:"500"
+    },
+    userInfo:{
+        marginTop:scaleHeight(6),
+        fontSize:setSpText2(12)
     },
     addressTip: {
         fontSize: setSpText2(14)
@@ -146,19 +150,9 @@ const style = StyleSheet.create({
         marginLeft: scaleSize(50),
         alignItems: "flex-end"
     },
-    userInfo: {
-        fontSize: setSpText2(14),
-        fontWeight: "500",
-    },
-    address: {
-        marginTop: scaleHeight(4),
-        fontSize: setSpText2(14),
-        color: "#999",
-        textAlign: "right"
-    },
     arrowRight: {
-        height: scaleSize(15),
-        width: scaleSize(15)
+        height: scaleSize(10),
+        width: scaleSize(10)
     },
     deliverWrap: {
         flex: 1,
