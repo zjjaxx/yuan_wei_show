@@ -32,6 +32,13 @@ function Order({ navigation }) {
                         <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right-gray.png")}></Image>
                     </View>
                 </TouchableHighlight>
+                <View style={style.productInfo}>
+                    <View style={style.headerWrap}>
+                        <Image style={style.avatar} source={require("../../assets/imgs/avatar.jpeg")}></Image>
+                        <Text style={style.name}>小可爱</Text>
+                    </View>
+                    <View></View>
+                </View>
                 {/* <View style={style.deliverWrap}>
                     <Text style={style.deliverTip}>运费</Text>
                     <View style={style.deliverFeeWrap}>
@@ -123,7 +130,8 @@ const style = StyleSheet.create({
         paddingVertical: scaleHeight(20),
         backgroundColor: "#fff",
         flexDirection:"row",
-        alignItems:"center"
+        alignItems:"center",
+        borderBottomWidth:scaleHeight(10)
     },
     addressInfoWrap: {
         marginRight:scaleSize(20),
