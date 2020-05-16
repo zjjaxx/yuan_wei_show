@@ -2,10 +2,9 @@ import React, { useCallback } from "react"
 import { View, Text, SafeAreaView, StyleSheet, Image, TouchableHighlight } from "react-native"
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
 import Header from "../../components/Header"
-//阴影
-import { BoxShadow } from 'react-native-shadow'
 //渐变
 import LinearGradient from 'react-native-linear-gradient';
+import ProductItem from "../../components/prodcutItem"
 function Order({ navigation }) {
     //返回事件
     const leftEvent = useCallback(() => {
@@ -32,42 +31,27 @@ function Order({ navigation }) {
                         <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right-gray.png")}></Image>
                     </View>
                 </TouchableHighlight>
-                <View style={style.productInfo}>
-                    <View style={style.headerWrap}>
-                        <Image style={style.avatar} source={require("../../assets/imgs/avatar.jpeg")}></Image>
-                        <Text style={style.name}>小可爱</Text>
+                <ProductItem></ProductItem>
+                <View style={style.orderInfo}>
+                    <View style={style.orderPriceWrap}>
+                        <Text style={style.productPriceTip}>商品金额</Text>
+                        <Text style={style.productPrice}>￥9.90</Text>
                     </View>
-                    <View></View>
+                    <View style={style.orderDeliveryWrap}>
+                        <Text style={style.productDeliveryTip}>运费</Text>
+                        <Text style={style.deliveryPrice}>+ ￥0.00</Text>
+                    </View>
                 </View>
-                {/* <View style={style.deliverWrap}>
-                    <Text style={style.deliverTip}>运费</Text>
-                    <View style={style.deliverFeeWrap}>
-                        <Text style={style.deliverFee}>￥0</Text>
-                        <Text style={style.deliverFeeTail}>.00</Text>
-                    </View>
-                </View> */}
-
-                {/* <BoxShadow setting={productBoxShadow}>
-                    <View style={style.productWrap}>
-                        <Image style={style.productImg} source={require("../../assets/imgs/pic3.jpg")}></Image>
-                        <View style={style.productInfoWrap}>
-                            <Text style={style.productName} numberOfLines={2} ellipsizeMode="tail">佛教围殴金佛风口浪尖忘记佛为我金佛按罚款服务佛排污口佛我就反问偶家放我家奇偶王府井忘记佛为</Text>
-                            <View style={style.priceWrap}>
-                                <Text style={style.price}>￥19</Text>
-                                <Text style={style.priceTail}>.90</Text>
-                            </View>
-                        </View>
-                    </View>
-                </BoxShadow> */}
                 <View style={style.bottomBar}>
+                    <View style={{flexDirection:"row",alignItems:"flex-end"}}>
                     <Text style={style.buyTip}>实际付款</Text>
                     <Text style={style.price}>￥19</Text>
                     <Text style={style.priceTail}>.00</Text>
+                    </View>
+                   
                     <TouchableHighlight underlayColor="#fff" onPress={pay}>
-                        <LinearGradient colors={["#f2140c", "#f2270c"]} style={style.buyBtn}>
-                            <View >
-                                <Text style={style.buyText}>确认购买</Text>
-                            </View>
+                        <LinearGradient useAngle={true} angle={90} colors={["#f2140c", "#f2270c","#fff"]} style={style.buyBtn}>
+                                <Text style={style.buyText}>提交订单</Text>
                         </LinearGradient>
                     </TouchableHighlight>
                 </View>
@@ -84,54 +68,27 @@ const style = StyleSheet.create({
     container: {
         position: "relative",
         flex: 1,
-        backgroundColor: "#eee"
+        backgroundColor: "#f9f9f9"
     },
 
     productWrap: {
         width: scaleSize(335),
         height: scaleHeight(100),
-        borderRadius: scaleSize(15),
+        borderRadius: scaleSize(10),
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#fff"
     },
-    productImg: {
-        marginLeft: scaleSize(10),
-        marginRight: scaleSize(10),
-        width: scaleSize(80),
-        height: scaleSize(80),
-        borderRadius: scaleSize(5)
-    },
-    productInfoWrap: {
-        flex: 1,
-        marginRight: scaleSize(10),
-        height: scaleSize(80),
-        justifyContent: "space-between"
-    },
-    productName: {
-        fontSize: setSpText2(14),
-    },
-    priceWrap: {
-        flexDirection: "row",
-        justifyContent: "flex-end",
-        alignItems: "flex-end"
-    },
-    price: {
-        fontSize: setSpText2(14),
-        color: "#f2140c",
-    },
-    priceTail: {
-        fontSize: setSpText2(10),
-        color: "#f2140c",
-    },
+ 
     addressWrap: {
         paddingHorizontal: scaleSize(10),
         paddingVertical: scaleHeight(20),
         backgroundColor: "#fff",
         flexDirection:"row",
         alignItems:"center",
-        borderBottomWidth:scaleHeight(10)
+        borderBottomWidth:scaleHeight(10),
+        borderColor:"#fca413"
     },
     addressInfoWrap: {
         marginRight:scaleSize(20),
@@ -186,16 +143,19 @@ const style = StyleSheet.create({
     },
     bottomBar: {
         paddingHorizontal: scaleSize(20),
+        paddingVertical:scaleHeight(10),
+        backgroundColor:"#fff",
         position: "absolute",
-        bottom: scaleHeight(20),
+        bottom: 0,
         left: 0,
         width: "100%",
-        height: scaleHeight(30),
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "flex-end"
+        justifyContent: "space-between"
     },
     buyTip: {
+        marginRight:scaleSize(4),
+        color:"#f2140c",
         fontSize: setSpText2(12),
     },
     buyBtn: {
@@ -210,33 +170,44 @@ const style = StyleSheet.create({
         color: "#fff",
         fontSize: setSpText2(14),
         fontWeight: "500"
-    }
-
+    },
+    orderInfo:{
+        marginTop:scaleHeight(10),
+        borderRadius:scaleSize(10),
+        paddingVertical:scaleHeight(10),
+        paddingHorizontal:scaleSize(10),
+        backgroundColor:"#fff"
+    },
+    orderPriceWrap:{
+        flexDirection:"row",
+        justifyContent:"space-between",
+        alignItems:"center"
+    },
+    productPriceTip:{
+        fontSize:setSpText2(12)
+    },
+    productPrice:{
+        fontSize:setSpText2(12)
+    },
+    orderDeliveryWrap:{
+        marginTop:scaleHeight(4),
+        flexDirection:"row",
+        justifyContent:"space-between",
+        alignItems:"center"
+    },
+    productDeliveryTip:{
+        fontSize:setSpText2(12)
+    },
+    deliveryPrice:{
+        color:"#f2140c",
+        fontSize:setSpText2(12)
+    },
+    price: {
+        fontSize: setSpText2(16),
+        color: "#f2140c",
+    },
+    priceTail: {
+        fontSize: setSpText2(10),
+        color: "#f2140c",
+    },
 })
-const productBoxShadow = {
-    width: scaleSize(335),
-    height: scaleHeight(100),
-    color: "#A2A2A2",
-    border: scaleSize(3),
-    radius: scaleSize(15),
-    opacity: 0.19,
-    x: scaleSize(3),
-    y: scaleSize(3),
-    style: {
-        marginHorizontal: scaleSize(20),
-    }
-}
-const addressBoxShadow = {
-    width: scaleSize(335),
-    height: scaleHeight(100),
-    color: "#A2A2A2",
-    border: scaleSize(3),
-    radius: scaleSize(15),
-    opacity: 0.19,
-    x: scaleSize(3),
-    y: scaleSize(3),
-    style: {
-        marginHorizontal: scaleSize(20),
-        marginTop: scaleHeight(20)
-    }
-}

@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, createContext, memo, useState, useEffect, useMemo, useRef } from "react"
-import { View, Text, SafeAreaView, TouchableHighlight, FlatList, StyleSheet, Animated,Image } from "react-native"
+import { View, Text, SafeAreaView, TouchableHighlight, FlatList, StyleSheet, Animated, Image } from "react-native"
 import { scaleHeight, scaleSize, setSpText2 } from "../../utils/ScreenUtil"
 import Header from "../../components/Header"
 //渐变
@@ -24,6 +24,11 @@ function OrderList({ navigation }) {
     }, [])
     const leftEvent = useCallback(() => {
         navigation.goBack()
+    }, [])
+    //跳转订单详情
+    const toOrderStatus = useCallback(() => {
+        console.log("enter")
+        navigation.navigate("orderState")
     }, [])
     //tab切换
     const tabChange = useCallback(({ i, from }) => {
@@ -64,9 +69,8 @@ function OrderList({ navigation }) {
                                     style={style.flatList}
                                     data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                                     renderItem={({ item, index }) => (
-                                        <TouchableHighlight key={index} underlayColor="#fff" onPress={() => { }}>
-                                            <OrderItem item={item}></OrderItem>
-                                        </TouchableHighlight>)}
+                                        <OrderItem toOrderStatus={toOrderStatus} item={item}></OrderItem>
+                                    )}
                                 />
                             </View>
                         ))}
@@ -106,30 +110,32 @@ const Tab = memo((props) => {
     )
 })
 const OrderItem = memo((props) => {
-    const { index, item } = props
+    const { index, item, toOrderStatus } = props
     return (
-        <View style={style.orderItemWrap}>
-            <View style={style.orderItemHeader}>
-                <Image style={style.sellerIcon} source={require("../../assets/imgs/avatar.jpeg")}></Image>
-                <Text style={style.name} numberOfLines={1} ellipsizeMode="tail">小可爱</Text>
-            </View>
-            <View style={style.orderItemInfo}>
-                <Image style={style.productImg} source={require("../../assets/imgs/pic3.jpg")}></Image>
-                <Text style={style.productName} numberOfLines={2} ellipsizeMode="tail">见覅偶尔玩家佛我我if叫我我交付物金额非叫我我见附件为佛我经济分解为of及文件夹违法未接诶飞机</Text>
-                <View style={style.orderItemInfoRight}>
-                    <View style={style.priceWrap}>
-                        <Text style={style.price}>￥39</Text>
-                        <Text style={style.priceTail}>.00</Text>
+        <TouchableHighlight key={index} underlayColor="#fff" onPress={() => toOrderStatus()}>
+            <View style={style.orderItemWrap}>
+                <View style={style.orderItemHeader}>
+                    <Image style={style.sellerIcon} source={require("../../assets/imgs/avatar.jpeg")}></Image>
+                    <Text style={style.name} numberOfLines={1} ellipsizeMode="tail">小可爱</Text>
+                </View>
+                <View style={style.orderItemInfo}>
+                    <Image style={style.productImg} source={require("../../assets/imgs/pic3.jpg")}></Image>
+                    <Text style={style.productName} numberOfLines={2} ellipsizeMode="tail">见覅偶尔玩家佛我我if叫我我交付物金额非叫我我见附件为佛我经济分解为of及文件夹违法未接诶飞机</Text>
+                    <View style={style.orderItemInfoRight}>
+                        <View style={style.priceWrap}>
+                            <Text style={style.price}>￥39</Text>
+                            <Text style={style.priceTail}>.00</Text>
+                        </View>
+                        <Text style={style.productNum}>共五件</Text>
                     </View>
-                    <Text style={style.productNum}>共五件</Text>
+                </View>
+                <View style={style.orderBottomWrap}>
+                    <TouchableHighlight style={style.remainPay} underlayColor="#fff" onPress={() => { }}>
+                        <Text style={style.remainPayText}>待付款</Text>
+                    </TouchableHighlight>
                 </View>
             </View>
-            <View style={style.orderBottomWrap}>
-                <TouchableHighlight style={style.remainPay} underlayColor="#fff" onPress={() => {}}>
-                    <Text style={style.remainPayText}>待付款</Text>
-                </TouchableHighlight>
-            </View>
-        </View>
+        </TouchableHighlight>
     )
 })
 export default OrderList
@@ -172,8 +178,8 @@ const style = StyleSheet.create({
     orderItemWrap: {
         paddingHorizontal: scaleSize(15),
         paddingVertical: scaleHeight(20),
-        borderBottomWidth:scaleSize(0.5),
-        borderBottomColor:"#eee"
+        borderBottomWidth: scaleSize(0.5),
+        borderBottomColor: "#eee"
     },
     orderItemHeader: {
         flexDirection: "row",
@@ -183,7 +189,7 @@ const style = StyleSheet.create({
         marginRight: scaleSize(10),
         width: scaleSize(20),
         height: scaleSize(20),
-        borderRadius:scaleSize(10)
+        borderRadius: scaleSize(10)
     },
     name: {
         marginRight: scaleSize(40),
@@ -206,7 +212,7 @@ const style = StyleSheet.create({
     },
     priceWrap: {
         flexDirection: "row",
-        alignItems:"flex-end"
+        alignItems: "flex-end"
     },
     productName: {
         flex: 1,
@@ -217,30 +223,30 @@ const style = StyleSheet.create({
     price: {
         fontSize: setSpText2(16),
     },
-    priceTail:{
-        fontSize:setSpText2(10),
+    priceTail: {
+        fontSize: setSpText2(10),
     },
-    productNum:{
-        marginTop:scaleHeight(2),
-        fontSize:setSpText2(10),
-        color:"#999"
+    productNum: {
+        marginTop: scaleHeight(2),
+        fontSize: setSpText2(10),
+        color: "#999"
     },
-    orderBottomWrap:{
-        marginTop:scaleHeight(10),
-        flexDirection:"row",
-        justifyContent:"flex-end"
+    orderBottomWrap: {
+        marginTop: scaleHeight(10),
+        flexDirection: "row",
+        justifyContent: "flex-end"
     },
-    remainPay:{
-        width:scaleSize(70),
-        height:scaleHeight(20),
-        borderRadius:scaleSize(15),
-        alignItems:"center",
-        justifyContent:"center",
-        borderWidth:scaleSize(0.5),
-        borderColor:"#f2140c"
+    remainPay: {
+        width: scaleSize(70),
+        height: scaleHeight(20),
+        borderRadius: scaleSize(15),
+        alignItems: "center",
+        justifyContent: "center",
+        borderWidth: scaleSize(0.5),
+        borderColor: "#f2140c"
     },
-    remainPayText:{
-        fontSize:setSpText2(12),
-        color:"#f2140c"
+    remainPayText: {
+        fontSize: setSpText2(12),
+        color: "#f2140c"
     }
 })
