@@ -5,6 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { scaleHeight, scaleSize, setSpText2 } from "../utils/ScreenUtil";
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import { getNodeInfo } from "../utils/common"
+import { useNodeRect, useNodeDiffListRect } from "../customUse/useClientRect"
 
 const Context = createContext()
 function AddressPopup(props) {
@@ -20,18 +21,28 @@ function AddressPopup(props) {
     }
     const [translateYAnimate] = useState(new Animated.Value(0))
     //tablist ref
-    const tabListRefs = useMemo(() => [1, 2, 3].map(item => React.createRef()), []) || [];
-    const lineRef = useRef()
+    // const tabListRefs = useMemo(() => [1, 2, 3].map(item => React.createRef()), []) || [];
+    const [tabListInfo, tabListRefs] = useNodeDiffListRect(3)
+    const [lineInfo, lineRef] = useNodeRect()
+    // const lineRef = useRef()
     //地址句柄
     const scrollTabRef = useRef()
     useEffect(() => {
-        setTimeout(() => {
-            getNodeInfo(lineRef.current).then(({ x, y, width, height, pageX, pageY }) => {
-                animationEvent(0, width)
-            })
+        let flag=false
+        addressSelectItem.forEach((element,index) => {
+            if(!tabListInfo[index]){
+                flag=true
+            }
+        });
+        if(flag){
+            return
+        }
+        let index=addressSelectItem.length==tabListInfo.length?addressSelectItem.length-1:addressSelectItem.length
+        if (lineInfo&&tabListInfo&&tabListInfo[index]&&scrollTabRef.current) {
+            animationEvent(index, lineInfo.width)
             viewPageSwitch(addressSelectItem.length)
-        }, 0)
-    }, [addressSelectItem])
+        }
+    }, [addressSelectItem, lineInfo,tabListInfo])
     const flatListData = useCallback((index) => {
         const { areaList, cityList, provinceList } = addressData
         switch (index) {
@@ -47,27 +58,30 @@ function AddressPopup(props) {
     }, [addressSelectItem])
     //tab切换
     const tabChange = useCallback(({ i, from }) => {
-        setTimeout(() => {
-            getNodeInfo(lineRef.current).then(({ x, y, width, height, pageX, pageY }) => {
-                animationEvent(i, width)
-            })
-        }, 0)
-    }, [])
+        if(tabListInfo&&tabListInfo[i]){
+            animationEvent(i, lineInfo.width)
+        }
+    }, [lineInfo,tabListInfo])
     const viewPageSwitch = useCallback((i) => {
         scrollTabRef.current.goToPage(i)
     }, [])
     const animationEvent = useCallback((index, lineWidth = 0) => {
-        getNodeInfo(tabListRefs[index].current).then(({ x, y, width, height, pageX, pageY }) => {
-            let calcLeft = pageX + (width - lineWidth) / 2
-            Animated.timing(
-                translateYAnimate,
-                {
-                    toValue: calcLeft,
-                    duration: 400,
-                }
-            ).start()
-        })
-    }, [translateYAnimate])
+        console.log("tabListInfo",tabListInfo,"index",index)
+        let array=tabListInfo.slice(0,index)
+        let _array=array.map(item=>item.width)
+        let totalWidth=_array.reduce((total,x)=>{
+            return total+x
+        },0)
+        console.log("tabListInfo[index].x",totalWidth)
+        let calcLeft = totalWidth + (tabListInfo[index].width - lineWidth) / 2
+        Animated.timing(
+            translateYAnimate,
+            {
+                toValue: calcLeft,
+                duration: 400,
+            }
+        ).start()
+    }, [translateYAnimate, tabListInfo])
     return (
         <>
             <TouchableHighlight style={{ flex: 1 }} underlayColor="#fff" onPress={() => setAddressPopupFlag(false)}>
@@ -106,9 +120,7 @@ const AddressViewPager = memo((props) => {
         switch (pageIndex) {
             case 0:
                 setAddressSelectItem([item])
-                setTimeout(() => {
-                    viewPageSwitch(1)
-                }, 0)
+                viewPageSwitch(1)
                 break
             case 1:
                 setAddressSelectItem((addressSelectItem) => [addressSelectItem[0], item])
@@ -162,7 +174,7 @@ const Tab = memo((props) => {
         const { tabListRefs } = useContext(Context)
         const { item, index } = props
         return (
-            <View style={style.tabItem} ref={tabListRefs[index]}>
+            <View style={style.tabItem} onLayout={params=>tabListRefs[index](params,index)}>
                 <Text style={style.tabTitle}>{item.value == -1 ? '请选择' : item.text}</Text>
             </View>
         )
@@ -179,7 +191,7 @@ const Tab = memo((props) => {
                     </TouchableHighlight>
                 )
             })}
-            <Animated.View ref={lineRef} style={[style.lineWrap, { left: translateYAnimate }]}>
+            <Animated.View onLayout={lineRef} style={[style.lineWrap, { left: translateYAnimate }]}>
                 <LinearGradient useAngle={true} angle={90} colors={["#f2140c", "#fff"]} style={style.line}></LinearGradient>
             </Animated.View>
         </View>

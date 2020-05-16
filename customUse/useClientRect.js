@@ -21,3 +21,21 @@ export function useNodeListRect(length) {
     }, [rect]))
     return [rect, ref];
 }
+export function useNodeDiffListRect(length) {
+    const [rect, setRect] = useState(new Array(length).fill(null));
+    const ref = new Array(length).fill(null).map((item, index) => useCallback(({ nativeEvent: { layout: { x, y, width, height } } },_index) => {
+        if(rect[_index]){
+            return
+        }
+        setRect(rect=>rect.map((item,index)=>{
+            if(index==_index){
+                return { x, y, width, height }
+            }
+            else{
+                return item
+            }
+        }));
+    }, [rect]))
+    console.log("rect",rect)
+    return [rect, ref];
+}
