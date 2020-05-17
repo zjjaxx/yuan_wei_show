@@ -9,6 +9,8 @@ import { useNodeRect, useNodeDiffListRect } from "../customUse/useClientRect"
 
 const Context = createContext()
 function AddressPopup(props) {
+    const [tabFlag, setTabFlag] = useState(false)
+    const [tabIndex, setTabIndex] = useState(0)
     //地址弹窗flag
     const { setAddressPopupFlag, addressData, addressSelectItem, setAddressSelectItem } = props
     const _addressSelectItem = () => {
@@ -28,21 +30,18 @@ function AddressPopup(props) {
     //地址句柄
     const scrollTabRef = useRef()
     useEffect(() => {
-        let flag=false
-        addressSelectItem.forEach((element,index) => {
-            if(!tabListInfo[index]){
-                flag=true
-            }
-        });
-        if(flag){
+        let index = addressSelectItem.length == tabListInfo.length ? addressSelectItem.length - 1 : addressSelectItem.length
+        let array = tabListInfo.slice(0, index + 1)
+        if (array.includes(null) || !lineInfo || !scrollTabRef.current) {
             return
         }
-        let index=addressSelectItem.length==tabListInfo.length?addressSelectItem.length-1:addressSelectItem.length
-        if (lineInfo&&tabListInfo&&tabListInfo[index]&&scrollTabRef.current) {
-            animationEvent(index, lineInfo.width)
-            viewPageSwitch(addressSelectItem.length)
+        if (!tabFlag) {
+            viewPageSwitch(index)
+            setTabIndex(index)
+            setTabFlag(true)
         }
-    }, [addressSelectItem, lineInfo,tabListInfo])
+        animationEvent()
+    }, [addressSelectItem, tabListInfo, lineInfo, tabIndex, tabFlag])
     const flatListData = useCallback((index) => {
         const { areaList, cityList, provinceList } = addressData
         switch (index) {
@@ -58,22 +57,18 @@ function AddressPopup(props) {
     }, [addressSelectItem])
     //tab切换
     const tabChange = useCallback(({ i, from }) => {
-        if(tabListInfo&&tabListInfo[i]){
-            animationEvent(i, lineInfo.width)
-        }
-    }, [lineInfo,tabListInfo])
+        setTabIndex(i)
+    }, [])
     const viewPageSwitch = useCallback((i) => {
         scrollTabRef.current.goToPage(i)
     }, [])
-    const animationEvent = useCallback((index, lineWidth = 0) => {
-        console.log("tabListInfo",tabListInfo,"index",index)
-        let array=tabListInfo.slice(0,index)
-        let _array=array.map(item=>item.width)
-        let totalWidth=_array.reduce((total,x)=>{
-            return total+x
-        },0)
-        console.log("tabListInfo[index].x",totalWidth)
-        let calcLeft = totalWidth + (tabListInfo[index].width - lineWidth) / 2
+    const animationEvent = useCallback(() => {
+        let array = tabListInfo.slice(0, tabIndex)
+        let _array = array.map(item => item.width)
+        let totalWidth = _array.reduce((total, x) => {
+            return total + x
+        }, 0)
+        let calcLeft = totalWidth + (tabListInfo[tabIndex].width - lineInfo.width) / 2
         Animated.timing(
             translateYAnimate,
             {
@@ -81,7 +76,7 @@ function AddressPopup(props) {
                 duration: 400,
             }
         ).start()
-    }, [translateYAnimate, tabListInfo])
+    }, [translateYAnimate, tabListInfo, lineInfo, tabIndex])
     return (
         <>
             <TouchableHighlight style={{ flex: 1 }} underlayColor="#fff" onPress={() => setAddressPopupFlag(false)}>
@@ -97,6 +92,7 @@ function AddressPopup(props) {
                 </View>
                 <Context.Provider value={{
                     scrollTabRef,
+                    setTabIndex,
                     setAddressSelectItem,
                     _addressSelectItem,
                     viewPageSwitch,
@@ -114,19 +110,23 @@ function AddressPopup(props) {
     )
 }
 const AddressViewPager = memo((props) => {
-    const { _addressSelectItem, flatListData, setAddressSelectItem, scrollTabRef, tabChange, setAddressPopupFlag, viewPageSwitch } = useContext(Context)
+    const { _addressSelectItem, flatListData, setAddressSelectItem, scrollTabRef, setTabIndex, tabChange, setAddressPopupFlag, viewPageSwitch } = useContext(Context)
 
     const setAddressItem = useCallback((pageIndex, index, item) => {
         switch (pageIndex) {
             case 0:
                 setAddressSelectItem([item])
-                viewPageSwitch(1)
+                setTimeout(() => {
+                    viewPageSwitch(1)
+                    setTabIndex(1)
+                })
                 break
             case 1:
                 setAddressSelectItem((addressSelectItem) => [addressSelectItem[0], item])
                 setTimeout(() => {
                     viewPageSwitch(2)
-                }, 0)
+                    setTabIndex(2)
+                })
                 break
             case 2:
                 setAddressSelectItem((addressSelectItem) => [addressSelectItem[0], addressSelectItem[1], item])
@@ -135,7 +135,7 @@ const AddressViewPager = memo((props) => {
             default:
                 break
         }
-    }, [])
+    }, [_addressSelectItem])
 
     const AddressItem = (props) => {
         const { item, isSelected } = props
@@ -169,18 +169,19 @@ const AddressViewPager = memo((props) => {
     )
 })
 const Tab = memo((props) => {
-    const { translateYAnimate, viewPageSwitch, lineRef, _addressSelectItem } = useContext(Context)
+    const { translateYAnimate, viewPageSwitch, lineRef, _addressSelectItem, setTabIndex } = useContext(Context)
     const TabItem = memo((props) => {
         const { tabListRefs } = useContext(Context)
         const { item, index } = props
         return (
-            <View style={style.tabItem} onLayout={params=>tabListRefs[index](params,index)}>
+            <View style={style.tabItem} onLayout={params => tabListRefs[index](params, index)}>
                 <Text style={style.tabTitle}>{item.value == -1 ? '请选择' : item.text}</Text>
             </View>
         )
     })
     const tabPress = useCallback((index) => {
         viewPageSwitch(index)
+        setTabIndex(index)
     }, [])
     return (
         <View style={style.tabWrap}>
