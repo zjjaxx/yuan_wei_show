@@ -59,7 +59,23 @@ function OrderStatus({ navigation }) {
                     </View>
                 </View>
                 <ProductItem></ProductItem>
-                <View style={{height:scaleHeight(1000)}}></View>
+                <View style={style.orderInfoWrap}>
+                    <View style={style.orderInfoItem}>
+                        <Text style={style.orderLabel}>订单编号: </Text>
+                        <Text style={style.orderItemContent}>12064393260</Text>
+                        <TouchableHighlight style={style.copy} underlayColor="#fff" onPress={()=>{}}>
+                            <Text style={style.copyText}>复制</Text>
+                        </TouchableHighlight>
+                    </View>
+                    <View style={[style.orderInfoItem,style.mt10]}>
+                        <Text style={style.orderLabel}>下单时间: </Text>
+                        <Text style={style.orderItemContent}>2020-05-17 17:19:23</Text>
+                    </View>
+                    <View style={[style.orderInfoItem,style.mt10]}>
+                        <Text style={style.orderLabel}>配送方式: </Text>
+                        <Text style={style.orderItemContent}>京东配送</Text>
+                    </View>
+                </View>
             </ScrollView>
         </View>
     )
@@ -209,5 +225,40 @@ const style = StyleSheet.create({
     productWrap: {
         marginTop: scaleHeight(10),
         backgroundColor: "#fff"
+    },
+    orderInfoWrap:{
+        marginTop:scaleHeight(10),
+        paddingVertical:scaleHeight(10),
+        paddingHorizontal:scaleSize(10),
+        backgroundColor:"#fff"
+    },
+    orderInfoItem:{
+        flexDirection:"row",
+        alignItems:"center"
+    },
+    orderLabel:{
+        width:scaleSize(80),
+        fontSize:setSpText2(14),
+        color:"#999"
+    },
+    orderItemContent:{
+        fontSize:setSpText2(14),
+        color:"#333",
+        fontWeight:"500"
+    },
+    mt10:{
+        marginTop:scaleHeight(10)
+    },
+    copy:{
+        marginLeft:scaleSize(20),
+        borderRadius:scaleSize(10),
+        paddingHorizontal:scaleSize(5),
+        paddingVertical:scaleHeight(2),
+        backgroundColor:"#eee",
+        alignItems:"center",
+        justifyContent:"center"
+    },
+    copyText:{
+        fontSize:setSpText2(12)
     }
 })
