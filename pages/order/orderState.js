@@ -77,6 +77,14 @@ function OrderStatus({ navigation }) {
                     </View>
                 </View>
             </ScrollView>
+            <View style={style.bottomBar}>
+                <TouchableHighlight style={style.payWrap} underlayColor="#fff" onPress={()=>{}}>
+                    <Text style={style.toPayText}>去支付</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={style.cancelPayWrap} underlayColor="#fff" onPress={()=>{}}>
+                    <Text style={style.cancelPay}>取消订单</Text>
+                </TouchableHighlight>
+            </View>
         </View>
     )
 }
@@ -260,5 +268,10 @@ const style = StyleSheet.create({
     },
     copyText:{
         fontSize:setSpText2(12)
+    },
+    bottomBar:{
+        paddingVertical:scaleHeight(10),
+        flexDirection:"row",
+        paddingHorizontal:scaleSize(10)
     }
 })
