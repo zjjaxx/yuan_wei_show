@@ -1,15 +1,13 @@
-import React, { useMemo, memo, useState, useCallback, useRef, useEffect, createContext, useContext } from "react"
-import { View, Text, StyleSheet, Image, TouchableHighlight, FlatList, ScrollView, Animated } from "react-native"
+import React, { memo, useState, useCallback, useRef, useEffect, createContext, useContext } from "react"
+import { View, Text, StyleSheet, Image, TouchableHighlight, FlatList } from "react-native"
 //渐变
 import LinearGradient from 'react-native-linear-gradient';
 import { scaleHeight, scaleSize, setSpText2 } from "../utils/ScreenUtil";
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import { getNodeInfo } from "../utils/common"
-import { useNodeRect, useNodeDiffListRect } from "../customUse/useClientRect"
+
 
 const Context = createContext()
 function AddressPopup(props) {
-    const [tabFlag, setTabFlag] = useState(false)
     const [tabIndex, setTabIndex] = useState(0)
     //地址弹窗flag
     const { setAddressPopupFlag, addressData, addressSelectItem, setAddressSelectItem } = props
@@ -21,27 +19,16 @@ function AddressPopup(props) {
             return addressSelectItem
         }
     }
-    const [translateYAnimate] = useState(new Animated.Value(0))
-    //tablist ref
-    // const tabListRefs = useMemo(() => [1, 2, 3].map(item => React.createRef()), []) || [];
-    const [tabListInfo, tabListRefs] = useNodeDiffListRect(3)
-    const [lineInfo, lineRef] = useNodeRect()
-    // const lineRef = useRef()
     //地址句柄
     const scrollTabRef = useRef()
     useEffect(() => {
-        let index = addressSelectItem.length == tabListInfo.length ? addressSelectItem.length - 1 : addressSelectItem.length
-        let array = tabListInfo.slice(0, index + 1)
-        if (array.includes(null) || !lineInfo || !scrollTabRef.current) {
+        let index = addressSelectItem.length == 3 ? addressSelectItem.length - 1 : addressSelectItem.length
+        if (!scrollTabRef.current) {
             return
         }
-        if (!tabFlag) {
-            viewPageSwitch(index)
-            setTabIndex(index)
-            setTabFlag(true)
-        }
-        animationEvent()
-    }, [addressSelectItem, tabListInfo, lineInfo, tabIndex, tabFlag])
+        setTimeout(() => viewPageSwitch(index))
+        setTabIndex(index)
+    }, [addressSelectItem])
     const flatListData = useCallback((index) => {
         const { areaList, cityList, provinceList } = addressData
         switch (index) {
@@ -62,21 +49,6 @@ function AddressPopup(props) {
     const viewPageSwitch = useCallback((i) => {
         scrollTabRef.current.goToPage(i)
     }, [])
-    const animationEvent = useCallback(() => {
-        let array = tabListInfo.slice(0, tabIndex)
-        let _array = array.map(item => item.width)
-        let totalWidth = _array.reduce((total, x) => {
-            return total + x
-        }, 0)
-        let calcLeft = totalWidth + (tabListInfo[tabIndex].width - lineInfo.width) / 2
-        Animated.timing(
-            translateYAnimate,
-            {
-                toValue: calcLeft,
-                duration: 400,
-            }
-        ).start()
-    }, [translateYAnimate, tabListInfo, lineInfo, tabIndex])
     return (
         <>
             <TouchableHighlight style={{ flex: 1 }} underlayColor="#fff" onPress={() => setAddressPopupFlag(false)}>
@@ -93,14 +65,12 @@ function AddressPopup(props) {
                 <Context.Provider value={{
                     scrollTabRef,
                     setTabIndex,
+                    tabIndex,
                     setAddressSelectItem,
                     _addressSelectItem,
                     viewPageSwitch,
-                    tabListRefs,
                     flatListData,
                     tabChange,
-                    translateYAnimate,
-                    lineRef,
                     setAddressPopupFlag
                 }}>
                     <AddressViewPager></AddressViewPager>
@@ -116,17 +86,17 @@ const AddressViewPager = memo((props) => {
         switch (pageIndex) {
             case 0:
                 setAddressSelectItem([item])
-                setTimeout(() => {
-                    viewPageSwitch(1)
-                    setTabIndex(1)
-                })
+                // setTimeout(() => {
+                //     viewPageSwitch(1)
+                //     setTabIndex(1)
+                // })
                 break
             case 1:
                 setAddressSelectItem((addressSelectItem) => [addressSelectItem[0], item])
-                setTimeout(() => {
-                    viewPageSwitch(2)
-                    setTabIndex(2)
-                })
+                // setTimeout(() => {
+                //     viewPageSwitch(2)
+                //     setTabIndex(2)
+                // })
                 break
             case 2:
                 setAddressSelectItem((addressSelectItem) => [addressSelectItem[0], addressSelectItem[1], item])
@@ -169,13 +139,14 @@ const AddressViewPager = memo((props) => {
     )
 })
 const Tab = memo((props) => {
-    const { translateYAnimate, viewPageSwitch, lineRef, _addressSelectItem, setTabIndex } = useContext(Context)
+    const { viewPageSwitch, _addressSelectItem, setTabIndex } = useContext(Context)
     const TabItem = memo((props) => {
-        const { tabListRefs } = useContext(Context)
+        const { tabIndex } = useContext(Context)
         const { item, index } = props
         return (
-            <View style={style.tabItem} onLayout={params => tabListRefs[index](params, index)}>
+            <View style={style.tabItem}>
                 <Text style={style.tabTitle}>{item.value == -1 ? '请选择' : item.text}</Text>
+                {index == tabIndex ? <LinearGradient useAngle={true} angle={90} colors={["#f2140c", "#fff"]} style={style.line}></LinearGradient> : null}
             </View>
         )
     })
@@ -192,9 +163,6 @@ const Tab = memo((props) => {
                     </TouchableHighlight>
                 )
             })}
-            <Animated.View onLayout={lineRef} style={[style.lineWrap, { left: translateYAnimate }]}>
-                <LinearGradient useAngle={true} angle={90} colors={["#f2140c", "#fff"]} style={style.line}></LinearGradient>
-            </Animated.View>
         </View>
     )
 })
@@ -248,15 +216,20 @@ const style = StyleSheet.create({
         flexDirection: "row",
     },
     tabItem: {
+        position: "relative",
         paddingHorizontal: scaleSize(10),
         fontSize: setSpText2(14),
-        height: scaleHeight(30),
+        height: scaleHeight(20),
     },
     lineWrap: {
         position: "absolute",
         bottom: 0,
     },
     line: {
+        position: "absolute",
+        bottom: 0,
+        left: "50%",
+        // transform:[{translateX:-scaleSize(12.5)}],
         width: scaleSize(25),
         height: scaleHeight(3),
         borderRadius: scaleSize(2.5)
