@@ -5,13 +5,13 @@ import Header from "../../components/Header"
 //渐变
 import LinearGradient from 'react-native-linear-gradient';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import { getNodeInfo } from "../../utils/common"
 import { useNodeRect, useNodeListRect } from "../../customUse/useClientRect"
 const Context = createContext()
 function OrderList({ navigation }) {
     const [lineRectInfo, lineRef] = useNodeRect()
     const [tabListRectInfo, tabListRefs] = useNodeListRect(5)
-    const [orderStatus] = useState(["全部", "待付款", "待收货", "待评价", "已完成"])
+    const [orderStatus] = useState(["全部", "待付款", "待收货", "已完成"])
+    const [tabIndex, setTabIndex] = useState(0)
     const [translateYAnimate] = useState(new Animated.Value(0))
     const scrollTabRef = useRef()
     useEffect(() => {
@@ -32,6 +32,7 @@ function OrderList({ navigation }) {
     }, [])
     //tab切换
     const tabChange = useCallback(({ i, from }) => {
+        setTabIndex(i)
         _animationEvent(i, lineRectInfo.width, tabListRectInfo.width)
     }, [lineRectInfo, tabListRectInfo])
     const _animationEvent = useCallback((index, lineWidth, tabItemWidth) => {
@@ -56,6 +57,7 @@ function OrderList({ navigation }) {
                     tabChange,
                     translateYAnimate,
                     lineRef,
+                    tabIndex
                 }}>
                     <ScrollableTabView
                         ref={scrollTabRef}
@@ -111,6 +113,7 @@ const Tab = memo((props) => {
 })
 const OrderItem = memo((props) => {
     const { index, item, toOrderStatus } = props
+    const {tabIndex}=useContext(Context)
     return (
         <TouchableHighlight key={index} underlayColor="#fff" onPress={() => toOrderStatus()}>
             <View style={style.orderItemWrap}>
@@ -129,14 +132,45 @@ const OrderItem = memo((props) => {
                         <Text style={style.productNum}>共五件</Text>
                     </View>
                 </View>
-                <View style={style.orderBottomWrap}>
-                    <TouchableHighlight style={style.remainPay} underlayColor="#fff" onPress={() => { }}>
-                        <Text style={style.remainPayText}>待付款</Text>
-                    </TouchableHighlight>
-                </View>
+                <BottomBar type={tabIndex}></BottomBar>
             </View>
-        </TouchableHighlight>
+        </TouchableHighlight >
     )
+})
+const BottomBar = memo((props) => {
+    const { type } = props
+    const _renderItem=()=>{
+        switch (type) {
+            case 1:
+                return (
+                    <View style={style.orderBottomWrap}>
+                        <TouchableHighlight style={style.remainPay} underlayColor="#fff" onPress={() => { }}>
+                            <Text style={style.remainPayText}>去支付</Text>
+                        </TouchableHighlight>
+                    </View>
+                )
+            case 2:
+                return (
+                    <View style={style.orderBottomWrap}>
+                        <TouchableHighlight style={style.delivery} underlayColor="#fff" onPress={() => { }}>
+                            <Text style={style.deliveryText}>查看物流</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight style={style.remainPay} underlayColor="#fff" onPress={() => { }}>
+                            <Text style={style.remainPayText}>确认收货</Text>
+                        </TouchableHighlight>
+                    </View>
+                )
+            case 3:
+                return (<View style={style.orderBottomWrap}>
+                    <TouchableHighlight style={style.remainPay} underlayColor="#fff" onPress={() => { }}>
+                        <Text style={style.remainPayText}>谢谢惠顾</Text>
+                    </TouchableHighlight>
+                </View>)
+            default:
+                return null
+        }
+    }
+    return _renderItem()
 })
 export default OrderList
 const style = StyleSheet.create({
@@ -248,5 +282,19 @@ const style = StyleSheet.create({
     remainPayText: {
         fontSize: setSpText2(12),
         color: "#f2140c"
+    },
+    delivery: {
+        marginRight:scaleSize(10),
+        width: scaleSize(70),
+        height: scaleHeight(20),
+        borderRadius: scaleSize(15),
+        alignItems: "center",
+        justifyContent: "center",
+        borderWidth: scaleSize(0.5),
+        borderColor: "#999"
+    },
+    deliveryText: {
+        fontSize: setSpText2(12),
+        color: "#333"
     }
 })

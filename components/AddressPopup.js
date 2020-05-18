@@ -86,17 +86,9 @@ const AddressViewPager = memo((props) => {
         switch (pageIndex) {
             case 0:
                 setAddressSelectItem([item])
-                // setTimeout(() => {
-                //     viewPageSwitch(1)
-                //     setTabIndex(1)
-                // })
                 break
             case 1:
                 setAddressSelectItem((addressSelectItem) => [addressSelectItem[0], item])
-                // setTimeout(() => {
-                //     viewPageSwitch(2)
-                //     setTabIndex(2)
-                // })
                 break
             case 2:
                 setAddressSelectItem((addressSelectItem) => [addressSelectItem[0], addressSelectItem[1], item])

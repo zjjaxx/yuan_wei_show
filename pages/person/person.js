@@ -3,7 +3,7 @@ import { View, Text, Button, SafeAreaView, StyleSheet, Image, TouchableHighlight
 import { connect } from "react-redux"
 import { logout } from "../../store/action"
 import { scaleHeight, scaleSize, setSpText2 } from "../../utils/ScreenUtil"
-function Person({ dispatch,navigation }) {
+function Person({ dispatch, navigation }) {
     const _logout = useCallback(() => {
         dispatch(logout())
     }, [dispatch])
@@ -38,7 +38,7 @@ function Person({ dispatch,navigation }) {
                         <Text style={style.menuTitle}>卡券</Text>
                     </View>
                 </View>
-                <TouchableHighlight underlayColor="#fff"  onPress={() => navigation.navigate("orderList")}>
+                <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate("orderList")}>
                     <View style={style.menuListItem}>
                         <Image style={style.menuListIcon} source={require("../../assets/imgs/order.png")}></Image>
                         <Text style={style.menuListText}>我的订单</Text>
@@ -55,11 +55,13 @@ function Person({ dispatch,navigation }) {
                     <Text style={style.menuListText}>我的出售</Text>
                     <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right.png")}></Image>
                 </View>
-                <View style={style.menuListItem}>
-                    <Image style={style.menuListIcon} source={require("../../assets/imgs/location.png")}></Image>
-                    <Text style={style.menuListText}>地址管理</Text>
-                    <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right.png")}></Image>
-                </View>
+                <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate("addressList")}>
+                    <View style={style.menuListItem}>
+                        <Image style={style.menuListIcon} source={require("../../assets/imgs/location.png")}></Image>
+                        <Text style={style.menuListText}>地址管理</Text>
+                        <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right.png")}></Image>
+                    </View>
+                </TouchableHighlight>
                 <TouchableHighlight style={style.logout} underlayColor="#fca413" onPress={_logout}>
                     <Text style={style.logoutText}>退出登录</Text>
                 </TouchableHighlight>

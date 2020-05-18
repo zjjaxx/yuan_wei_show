@@ -19,6 +19,7 @@ import CategoriesScreen from "../pages/publish/categories"
 import AddressListScreen from "../pages/address/addressList"
 import OrderListScreen from "../pages/order/orderList"
 import OrderStautsScreen from "../pages/order/orderState"
+import DeliveryScreen from "../pages/order/delivery"
 import { connect } from "react-redux"
 import { asyncToken } from "../store/action"
 //tab 路由容器
@@ -80,6 +81,7 @@ function AppStackScreen({ isLoading, isLogin, dispatch }) {
                         <AppStack.Screen name="editAddress" component={EditAddressScreen} ></AppStack.Screen>
                         <AppStack.Screen name="orderList" component={OrderListScreen} ></AppStack.Screen>
                         <AppStack.Screen name="orderState" component={OrderStautsScreen}></AppStack.Screen>
+                        <AppStack.Screen name="delivery" component={DeliveryScreen}></AppStack.Screen>
                     </>
                 ) : (
                         <>
