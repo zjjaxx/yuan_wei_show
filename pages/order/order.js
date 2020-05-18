@@ -29,6 +29,7 @@ function Order({ navigation }) {
                             <Text style={style.userInfo}>绿灯 17855845874</Text>
                         </View>
                         <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right-gray.png")}></Image>
+                        <Image style={style.bar} source={require("../../assets/imgs/baba.png")}></Image>
                     </View>
                 </TouchableHighlight>
                 <ProductItem></ProductItem>
@@ -82,13 +83,19 @@ const style = StyleSheet.create({
     },
  
     addressWrap: {
+        position:"relative",
         paddingHorizontal: scaleSize(10),
         paddingVertical: scaleHeight(20),
         backgroundColor: "#fff",
         flexDirection:"row",
         alignItems:"center",
-        borderBottomWidth:scaleHeight(10),
-        borderColor:"#fca413"
+    },
+    bar:{
+        position:"absolute",
+        bottom:0,
+        left:scaleSize(10),
+        width:"100%",
+        height:scaleHeight(4)
     },
     addressInfoWrap: {
         marginRight:scaleSize(20),

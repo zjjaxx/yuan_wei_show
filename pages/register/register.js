@@ -78,9 +78,9 @@ function Login({ dispatch, navigation }) {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <ScrollView style={style.container}>
-                <BoxShadow setting={shadowOpt}>
+                {/* <BoxShadow setting={shadowOpt}> */}
                     <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/yuanwei.png")}></Image>
-                </BoxShadow>
+                {/* </BoxShadow> */}
                 <Formik
                     initialValues={{ phone: '', password: "", confirmPassword: "", qcode: "" }}
                     onSubmit={values => setLogin(values)}
@@ -182,9 +182,11 @@ const style = StyleSheet.create({
         backgroundColor: "#fff",
     },
     logo: {
-        width: scaleSize(90),
-        height: scaleHeight(90),
-        borderRadius: scaleSize(15)
+        marginTop: scaleSize(40),
+        width: scaleSize(80),
+        height: scaleSize(80),
+        borderRadius: scaleSize(15),
+        borderWidth:0
     },
     formWrap: {
         marginTop: scaleSize(30)
