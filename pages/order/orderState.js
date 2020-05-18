@@ -75,14 +75,26 @@ function OrderStatus({ navigation }) {
                         <Text style={style.orderLabel}>配送方式: </Text>
                         <Text style={style.orderItemContent}>京东配送</Text>
                     </View>
+                    <View style={[style.orderInfoItem,style.productPrice]}>
+                        <Text style={style.orderLabel}>商品总额: </Text>
+                        <Text style={style.orderItemContent}>￥14.90</Text>
+                    </View>
+                    <View style={[style.orderInfoItem,style.deliveryFee]}>
+                        <Text style={style.orderLabel}>运费: </Text>
+                        <Text style={style.orderItemContent}>+￥0.00</Text>
+                    </View>
+                    <View style={style.totalPay}>
+                        <Text style={style.needPay}>需付款:<Text style={style.totalPrice}>￥14</Text><Text style={style.totalPriceTail}>.90</Text></Text>
+                    </View>
                 </View>
+                <View style={{height:scaleHeight(300)}}></View>
             </ScrollView>
             <View style={style.bottomBar}>
-                <TouchableHighlight style={style.payWrap} underlayColor="#fff" onPress={()=>{}}>
-                    <Text style={style.toPayText}>去支付</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={style.cancelPayWrap} underlayColor="#fff" onPress={()=>{}}>
+                <TouchableHighlight style={style.bottomCancelWrap} underlayColor="#fff" onPress={()=>{}}>
                     <Text style={style.cancelPay}>取消订单</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={style.bottomPayWrap} underlayColor="#f2140c" onPress={()=>{}}>
+                    <Text style={style.toPayText}>去支付</Text>
                 </TouchableHighlight>
             </View>
         </View>
@@ -247,7 +259,7 @@ const style = StyleSheet.create({
     orderLabel:{
         width:scaleSize(80),
         fontSize:setSpText2(14),
-        color:"#999"
+        color:"#333"
     },
     orderItemContent:{
         fontSize:setSpText2(14),
@@ -256,6 +268,14 @@ const style = StyleSheet.create({
     },
     mt10:{
         marginTop:scaleHeight(10)
+    },
+    productPrice:{
+        marginTop:scaleHeight(15),
+        justifyContent:"space-between"
+    },
+    deliveryFee:{
+        marginTop:scaleHeight(15),
+        justifyContent:"space-between"
     },
     copy:{
         marginLeft:scaleSize(20),
@@ -270,8 +290,56 @@ const style = StyleSheet.create({
         fontSize:setSpText2(12)
     },
     bottomBar:{
-        paddingVertical:scaleHeight(10),
+        paddingTop:scaleHeight(10),
+        paddingBottom:scaleHeight(30),
         flexDirection:"row",
+        justifyContent:"flex-end",
+        backgroundColor:"#fff",
         paddingHorizontal:scaleSize(10)
+    },
+    totalPay:{
+        marginTop:scaleHeight(10),
+        flexDirection:"row",
+        justifyContent:"flex-end",
+        alignItems:"flex-end"
+    },
+    needPay:{
+        fontSize:setSpText2(12),
+        color:"#333"
+    },
+    totalPrice:{
+        color:"#f2140c",
+        fontSize:setSpText2(14),
+    },
+    totalPriceTail:{
+        color:"#f2140c",
+        fontSize:setSpText2(12),
+    },
+    bottomPayWrap:{
+        width:scaleSize(80),
+        height:scaleHeight(25),
+        borderRadius:scaleSize(15),
+        justifyContent:"center",
+        alignItems:"center",
+        backgroundColor:"#f2140c"
+    },
+    toPayText:{
+        color:"#fff",
+        fontSize:setSpText2(12)
+    },
+    bottomCancelWrap:{
+        marginRight:scaleSize(10),
+        width:scaleSize(80),
+        height:scaleHeight(25),
+        borderRadius:scaleSize(15),
+        justifyContent:"center",
+        alignItems:"center",
+        backgroundColor:"#fff",
+        borderWidth:scaleSize(0.5),
+        borderColor:"#999"
+    },
+    cancelPay:{
+        color:"#333",
+        fontSize:setSpText2(12)
     }
 })
