@@ -1,4 +1,4 @@
-import React, {  memo, useState, useCallback, useRef, useEffect, createContext, useContext } from "react"
+import React, { memo, useState, useCallback, useRef, useEffect, createContext, useContext } from "react"
 import { View, Text, StyleSheet, Image, TouchableHighlight, FlatList } from "react-native"
 //渐变
 import LinearGradient from 'react-native-linear-gradient';
@@ -22,12 +22,13 @@ function AddressPopup(props) {
     //地址句柄
     const scrollTabRef = useRef()
     useEffect(() => {
+        let index = addressSelectItem.length == 3 ? addressSelectItem.length - 1 : addressSelectItem.length
         if (!scrollTabRef.current) {
             return
         }
-        viewPageSwitch(index)
+        setTimeout(() => viewPageSwitch(index))
         setTabIndex(index)
-    }, [])
+    }, [addressSelectItem])
     const flatListData = useCallback((index) => {
         const { areaList, cityList, provinceList } = addressData
         switch (index) {
@@ -85,17 +86,17 @@ const AddressViewPager = memo((props) => {
         switch (pageIndex) {
             case 0:
                 setAddressSelectItem([item])
-                setTimeout(() => {
-                    viewPageSwitch(1)
-                    setTabIndex(1)
-                })
+                // setTimeout(() => {
+                //     viewPageSwitch(1)
+                //     setTabIndex(1)
+                // })
                 break
             case 1:
                 setAddressSelectItem((addressSelectItem) => [addressSelectItem[0], item])
-                setTimeout(() => {
-                    viewPageSwitch(2)
-                    setTabIndex(2)
-                })
+                // setTimeout(() => {
+                //     viewPageSwitch(2)
+                //     setTabIndex(2)
+                // })
                 break
             case 2:
                 setAddressSelectItem((addressSelectItem) => [addressSelectItem[0], addressSelectItem[1], item])
@@ -138,14 +139,14 @@ const AddressViewPager = memo((props) => {
     )
 })
 const Tab = memo((props) => {
-    const {  viewPageSwitch,  _addressSelectItem, setTabIndex } = useContext(Context)
+    const { viewPageSwitch, _addressSelectItem, setTabIndex } = useContext(Context)
     const TabItem = memo((props) => {
-        const { tabListRefs,tabIndex } = useContext(Context)
+        const { tabIndex } = useContext(Context)
         const { item, index } = props
         return (
-            <View style={style.tabItem} onLayout={params => tabListRefs[index](params, index)}>
+            <View style={style.tabItem}>
                 <Text style={style.tabTitle}>{item.value == -1 ? '请选择' : item.text}</Text>
-                {index==tabIndex?<LinearGradient useAngle={true} angle={90} colors={["#f2140c", "#fff"]} style={style.line}></LinearGradient>:null}
+                {index == tabIndex ? <LinearGradient useAngle={true} angle={90} colors={["#f2140c", "#fff"]} style={style.line}></LinearGradient> : null}
             </View>
         )
     })
@@ -215,7 +216,7 @@ const style = StyleSheet.create({
         flexDirection: "row",
     },
     tabItem: {
-        position:"relative",
+        position: "relative",
         paddingHorizontal: scaleSize(10),
         fontSize: setSpText2(14),
         height: scaleHeight(20),
@@ -225,9 +226,9 @@ const style = StyleSheet.create({
         bottom: 0,
     },
     line: {
-        position:"absolute",
-        bottom:0,
-        left:"50%",
+        position: "absolute",
+        bottom: 0,
+        left: "50%",
         // transform:[{translateX:-scaleSize(12.5)}],
         width: scaleSize(25),
         height: scaleHeight(3),
