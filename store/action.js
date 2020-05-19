@@ -2,8 +2,8 @@ import { TOKEN_KEY, getLocalStorage, setLocalStorage } from "../utils/common"
 export const SET_LOGIN = "SET_LOGIN"
 export const SET_LOADING = "SET_LOADING"
 export const SET_TOKEN = "SET_TOKEN"
-
-
+export const SET_WEBSOCKET = "SET_WEBSOCKET"
+import {wsURL} from "../utils/config"
 
 export function asyncToken() {
     return (dispatch, getState) => {
@@ -55,4 +55,26 @@ export function logout() {
         })
     }
 
+}
+export function initWebSocket() {
+    return (dispatch, getState) => {
+        const ws = new WebSocket(wsURL);
+        ws.onopen = () => {
+            console.log("open")
+            dispatch({
+                type:SET_WEBSOCKET,
+                payload:ws
+            })
+        };
+        ws.onmessage = (e) => {
+            console.log(e.data);
+        };
+        ws.onerror = (e) => {
+            console.log(e.message);
+        };
+
+        ws.onclose = (e) => {
+            console.log(e.code, e.reason);
+        };
+    }
 }

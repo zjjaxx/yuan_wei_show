@@ -31,5 +31,17 @@ export default {
             default:
                 return state
         }
+    },
+    webSocket(state=null,action){
+        const { type, payload } = action
+        switch (type) {
+            case SET_LOGIN:
+                return payload
+            default:
+                return state
+        }
+    },
+    device_code(state=8,action){
+        return 8
     }
 }

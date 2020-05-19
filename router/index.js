@@ -22,7 +22,7 @@ import OrderListScreen from "../pages/order/orderList"
 import OrderStautsScreen from "../pages/order/orderState"
 import DeliveryScreen from "../pages/order/delivery"
 import { connect } from "react-redux"
-import { asyncToken } from "../store/action"
+import { asyncToken,initWebSocket } from "../store/action"
 //tab 路由容器
 const Tab = createBottomTabNavigator();
 function TabContainer() {
@@ -61,6 +61,7 @@ const AppStack = createStackNavigator()
 function AppStackScreen({ isLoading, isLogin, dispatch }) {
     useEffect(() => {
         dispatch(asyncToken())
+        dispatch(initWebSocket())
     }, [dispatch])
     if (isLoading) {
         return (

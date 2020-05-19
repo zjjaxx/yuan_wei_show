@@ -5,7 +5,9 @@
  * @LastEditTime: 2019-11-15 09:10:35
  */
 import axios from "axios"
-import  Qs from "querystring";
+import Qs from "querystring";
+import { baseURL } from "../utils/config"
+import {showToast} from "../utils/common"
 const instance = axios.create({
     //表单格式
     headers: {
@@ -20,9 +22,7 @@ const instance = axios.create({
         return data;
     }],
 })
-// local.weile999.com
-// https://ces.weile999.com
-instance.defaults.baseURL = "https://ces.weile999.com";
+instance.defaults.baseURL = baseURL;
 instance.defaults.timeout = 10000;
 instance.interceptors.request.use(function (config) {
     // if (store.state.token) {
@@ -36,29 +36,17 @@ instance.interceptors.request.use(function (config) {
 
 // Add a response interceptor
 instance.interceptors.response.use(function (response) {
-    // if (!response.data.msg) {
-    //     Notify(response.data.result)
-    //     if(response.data.result=="手机号码未绑定"){
-    //         router.push({name:"quickLogin",query:{type:2}})
-    //     }
-        
-    //     return Promise.reject(response.data.result);
+    if (!response.data.msg) {
+        showToast(response.data.result)
+        return Promise.reject(response.data.result);
+    }
+    return response;
     // }
-    // else{
-        return response;
-    // }
-  
+
 }, function (error) {
-    // Do something with response error
-    // if (error.response.data.code == 401) {
-    //     store.commit("exit")
-    //     router.replace("/login")
-    // }
-    // else if (error.response.data.code == 403) {
-    //     store.commit("exit")
-    //     router.replace("/login")
-    // }
-    // Toast(error.response.data.result);
+    console.log("response error", error)
+    // Add a Toast on screen.
+    showToast(error.response.data.result)
     return Promise.reject(error.response.data.result);
 });
 

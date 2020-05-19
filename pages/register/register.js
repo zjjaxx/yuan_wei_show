@@ -1,31 +1,45 @@
 import React, { useCallback, useState, useRef, useEffect } from "react"
-import { View, Button, StyleSheet, Image, TextInput, Text, Alert,ScrollView, TouchableOpacity, TouchableHighlight, SafeAreaView, KeyboardAvoidingView } from "react-native"
+import { View, Button, StyleSheet, Image, TextInput, Text, Alert, ScrollView, TouchableOpacity, TouchableHighlight, SafeAreaView, KeyboardAvoidingView } from "react-native"
 import { connect } from "react-redux"
 import { Formik } from 'formik';
 import { login } from "../../store/action"
+import { register, msgCode } from "../../api/api"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import * as yup from "yup"
-//阴影
-import { BoxShadow } from 'react-native-shadow'
-
+import { showToast, encrypt } from "../../utils/common"
 
 const phoneRegExp = /^1[3456789]\d{9}$/
 const passwordRegExp = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
-function Login({ dispatch, navigation }) {
+function Login({ dispatch, navigation, device_code }) {
+    //加密
+    const [key, setKey] = useState("")
+    const [iv, setIv] = useState("")
     //短信验证码
     const [codeState, setCodeState] = useState("获取验证码")
     //倒计时ref
     const timerRef = useRef()
     //登入事件
     const setLogin = useCallback((values) => {
-        dispatch(login("token" + Math.random()))
-    }, [dispatch])
+        console.log("key", key, "iv", iv)
+        let password = encrypt(values.password, key, iv)
+        let confirm_password = encrypt(values.confirm_password, key, iv)
+        register({
+            mobile: values.mobile,
+            password,
+            confirm_password,
+            pid: values.pid,
+            msgCode: values.msgCode,
+            device_code
+        }).then(({ data: { result } }) => {
+            dispatch(login(result.token))
+        })
+    }, [dispatch, key, iv])
     //提交事件
     const _handleSubmit = useCallback((values, errors, handleSubmit) => {
-        if (!(values.qcode && values.phone && values.password && values.confirmPassword)) {
+        if (!(values.msgCode && values.mobile && values.password && values.confirm_password)) {
             return
         }
-        if (values.password != values.confirmPassword) {
+        if (values.password != values.confirm_password) {
             Alert.alert(
                 '提示',
                 "2次输入密码不一致",
@@ -53,8 +67,12 @@ function Login({ dispatch, navigation }) {
         handleSubmit()
     }, [])
     //获取短信验证码
-    const getCode = useCallback(() => {
+    const getCode = useCallback((mobile) => {
         if (codeState != "获取验证码") {
+            return
+        }
+        if (!phoneRegExp.test(mobile)) {
+            showToast("手机格式有误")
             return
         }
         let timeCount = 60
@@ -68,6 +86,10 @@ function Login({ dispatch, navigation }) {
             }
             setCodeState(timeCount + "s")
         }, 1000)
+        msgCode({ mobile }).then(({ data: { result } }) => {
+            setKey(result.key)
+            setIv(result.iv)
+        })
     }, [codeState, timerRef])
     //取消倒计时
     useEffect(() => {
@@ -79,14 +101,14 @@ function Login({ dispatch, navigation }) {
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <ScrollView style={style.container}>
                 {/* <BoxShadow setting={shadowOpt}> */}
-                    <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/yuanwei.png")}></Image>
+                <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/yuanwei.png")}></Image>
                 {/* </BoxShadow> */}
                 <Formik
-                    initialValues={{ phone: '', password: "", confirmPassword: "", qcode: "" }}
+                    initialValues={{ mobile: '', password: "", confirm_password: "", msgCode: "", pid: "" }}
                     onSubmit={values => setLogin(values)}
                     validationSchema={
                         yup.object().shape({
-                            phone: yup
+                            mobile: yup
                                 .string()
                                 .matches(phoneRegExp, '手机格式有误')
                                 .required(),
@@ -94,74 +116,74 @@ function Login({ dispatch, navigation }) {
                                 .string()
                                 .matches(passwordRegExp, "密码必须是6~16位数字和字母组合")
                                 .required(),
-                            confirmPassword: yup
+                            confirm_password: yup
                                 .string()
                                 .matches(passwordRegExp, "密码必须是6~16位数字和字母组合")
                                 .required(),
-                            qcode: yup
+                            msgCode: yup
                                 .string()
                                 .required()
                         })}
                 >
                     {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-                        <View style={style.formWrap}>
-                            <Text style={style.inputTitle}>请输入你的手机号</Text>
-                            <View style={style.inputWrap}>
-                                <TextInput style={style.input}
-                                    onChangeText={handleChange('phone')}
-                                    onBlur={handleBlur('phone')}
-                                    value={values.phone}
-                                />
-                                {values.phone ? <Image style={style.tipIcon} source={errors.phone ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
-                            </View>
-                            <Text style={[style.inputTitle, style.mt10]}>请输入密码</Text>
-                            <View style={style.inputWrap}>
-                                <TextInput
-                                    style={style.input}
-                                    onChangeText={handleChange('password')}
-                                    onBlur={handleBlur('password')}
-                                    value={values.password}
-                                    secureTextEntry={true}
-                                />
-                                {values.password ? <Image style={style.tipIcon} source={errors.password ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
-                            </View>
-                            <Text style={[style.inputTitle, style.mt10]}>请再次输入密码</Text>
-                            <KeyboardAvoidingView behavior="padding" enabled >
+                        <KeyboardAvoidingView behavior="padding" style={{flex:1}} enabled={true} keyboardVerticalOffset={scaleHeight(45)}>
+                            <View style={style.formWrap}>
+                                <Text style={style.inputTitle}>请输入你的手机号</Text>
                                 <View style={style.inputWrap}>
-                                    <TextInput
-                                        style={style.input}
-                                        onChangeText={handleChange('confirmPassword')}
-                                        onBlur={handleBlur('confirmPassword')}
-                                        value={values.confirmPassword}
-                                        secureTextEntry={true}
+                                    <TextInput style={style.input}
+                                        onChangeText={handleChange('mobile')}
+                                        value={values.mobile}
                                     />
-                                    {values.confirmPassword ? <Image style={style.tipIcon} source={errors.confirmPassword ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
+                                    {values.mobile ? <Image style={style.tipIcon} source={errors.mobile ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
                                 </View>
-                            </KeyboardAvoidingView>
-                            <Text style={[style.inputTitle, style.mt10]}>短信验证码</Text>
-                            <KeyboardAvoidingView behavior="padding" enabled >
+                                <Text style={[style.inputTitle, style.mt10]}>请输入密码</Text>
                                 <View style={style.inputWrap}>
                                     <TextInput
                                         style={style.input}
                                         onChangeText={handleChange('password')}
-                                        onBlur={handleBlur('password')}
                                         value={values.password}
                                         secureTextEntry={true}
                                     />
-                                    <TouchableOpacity onPress={getCode}>
+                                    {values.password ? <Image style={style.tipIcon} source={errors.password ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
+                                </View>
+                                <Text style={[style.inputTitle, style.mt10]}>请再次输入密码</Text>
+                                <View style={style.inputWrap}>
+                                    <TextInput
+                                        style={style.input}
+                                        onChangeText={handleChange('confirm_password')}
+                                        value={values.confirm_password}
+                                        secureTextEntry={true}
+                                    />
+                                    {values.confirm_password ? <Image style={style.tipIcon} source={errors.confirm_password ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
+                                </View>
+                                <Text style={[style.inputTitle, style.mt10]}>短信验证码</Text>
+                                <View style={style.inputWrap}>
+                                    <TextInput
+                                        style={style.input}
+                                        onChangeText={handleChange('msgCode')}
+                                        value={values.msgCode}
+                                    />
+                                    <TouchableOpacity onPress={() => getCode(values.mobile)}>
                                         <Text style={style.qcode}>{codeState}</Text>
                                     </TouchableOpacity>
                                 </View>
-                            </KeyboardAvoidingView>
-                            <View style={style.submitWrap}>
-                                <Text style={style.loginTitle}>注册</Text>
+                                <Text style={[style.inputTitle, style.mt10]}>邀请码(选填)</Text>
+                                <View style={style.inputWrap}>
+                                    <TextInput style={style.input}
+                                        onChangeText={handleChange('pid')}
+                                        value={values.pid}
+                                    />
+                                </View>
+                                <View style={style.submitWrap}>
+                                    <Text style={style.loginTitle}>注册</Text>
                                     <TouchableHighlight underlayColor="#fff" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
-                                        <View style={[style.enabledBtn, values.qcode && values.confirmPassword && values.password && values.phone && style.activeBtn]}>
+                                        <View style={[style.enabledBtn, values.msgCode && values.confirm_password && values.password && values.mobile && style.activeBtn]}>
                                             <Image style={style.arrowRight} source={require("../../assets/imgs/arrow_right.png")}></Image>
                                         </View>
                                     </TouchableHighlight>
+                                </View>
                             </View>
-                        </View>
+                        </KeyboardAvoidingView>
                     )}
                 </Formik>
                 <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate("login")}>
@@ -186,7 +208,7 @@ const style = StyleSheet.create({
         width: scaleSize(80),
         height: scaleSize(80),
         borderRadius: scaleSize(15),
-        borderWidth:0
+        borderWidth: 0
     },
     formWrap: {
         marginTop: scaleSize(30)
@@ -203,8 +225,9 @@ const style = StyleSheet.create({
         color: "#999"
     },
     input: {
-        paddingVertical:scaleHeight(5),
+        paddingVertical: scaleHeight(5),
         flex: 1,
+        color: "#333",
         fontSize: setSpText2(14)
     },
     mt10: {

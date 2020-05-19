@@ -4,20 +4,23 @@ import { connect } from "react-redux"
 import { Formik } from 'formik';
 import * as yup from "yup"
 import { login } from "../../store/action"
+import {login as loginApi} from "../../api/api"
 import { scaleSize, setSpText2 ,scaleHeight} from "../../utils/ScreenUtil"
-
+import {MD5} from "../../utils/common"
 //阴影
 import { BoxShadow } from 'react-native-shadow'
-
 const phoneRegExp = /^1[3456789]\d{9}$/
 const passwordRegExp = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
-function Login({ dispatch, navigation }) {
+function Login({ dispatch, navigation, device_code}) {
     //登入
     const setLogin = useCallback((values) => {
-        dispatch(login("token" + Math.random()))
+        let password=MD5(MD5(values.password))
+        loginApi({mobile:values.mobile,password,device_code:device_code}).then(({data:{result}})=>{
+            dispatch(login(result.token))
+        })
     }, [dispatch])
     const _handleSubmit = useCallback((values, errors, handleSubmit) => {
-        if (!(values.phone && values.password)) {
+        if (!(values.mobile && values.password)) {
             return
         }
         for (let [key, value] of Object.entries(errors)) {
@@ -42,11 +45,11 @@ function Login({ dispatch, navigation }) {
                     <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/yuanwei.png")}></Image>
                 {/* </BoxShadow> */}
                 <Formik
-                    initialValues={{ phone: '', password: "" }}
+                    initialValues={{ mobile: '', password: "" }}
                     onSubmit={values => setLogin(values)}
                     validationSchema={
                         yup.object().shape({
-                            phone: yup
+                            mobile: yup
                                 .string()
                                 .matches(phoneRegExp, '手机格式有误')
                                 .required(),
@@ -62,11 +65,10 @@ function Login({ dispatch, navigation }) {
                             <View style={style.inputWrap}>
                                 <TextInput style={style.input}
                                     keyboardType="numeric"
-                                    onChangeText={handleChange('phone')}
-                                    onBlur={handleBlur('phone')}
-                                    value={values.phone}
+                                    onChangeText={handleChange('mobile')}
+                                    value={values.mobile}
                                 />
-                                {values.phone ? <Image style={style.tipIcon} source={errors.phone ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
+                                {values.mobile ? <Image style={style.tipIcon} source={errors.mobile ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
                             </View>
                             <Text style={[style.inputTitle, style.mt10]}>请输入密码</Text>
                             <View style={style.inputWrap}>
@@ -83,7 +85,7 @@ function Login({ dispatch, navigation }) {
                             <View style={style.submitWrap}>
                                 <Text style={style.loginTitle}>登录</Text>
                                     <TouchableHighlight underlayColor="#fff" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
-                                        <View style={[style.enabledBtn, values.password && values.phone && style.activeBtn]}>
+                                        <View style={[style.enabledBtn, values.password && values.mobile && style.activeBtn]}>
                                             <Image style={style.arrowRight} source={require("../../assets/imgs/arrow_right.png")}></Image>
                                         </View>
                                     </TouchableHighlight>
@@ -130,6 +132,7 @@ const style = StyleSheet.create({
     },
     input: {
         flex:1,
+        color:"#333",
         paddingVertical:scaleHeight(10),
         fontSize: setSpText2(14)
     },
