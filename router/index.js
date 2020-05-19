@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from "@react-navigation/stack"
 import { scaleSize, setSpText2, scaleHeight } from "../utils/ScreenUtil"
 import HomeScreen from "../pages/home/home"
+import CategoryScreen from "../pages/category/category"
 import OrderScreen from "../pages/order/order"
 import MessageScreen from "../pages/message/messageList"
 import PersonScreen from "../pages/person/person"
@@ -29,10 +30,12 @@ function TabContainer() {
         tabBarIcon: ({ focused, color, size }) => {
             if (route.name === 'home') {
                 return <Image style={style.icon} source={focused ? require("../assets/imgs/tab/homeSelected.png") : require("../assets/imgs/tab/home.png")}></Image>
-            } else if (route.name === 'person') {
+            } else if (route.name === 'category') {
+                return <Image style={style.icon} source={focused ? require("../assets/imgs/tab/categorySelected.png") : require("../assets/imgs/tab/category.png")}></Image>
+            }else if (route.name === 'person') {
                 return <Image style={style.icon} source={focused ? require("../assets/imgs/tab/personSelected.png") : require("../assets/imgs/tab/person.png")}></Image>
             } else if (route.name === 'message') {
-                return <Image style={style.icon} source={focused ? require("../assets/imgs/tab/serviceSelected.png") : require("../assets/imgs/tab/service.png")}></Image>
+                return <Image style={style.icon} source={focused ? require("../assets/imgs/tab/messageSelected.png") : require("../assets/imgs/tab/message.png")}></Image>
             }
         }
     })
@@ -45,6 +48,7 @@ function TabContainer() {
             }
         }} >
             <Tab.Screen name="home" component={HomeScreen} options={{ headerShown: false ,title:"爆款推荐"}} />
+            <Tab.Screen name="category" component={CategoryScreen} options={{ headerShown: false ,title:"分类"}} />
             <Tab.Screen name="message" component={MessageScreen} options={{ headerShown: false,title:"消息中心" }} />
             <Tab.Screen name="person" component={PersonScreen} options={{ headerShown: false,title:"个人中心"}} />
         </Tab.Navigator>
