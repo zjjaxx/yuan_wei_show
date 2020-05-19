@@ -61,6 +61,7 @@ function Login({ dispatch, navigation }) {
                             <Text style={style.inputTitle}>请输入你的手机号</Text>
                             <View style={style.inputWrap}>
                                 <TextInput style={style.input}
+                                    keyboardType="numeric"
                                     onChangeText={handleChange('phone')}
                                     onBlur={handleBlur('phone')}
                                     value={values.phone}

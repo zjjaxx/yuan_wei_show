@@ -1,5 +1,5 @@
 import React, { useCallback, useState, memo } from "react"
-import { Text, View, StyleSheet, Image, ScrollView, TouchableHighlight, SafeAreaView, TextInput, KeyboardAvoidingView, Modal } from "react-native"
+import { Text, View, StyleSheet, Image, ScrollView, TouchableHighlight, SafeAreaView, TextInput, KeyboardAvoidingView, Modal,Alert } from "react-native"
 import Header from "../../components/Header"
 import CameraRoll from "@react-native-community/cameraroll";
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
@@ -55,6 +55,18 @@ function ProductDetail({ navigation }) {
             console.log("path", path)
         })
     }, [imgList])
+    //查看更多
+    const checkMore=useCallback(()=>{
+        Alert.alert(
+            '提示',
+            "需开通vip才能查看更多",
+            [
+                { text: 'OK', onPress: () => {} },
+                { text: 'Cancel', onPress: () => {} },
+            ],
+
+        )
+    },[])
     const toInfo=useCallback(()=>{
         navigation.navigate("info")
     },[])
@@ -102,9 +114,9 @@ function ProductDetail({ navigation }) {
                     <Modal visible={imgPreviewFlag} transparent={true}>
                         <ImageViewer onSave={_onSaveToCamera} menus={({ cancel, saveToLocal }) => <CustomMenus cancel={cancel} saveToLocal={saveToLocal}></CustomMenus>} onClick={() => setImgPreviewFlag(false)} imageUrls={imgList} />
                     </Modal>
-                    <View style={style.checkMoreWrap}>
+                    <TouchableHighlight underlayColor="#fca413" onPress={checkMore} style={style.checkMoreWrap}>
                         <Text style={style.checkMore}>查看更多</Text>
-                    </View>
+                    </TouchableHighlight>
                     <LeaveMessageList leaveMessageList={[[2, 4, 3], [3, 45, 5]]}></LeaveMessageList>
                 </ScrollView>
                 <BottomBar
@@ -308,7 +320,7 @@ const style = StyleSheet.create({
     },
     productImg: {
         borderRadius: scaleSize(5),
-        height: scaleHeight(220),
+        height: scaleSize(220),
         width: scaleSize(330)
     },
     productName: {

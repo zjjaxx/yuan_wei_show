@@ -5,6 +5,7 @@ import Header from "../../components/Header"
 import useStatusBarHeight from "../../customUse/useStatusBarHeight"
 import { useNodeRect } from "../../customUse/useClientRect"
 import ProductItem from "../../components/prodcutItem"
+import ProductItemLarge from "../../components/ProductItemLarge"
 
 function OrderStatus({ navigation }) {
     const [orderStatus] = useState(2)
@@ -103,7 +104,10 @@ function OrderStatus({ navigation }) {
                         <Text style={style.needPay}>需付款:<Text style={style.totalPrice}>￥14</Text><Text style={style.totalPriceTail}>.90</Text></Text>
                     </View>
                 </View>
-                <View style={{ height: scaleHeight(300) }}></View>
+                <Text style={style.recommandText}>为你推荐</Text>
+                    <View style={style.recommandProductWrap}>
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(item => <ProductItemLarge productPress={()=>navigation.navigate("productDetail")}></ProductItemLarge>)}
+                    </View>
             </ScrollView>
             <BottomBar type={orderStatus}></BottomBar>
         </View>
@@ -411,5 +415,18 @@ const style = StyleSheet.create({
     cancelPay: {
         color: "#333",
         fontSize: setSpText2(12)
-    }
+    },
+    recommandText: {
+        backgroundColor:"#fff",
+        paddingHorizontal: scaleSize(20),
+        paddingVertical: scaleHeight(20),
+        fontWeight: "500",
+        fontSize: setSpText2(16)
+    },
+    recommandProductWrap: {
+        flexDirection: "row",
+        paddingHorizontal: scaleSize(10),
+        justifyContent: "space-between",
+        flexWrap: "wrap"
+    },
 })

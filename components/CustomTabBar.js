@@ -4,7 +4,7 @@ import { scaleSize, setSpText2, scaleHeight } from "../utils/ScreenUtil"
 import { useNodeListRect } from "../customUse/useClientRect"
 const { width: viewportWidth } = Dimensions.get('window');
 let CustomTabBar = function (props, customTabRef) {
-    const { tabList, tabIndex, tabChange } = props
+    const { tabList, tabIndex, tabChange,scrollTabRef} = props
     //refs
     const [tabInfo, tabListRefs] = useNodeListRect(tabList.length)
     const scrollRef = useRef()
@@ -26,14 +26,15 @@ let CustomTabBar = function (props, customTabRef) {
         scrollRef.current.scrollTo({ x: distance, animated: true })
     }, [tabInfo])
     const _tabChange = useCallback((index) => {
+        scrollTabRef.current.goToPage(index)
         tabChange({i:index, from:tabIndex})
     }, [tabIndex])
     const TabItem = React.memo(function (props) {
         const { _tabChange, index, tabIndex, tabItemData, tabListRefs } = props
         return (
             <TouchableHighlight underlayColor="#fff" onPress={() => _tabChange(index)}>
-                <View style={style.tabItemWrap}>
-                    <View onLayout={tabListRefs[index]} style={[style.item, tabIndex == index ? style.activeItem : {}]} >
+                <View onLayout={tabListRefs[index]} style={style.tabItemWrap}>
+                    <View  style={[style.item, tabIndex == index ? style.activeItem : {}]} >
                         <Text style={style.itemName}>{tabItemData}</Text>
                     </View>
                 </View>
