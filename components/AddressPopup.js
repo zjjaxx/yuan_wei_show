@@ -118,6 +118,7 @@ const AddressViewPager = memo((props) => {
             {_addressSelectItem().map((pageItem, pageIndex) => (
                 <View style={{ flex: 1 }} key={pageIndex} tabLabel={"item" + pageIndex}>
                     <FlatList
+                        showsVerticalScrollIndicator = {false}
                         style={style.flatList}
                         data={flatListData(pageIndex)}
                         renderItem={({ item, index }) => (

@@ -94,7 +94,7 @@ function Publish({ navigation, route }) {
     },[labelList])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-            <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled >
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS == "android" ?"":"padding"} enabled >
                 <View style={style.container}>
                     <Formik
                         initialValues={{ publishValue: '', price: "", deliverFee: "" }}
@@ -214,7 +214,8 @@ const style = StyleSheet.create({
         borderBottomColor: "#eee",
         borderBottomWidth: scaleSize(0.5),
         fontSize: setSpText2(14),
-        height: scaleHeight(150)
+        height: scaleHeight(150),
+        color:"#333"
     },
     categoriesTitle: {
         marginTop: scaleHeight(20),
@@ -285,7 +286,8 @@ const style = StyleSheet.create({
     priceValue: {
         textAlign: "right",
         fontSize: setSpText2(14),
-        fontWeight: "500"
+        fontWeight: "500",
+        color:"#333"
     },
     isFreeDeliveryWrap: {
         marginTop: scaleHeight(10),
@@ -316,7 +318,8 @@ const style = StyleSheet.create({
     deliverFeeValue: {
         textAlign: "right",
         fontSize: setSpText2(14),
-        fontWeight: "500"
+        fontWeight: "500",
+        color:"#333"
     }
 })
 

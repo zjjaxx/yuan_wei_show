@@ -70,7 +70,7 @@ function AddressComponent(props) {
                                 <Text style={style.defaultLabel}>设置默认地址</Text>
                                 <Text style={style.tip}>提醒：每次下单会默认推荐使用该地址</Text>
                             </View>
-                            <Switch value={isDefault} ios_backgroundColor="#eee" onValueChange={() => setIsDefault(isDefault => !isDefault)} trackColor={{ false: '#eee', true: '#f2140c' }}></Switch>
+                            <Switch thumbTintColor="#f2140c" value={isDefault} ios_backgroundColor="#eee" onValueChange={() => setIsDefault(isDefault => !isDefault)}  trackColor={{ false: '#eee', true: '#f2140c' }}></Switch>
                         </View>
                         <TouchableHighlight style={style.saveWrap} underlayColor="#f2140c" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
                                 <Text style={style.saveTitle}>保存</Text>
@@ -118,12 +118,14 @@ const style = StyleSheet.create({
     nameInput: {
         marginRight: scaleSize(20),
         paddingVertical: 0,
-        flex: 1
+        flex: 1,
+        color:"#333"
     },
     phoneInput: {
         marginRight: scaleSize(20),
         paddingVertical: 0,
-        flex: 1
+        flex: 1,
+        color:"#333"
     },
     areTitle: {
         flex: 1,
@@ -140,7 +142,8 @@ const style = StyleSheet.create({
     addressDetailInput: {
         marginRight: scaleSize(20),
         paddingVertical: 0,
-        flex: 1
+        flex: 1,
+        color:"#333"
     },
     defaultLabelWrap: {
         marginRight: scaleSize(30),
@@ -154,7 +157,7 @@ const style = StyleSheet.create({
         fontSize: scaleSize(12)
     },
     saveWrap: {
-        marginTop: scaleHeight(270),
+        marginTop: scaleHeight(250),
         width: scaleSize(340),
         backgroundColor: "#f2140c",
         height: scaleHeight(30),

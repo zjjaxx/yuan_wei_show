@@ -375,6 +375,7 @@ const style = StyleSheet.create({
         paddingHorizontal: scaleSize(10),
         backgroundColor: "#eee",
         fontSize: setSpText2(14),
+        color:"#333",
         borderRadius: scaleSize(4)
     },
     leaveTitleWrap: {

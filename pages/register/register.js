@@ -98,7 +98,7 @@ function Login({ dispatch, navigation, device_code }) {
     }, [timerRef])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-            <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+            <KeyboardAvoidingView behavior={Platform.OS == "android" ?"":"padding"} style={{ flex: 1 }}>
                 <ScrollView style={style.container}>
                     <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/yuanwei.png")}></Image>
                     <Formik
@@ -216,14 +216,14 @@ const style = StyleSheet.create({
         backgroundColor: "#fff",
     },
     logo: {
-        marginTop: scaleSize(40),
+        marginTop: scaleHeight(10),
         width: scaleSize(80),
         height: scaleSize(80),
         borderRadius: scaleSize(15),
         borderWidth: 0
     },
     formWrap: {
-        marginTop: scaleSize(30)
+        marginTop: scaleHeight(20)
     },
     inputWrap: {
         flexDirection: "row",
@@ -247,16 +247,16 @@ const style = StyleSheet.create({
     },
     tipIcon: {
         width: scaleSize(15),
-        height: scaleHeight(15)
+        height: scaleSize(15)
     },
     forget: {
-        marginTop: scaleSize(12),
+        marginTop: scaleHeight(12),
         color: "#999",
         alignSelf: "flex-end",
         fontSize: setSpText2(12)
     },
     submitWrap: {
-        marginTop: scaleSize(50),
+        marginTop: scaleHeight(30),
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between"
@@ -286,8 +286,9 @@ const style = StyleSheet.create({
         height: scaleHeight(10)
     },
     registerWrap: {
-        marginTop: scaleSize(40),
-        flexDirection: "row"
+        marginTop: scaleHeight(10),
+        flexDirection: "row",
+        marginBottom:scaleHeight(20)
     },
     noAccount: {
         marginRight: scaleSize(4),
@@ -303,18 +304,6 @@ const style = StyleSheet.create({
         fontSize: setSpText2(14)
     }
 })
-const shadowOpt = {
-    width: scaleSize(80),
-    height: scaleHeight(100),
-    color: "#A2A2A2",
-    border: scaleSize(3),
-    radius: scaleSize(8),
-    opacity: 0.19,
-    x: scaleSize(3),
-    y: scaleSize(3),
-    style: {
-        marginTop: scaleSize(20)
-    }
-}
+
 
 export default connect(state => state, dispatch => ({ dispatch }))(Login)

@@ -39,7 +39,7 @@ function OrderStatus({ navigation }) {
                     <Header wrapStyle={[style.headerWrap, { top: statusBarHeight, opacity: headerOpacity }]} leftEvent={leftEvent} title="订单详情"></Header>
                 )}
             <ScrollView scrollEventThrottle={16} style={style.scrollView} onScroll={onScroll}>
-                <View onLayout={rectRef} style={[style.orderStatusWrap, { paddingTop: statusBarHeight }, orderStatus == 2 ? { paddingBottom: scaleHeight(130) } : {}]}>
+                <View onLayout={rectRef} style={[style.orderStatusWrap, { paddingTop: statusBarHeight }]}>
                     <View style={style.orderStatus}>
                         <Image style={style.statusIcon} source={require("../../assets/imgs/time.png")}></Image>
                         <Text style={style.statusText}>{orderStatus == 1 ? '等待付款' : orderStatus == 2 ? '待收货' : '谢谢惠顾'}</Text>
@@ -199,7 +199,6 @@ const style = StyleSheet.create({
     orderStatusWrap: {
         marginBottom: scaleHeight(10),
         position: "relative",
-        paddingBottom: scaleHeight(90),
         backgroundColor: "#f2140c"
     },
     orderStatus: {
@@ -242,7 +241,7 @@ const style = StyleSheet.create({
         fontSize: setSpText2(12)
     },
     payWrap: {
-        marginTop: scaleHeight(10),
+        marginTop: scaleHeight(20),
         width: scaleSize(100),
         height: scaleHeight(25),
         borderRadius: scaleSize(15),
@@ -256,10 +255,7 @@ const style = StyleSheet.create({
         color: "#f2140c"
     },
     addressBottomWrap: {
-        position: "absolute",
-        bottom: -scaleHeight(10),
-        left: 0,
-        width: "100%",
+        marginTop:scaleHeight(40),
         backgroundColor: "#fff",
         borderTopLeftRadius: scaleSize(10),
         borderTopRightRadius: scaleSize(10),
@@ -364,11 +360,11 @@ const style = StyleSheet.create({
         fontSize: setSpText2(12)
     },
     bottomBar: {
-        paddingTop: scaleHeight(10),
-        paddingBottom: scaleHeight(30),
+        height:scaleHeight(50),
         flexDirection: "row",
         justifyContent: "flex-end",
         backgroundColor: "#fff",
+        alignItems:"center",
         paddingHorizontal: scaleSize(10)
     },
     totalPay: {

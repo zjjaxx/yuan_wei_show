@@ -80,7 +80,8 @@ const style = StyleSheet.create({
     searchInput: {
         flex: 1,
         paddingVertical: scaleHeight(5),
-        fontSize: setSpText2(14)
+        fontSize: setSpText2(14),
+        color:"#333"
     },
     cancelText: {
         paddingHorizontal: scaleSize(10),
