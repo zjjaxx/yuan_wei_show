@@ -26,7 +26,7 @@ import SearchScreen from "../pages/category/search"
 import MyPublishScreen from "../pages/publish/myPublish"
 import UnshelveScreen from "../pages/person/unshelve"
 import { connect } from "react-redux"
-import { asyncToken,initWebSocket } from "../store/action"
+import { asyncToken } from "../store/action"
 //tab 路由容器
 const Tab = createBottomTabNavigator();
 function TabContainer() {
@@ -65,7 +65,6 @@ const AppStack = createStackNavigator()
 function AppStackScreen({ isLoading, isLogin, dispatch }) {
     useEffect(() => {
         dispatch(asyncToken())
-        dispatch(initWebSocket())
     }, [dispatch])
     if (isLoading) {
         return (

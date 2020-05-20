@@ -29,7 +29,7 @@ function Person({ dispatch, navigation }) {
                     </TouchableHighlight>
                     <TouchableHighlight style={style.touchWrap} underlayColor="#fff" onPress={() => navigation.navigate("unshelve")}>
                         <View style={style.menuItem}>
-                            <Text style={style.num}>44</Text>
+                            <Text style={style.num}>44</Text> 
                             <Text style={style.menuTitle}>下架</Text>
                         </View>
                     </TouchableHighlight>
