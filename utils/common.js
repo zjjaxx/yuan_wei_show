@@ -30,7 +30,7 @@ export const getLocalStorage = async (key) => {
     }
 }
 
-export const TOKEN_KEY="TOKEN"
+
 
 export function showToast(message){
     Toast.show(message, {

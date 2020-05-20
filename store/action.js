@@ -1,9 +1,9 @@
-import { TOKEN_KEY, getLocalStorage, setLocalStorage } from "../utils/common"
+import {  getLocalStorage, setLocalStorage } from "../utils/common"
 export const SET_LOGIN = "SET_LOGIN"
 export const SET_LOADING = "SET_LOADING"
 export const SET_TOKEN = "SET_TOKEN"
 export const SET_WEBSOCKET = "SET_WEBSOCKET"
-import {wsURL} from "../utils/config"
+import { wsURL,TOKEN_KEY,VALID_TIME,validTimeCount } from "../utils/config"
 
 export function asyncToken() {
     return (dispatch, getState) => {
@@ -11,10 +11,28 @@ export function asyncToken() {
             type: SET_LOADING,
             payload: true
         })
-
+        let _token=""
         getLocalStorage(TOKEN_KEY).then(token => {
-            token && dispatch(login(token))
+            if (token) {
+                _token=token
+                return getLocalStorage(VALID_TIME)
+            }
+            else{
+                throw "no token"
+            }
         })
+            .then(validTime => {
+                let now = new Date().getTime()
+                if (now - parseInt(validTime) > validTimeCount) {
+                    dispatch(logout())
+                }
+                else {
+                    dispatch(login(_token))
+                }
+            })
+            .catch(res=>{
+                console.log(res)
+            })
             .finally(res => {
                 setTimeout(() => {
                     dispatch({
@@ -23,8 +41,6 @@ export function asyncToken() {
                     })
                 }, 3000)
             })
-
-
     }
 }
 export function login(token) {
@@ -38,6 +54,9 @@ export function login(token) {
                 type: SET_TOKEN,
                 payload: token
             })
+        })
+        setLocalStorage(VALID_TIME, new Date().getTime()+"").then(res => {
+
         })
     }
 }
@@ -53,6 +72,8 @@ export function logout() {
                 payload: ""
             })
         })
+        setLocalStorage(VALID_TIME, "").then(res => {
+        })
     }
 
 }
@@ -62,8 +83,8 @@ export function initWebSocket() {
         ws.onopen = () => {
             console.log("open")
             dispatch({
-                type:SET_WEBSOCKET,
-                payload:ws
+                type: SET_WEBSOCKET,
+                payload: ws
             })
         };
         ws.onmessage = (e) => {
@@ -72,7 +93,6 @@ export function initWebSocket() {
         ws.onerror = (e) => {
             console.log(e.message);
         };
-
         ws.onclose = (e) => {
             console.log(e.code, e.reason);
         };

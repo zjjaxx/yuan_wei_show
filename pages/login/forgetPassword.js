@@ -10,7 +10,7 @@ import { showToast, encrypt } from "../../utils/common"
 
 const phoneRegExp = /^1[3456789]\d{9}$/
 const passwordRegExp = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
-function Login({ dispatch, navigation, device_code }) {
+function ForgetPassword({ dispatch, navigation, device_code }) {
     //加密
     const [key, setKey] = useState("")
     const [iv, setIv] = useState("")
@@ -18,20 +18,20 @@ function Login({ dispatch, navigation, device_code }) {
     const [codeState, setCodeState] = useState("获取验证码")
     //倒计时ref
     const timerRef = useRef()
-    //登入事件
-    const setLogin = useCallback((values) => {
+    //重置密码事件
+    const resetPassword = useCallback((values) => {
         let password = encrypt(values.password, key, iv)
         let confirm_password = encrypt(values.confirm_password, key, iv)
-        register({
-            mobile: values.mobile,
-            password,
-            confirm_password,
-            pid: values.pid,
-            msgCode: values.msgCode,
-            device_code
-        }).then(({ data: { result } }) => {
-            dispatch(login(result.token))
-        })
+        // register({
+        //     mobile: values.mobile,
+        //     password,
+        //     confirm_password,
+        //     pid: values.pid,
+        //     msgCode: values.msgCode,
+        //     device_code
+        // }).then(({ data: { result } }) => {
+        //     dispatch(login(result.token))
+        // })
     }, [dispatch, key, iv])
     //提交事件
     const _handleSubmit = useCallback((values, errors, handleSubmit) => {
@@ -102,7 +102,7 @@ function Login({ dispatch, navigation, device_code }) {
                 <ScrollView style={style.container}>
                     <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/yuanwei.png")}></Image>
                     <Formik
-                        initialValues={{ mobile: '', password: "", confirm_password: "", msgCode: "", pid: "" }}
+                        initialValues={{ mobile: '', password: "", confirm_password: "", msgCode: "" }}
                         onSubmit={values => setLogin(values)}
                         validationSchema={
                             yup.object().shape({
@@ -175,18 +175,8 @@ function Login({ dispatch, navigation, device_code }) {
                                         <Text style={style.qcode}>{codeState}</Text>
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={[style.inputTitle, style.mt10]}>邀请码(选填)</Text>
-                                <View style={style.inputWrap}>
-                                    <TextInput
-                                        returnKeyType="done"
-                                        returnKeyLabel="完成"
-                                        style={style.input}
-                                        onChangeText={handleChange('pid')}
-                                        value={values.pid}
-                                    />
-                                </View>
                                 <View style={style.submitWrap}>
-                                    <Text style={style.loginTitle}>注册</Text>
+                                    <Text style={style.loginTitle}>重置密码</Text>
                                     <TouchableHighlight underlayColor="#fff" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
                                         <View style={[style.enabledBtn, values.msgCode && values.confirm_password && values.password && values.mobile && style.activeBtn]}>
                                             <Image style={style.arrowRight} source={require("../../assets/imgs/arrow_right.png")}></Image>
@@ -317,4 +307,4 @@ const shadowOpt = {
     }
 }
 
-export default connect(state => state, dispatch => ({ dispatch }))(Login)
+export default connect(state => state, dispatch => ({ dispatch }))(ForgetPassword)

@@ -30,7 +30,7 @@ function Category({ navigation }) {
             <View style={style.container}>
                 <View style={style.headerWrap}>
                     <Text style={style.headerTitle}>分类</Text>
-                    <TouchableHighlight underlayColor="#fff" onPress={() => { }}>
+                    <TouchableHighlight underlayColor="#fff" onPress={() => {navigation.navigate("search") }}>
                         <Image style={style.search} source={require("../../assets/imgs/search.png")}></Image>
                     </TouchableHighlight>
                 </View>

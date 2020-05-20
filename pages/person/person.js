@@ -21,22 +21,30 @@ function Person({ dispatch, navigation }) {
                     </View>
                 </View>
                 <View style={style.menuWrap}>
-                    <View style={style.menuItem}>
-                        <Text style={style.num}>4</Text>
-                        <Text style={style.menuTitle}>发布</Text>
-                    </View>
-                    <View style={style.menuItem}>
-                        <Text style={style.num}>14</Text>
-                        <Text style={style.menuTitle}>粉丝</Text>
-                    </View>
-                    <View style={style.menuItem}>
-                        <Text style={style.num}>24</Text>
-                        <Text style={style.menuTitle}>关注</Text>
-                    </View>
-                    <View style={style.menuItem}>
-                        <Text style={style.num}>44</Text>
-                        <Text style={style.menuTitle}>卡券</Text>
-                    </View>
+                    <TouchableHighlight style={style.touchWrap} underlayColor="#fff" onPress={() => navigation.navigate("myPublish")}>
+                        <View style={style.menuItem}>
+                            <Text style={style.num}>4</Text>
+                            <Text style={style.menuTitle}>发布</Text>
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight style={style.touchWrap} underlayColor="#fff" onPress={() => navigation.navigate("unshelve")}>
+                        <View style={style.menuItem}>
+                            <Text style={style.num}>44</Text>
+                            <Text style={style.menuTitle}>下架</Text>
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight style={style.touchWrap} underlayColor="#fff" onPress={() => { }}>
+                        <View style={style.menuItem}>
+                            <Text style={style.num}>14</Text>
+                            <Text style={style.menuTitle}>粉丝</Text>
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight style={style.touchWrap} underlayColor="#fff" onPress={() => { }}>
+                        <View style={style.menuItem}>
+                            <Text style={style.num}>24</Text>
+                            <Text style={style.menuTitle}>关注</Text>
+                        </View>
+                    </TouchableHighlight>
                 </View>
                 <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate("orderList")}>
                     <View style={style.menuListItem}>
@@ -110,8 +118,11 @@ const style = StyleSheet.create({
         flexDirection: "row",
         paddingVertical: scaleHeight(10)
     },
-    menuItem: {
+    touchWrap: {
         flex: 1,
+    },
+    menuItem: {
+        width: "100%",
         paddingVertical: scaleHeight(10),
         alignItems: "center",
         justifyContent: "center"

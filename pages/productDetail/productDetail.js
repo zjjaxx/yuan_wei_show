@@ -142,30 +142,6 @@ const UserInfo = memo((props) => {
         </View>
     )
 })
-//轮播图 画廊
-const Swiper = React.memo(function (props) {
-    // const { banners } = props
-    // const [slider, setSlider] = useState(0)
-    const _renderItemWithParallax = function ({ item, index }, parallaxProps) {
-        return (
-            <Image key={index} style={style.productImg} source={index % 2 ? require("../../assets/imgs/pic2.jpg") : require("../../assets/imgs/pic1.jpg")} />
-        );
-    }
-    return (
-        <View style={style.swiperWrapper}>
-            <Carousel
-                data={mockData}
-                renderItem={_renderItemWithParallax}
-                sliderWidth={sliderWidth}
-                itemWidth={itemWidth}
-                containerCustomStyle={style.slider}
-                contentContainerCustomStyle={style.sliderContentContainer}
-                layout={"tinder"}
-                loop={true}
-            />
-        </View>
-    );
-})
 //底部栏
 const BottomBar = React.memo(function (props) {
     const { isSave, isShowLeaveMessage, toggleSave, setIsShowLeaveMessage, leaveMessage, payConfirm } = props
@@ -181,11 +157,13 @@ const BottomBar = React.memo(function (props) {
     }, [])
     return (
         <>
-            {isShowLeaveMessage ? <KeyboardAvoidingView keyboardVerticalOffset={scaleHeight(30)} behavior={Platform.OS == "android" ? '' : 'position'} enabled contentContainerStyle={{ backgroundColor: "#fff" }}>
+            {isShowLeaveMessage ? <KeyboardAvoidingView keyboardVerticalOffset={scaleHeight(32)} behavior={Platform.OS == "android" ? '' : 'position'} enabled contentContainerStyle={{ backgroundColor: "#fff" }}>
                 <View style={style.leaveInputWrap}>
                     <Image style={style.avatar} source={require("../../assets/imgs/avatar.jpeg")}></Image>
                     <TextInput
                         style={style.leaveInput}
+                        returnKeyType="send"
+                        returnKeyLabel="发送"
                         placeholderTextColor="#999"
                         placeholder="看对眼就留言，问问更多细节~"
                         onChangeText={leaveInputValueChange}
@@ -309,20 +287,7 @@ const style = StyleSheet.create({
         height: scaleHeight(20),
         width: scaleSize(20)
     },
-    swiperWrapper: {
-        marginTop: scaleSize(10),
-    },
-    slider: {
-        overflow: 'visible' // for custom animations
-    },
-    sliderContentContainer: {
-        paddingVertical: scaleSize(8)
-    },
-    productImg: {
-        borderRadius: scaleSize(5),
-        height: scaleSize(220),
-        width: scaleSize(330)
-    },
+
     productName: {
         marginHorizontal: scaleSize(20),
         marginTop: scaleSize(10),

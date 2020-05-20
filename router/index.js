@@ -9,6 +9,7 @@ import OrderScreen from "../pages/order/order"
 import MessageScreen from "../pages/message/messageList"
 import PersonScreen from "../pages/person/person"
 import LoginScreen from "../pages/login/login"
+import ForgetPasswordScreen from "../pages/login/forgetPassword"
 import FlashScreen from "../pages/flash/flash"
 import RegisterScreen from "../pages/register/register"
 import ProductDetailScreen from "../pages/productDetail/productDetail"
@@ -21,6 +22,9 @@ import AddressListScreen from "../pages/address/addressList"
 import OrderListScreen from "../pages/order/orderList"
 import OrderStautsScreen from "../pages/order/orderState"
 import DeliveryScreen from "../pages/order/delivery"
+import SearchScreen from "../pages/category/search"
+import MyPublishScreen from "../pages/publish/myPublish"
+import UnshelveScreen from "../pages/person/unshelve"
 import { connect } from "react-redux"
 import { asyncToken,initWebSocket } from "../store/action"
 //tab 路由容器
@@ -87,11 +91,16 @@ function AppStackScreen({ isLoading, isLogin, dispatch }) {
                         <AppStack.Screen name="orderList" component={OrderListScreen} ></AppStack.Screen>
                         <AppStack.Screen name="orderState" component={OrderStautsScreen}></AppStack.Screen>
                         <AppStack.Screen name="delivery" component={DeliveryScreen}></AppStack.Screen>
+                        <AppStack.Screen name="search" component={SearchScreen}></AppStack.Screen>  
+                        <AppStack.Screen name="myPublish" component={MyPublishScreen}></AppStack.Screen>  
+                        <AppStack.Screen name="unshelve" component={UnshelveScreen}></AppStack.Screen>  
                     </>
                 ) : (
                         <>
                             <AppStack.Screen name="login" component={LoginScreen}></AppStack.Screen>
                             <AppStack.Screen name="register" component={RegisterScreen}></AppStack.Screen>
+                            <AppStack.Screen name="forgetPassword" component={ForgetPasswordScreen}></AppStack.Screen>
+                           
                         </>
                     )
             }

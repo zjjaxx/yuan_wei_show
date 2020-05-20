@@ -4,18 +4,18 @@ import { connect } from "react-redux"
 import { Formik } from 'formik';
 import * as yup from "yup"
 import { login } from "../../store/action"
-import {login as loginApi} from "../../api/api"
-import { scaleSize, setSpText2 ,scaleHeight} from "../../utils/ScreenUtil"
-import {MD5} from "../../utils/common"
+import { login as loginApi } from "../../api/api"
+import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
+import { MD5 } from "../../utils/common"
 //阴影
 import { BoxShadow } from 'react-native-shadow'
 const phoneRegExp = /^1[3456789]\d{9}$/
 const passwordRegExp = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
-function Login({ dispatch, navigation, device_code}) {
+function Login({ dispatch, navigation, device_code }) {
     //登入
     const setLogin = useCallback((values) => {
-        let password=MD5(MD5(values.password))
-        loginApi({mobile:values.mobile,password,device_code:device_code}).then(({data:{result}})=>{
+        let password = MD5(MD5(values.password))
+        loginApi({ mobile: values.mobile, password, device_code: device_code }).then(({ data: { result } }) => {
             dispatch(login(result.token))
         })
     }, [dispatch])
@@ -29,7 +29,7 @@ function Login({ dispatch, navigation, device_code}) {
                     '提示',
                     value,
                     [
-                        { text: 'OK', onPress: () => {} },
+                        { text: 'OK', onPress: () => { } },
                     ],
 
                 )
@@ -41,9 +41,7 @@ function Login({ dispatch, navigation, device_code}) {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
-                {/* <BoxShadow setting={shadowOpt}> */}
-                    <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/yuanwei.png")}></Image>
-                {/* </BoxShadow> */}
+                <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/yuanwei.png")}></Image>
                 <Formik
                     initialValues={{ mobile: '', password: "" }}
                     onSubmit={values => setLogin(values)}
@@ -64,6 +62,8 @@ function Login({ dispatch, navigation, device_code}) {
                             <Text style={style.inputTitle}>请输入你的手机号</Text>
                             <View style={style.inputWrap}>
                                 <TextInput style={style.input}
+                                    returnKeyType="done"
+                                    returnKeyLabel="完成"
                                     keyboardType="numeric"
                                     onChangeText={handleChange('mobile')}
                                     value={values.mobile}
@@ -74,6 +74,8 @@ function Login({ dispatch, navigation, device_code}) {
                             <View style={style.inputWrap}>
                                 <TextInput
                                     style={style.input}
+                                    returnKeyType="done"
+                                    returnKeyLabel="完成"
                                     onChangeText={handleChange('password')}
                                     onBlur={handleBlur('password')}
                                     value={values.password}
@@ -81,14 +83,16 @@ function Login({ dispatch, navigation, device_code}) {
                                 />
                                 {values.password ? <Image style={style.tipIcon} source={errors.password ? require("../../assets/imgs/error.png") : require("../../assets/imgs/ok.png")}></Image> : null}
                             </View>
-                            <Text style={style.forget}>忘记密码?</Text>
+                            <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate("forgetPassword")}>
+                                <Text style={style.forget}>忘记密码?</Text>
+                            </TouchableHighlight>
                             <View style={style.submitWrap}>
                                 <Text style={style.loginTitle}>登录</Text>
-                                    <TouchableHighlight underlayColor="#fff" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
-                                        <View style={[style.enabledBtn, values.password && values.mobile && style.activeBtn]}>
-                                            <Image style={style.arrowRight} source={require("../../assets/imgs/arrow_right.png")}></Image>
-                                        </View>
-                                    </TouchableHighlight>
+                                <TouchableHighlight underlayColor="#fff" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
+                                    <View style={[style.enabledBtn, values.password && values.mobile && style.activeBtn]}>
+                                        <Image style={style.arrowRight} source={require("../../assets/imgs/arrow_right.png")}></Image>
+                                    </View>
+                                </TouchableHighlight>
                             </View>
                         </View>
                     )}
@@ -131,9 +135,9 @@ const style = StyleSheet.create({
         color: "#999",
     },
     input: {
-        flex:1,
-        color:"#333",
-        paddingVertical:scaleHeight(10),
+        flex: 1,
+        color: "#333",
+        paddingVertical: scaleHeight(10),
         fontSize: setSpText2(14)
     },
     mt10: {
