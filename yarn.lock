@@ -5435,6 +5435,11 @@ react-native-swipe-list-view@^3.0.1:
   resolved "https://registry.npm.taobao.org/react-native-swipe-list-view/download/react-native-swipe-list-view-3.0.1.tgz#030a8b200806a20b8f60b693f20c394ca5a8e09a"
   integrity sha1-AwqLIAgGoguPYLaT8gw5TKWo4Jo=
 
+react-native-update@^5.5.10:
+  version "5.5.10"
+  resolved "https://registry.npm.taobao.org/react-native-update/download/react-native-update-5.5.10.tgz#7c4bbdc54c5493da4f5cfaa7d3f43d4626986bdb"
+  integrity sha1-fEu9xUxUk9pPXPqn0/Q9RiaYa9s=
+
 react-native@0.62.2:
   version "0.62.2"
   resolved "https://registry.npm.taobao.org/react-native/download/react-native-0.62.2.tgz#d831e11a3178705449142df19a70ac2ca16bad10"

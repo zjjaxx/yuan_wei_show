@@ -1,9 +1,22 @@
 import React, { useMemo, memo, useCallback, useState, useEffect, useRef } from "react"
-import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight } from "react-native"
+import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight,Alert } from "react-native"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import { Popover } from '@ui-kitten/components';
 import toDate from "../../utils/toDate"
-
+//热更新
+import { APP_KEY_CONFIG } from "../../utils/config"
+import {
+    isFirstTime,
+    isRolledBack,
+    packageVersion,
+    currentVersion,
+    checkUpdate,
+    downloadUpdate,
+    switchVersion,
+    switchVersionLater,
+    markSuccess,
+} from 'react-native-update';
+const { appKey } = APP_KEY_CONFIG[Platform.OS];
 function Home({ navigation }) {
     //下拉刷新flag
     const [refreshing, setRefreshing] = useState(false)
@@ -25,6 +38,49 @@ function Home({ navigation }) {
     const _toPublish = useCallback(() => {
         navigation.navigate("publish")
     }, [])
+    //热更新
+    const doUpdate = async (info) => {
+        try {
+            const hash = await downloadUpdate(info);
+            Alert.alert('提示', '下载完毕,是否重启应用?', [
+                { text: '是', onPress: () => { switchVersion(hash); } },
+                { text: '否', },
+                { text: '下次启动时', onPress: () => { switchVersionLater(hash); } },
+            ]);
+        } catch (err) {
+            Alert.alert('提示', '更新失败.');
+        }
+    };
+    const doCheckUpdate = async () => {
+        console.log("__DEV__",__DEV__)
+        if (__DEV__) {
+            // 开发模式不支持热更新，跳过检查
+            return;
+        }
+        let info;
+        try {
+            info = await checkUpdate(appKey);
+        } catch (err) {
+            console.warn(err);
+            return;
+        }
+        if (info.expired) {
+            Alert.alert('提示', '您的应用版本已更新,请前往应用商店下载新的版本', [
+                { text: '确定', onPress: () => { info.downloadUrl && Linking.openURL(info.downloadUrl) } },
+            ]);
+        } else if (info.upToDate) {
+            Alert.alert('提示', '您的应用版本已是最新.');
+        } else {
+            Alert.alert('提示', '检查到新的版本' + info.name + ',是否下载?\n' + info.description, [
+                { text: '是', onPress: () => {doUpdate(info) } },
+                { text: '否', },
+            ]);
+        }
+    };
+    useEffect( () => {
+         doCheckUpdate()
+    }, [])
+ 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
@@ -75,13 +131,13 @@ const RecommandProductItem = memo((props) => {
                     </TouchableHighlight>}
                     onBackdropPress={() => hidePopup(false)}>
                     <View style={style.pupopWrap}>
-                        <TouchableHighlight activeOpacity={1} underlayColor="rgba(0,0,0,0.7)" onPress={() => {  }}>
+                        <TouchableHighlight activeOpacity={1} underlayColor="rgba(0,0,0,0.7)" onPress={() => { }}>
                             <View style={style.optionItem}>
                                 <Image style={style.saveIcon} source={require("../../assets/imgs/save.png")}></Image>
                                 <Text style={style.save}>收藏</Text>
                             </View>
                         </TouchableHighlight>
-                        <TouchableHighlight activeOpacity={1} underlayColor="rgba(0,0,0,0.7)" onPress={() => {  }}>
+                        <TouchableHighlight activeOpacity={1} underlayColor="rgba(0,0,0,0.7)" onPress={() => { }}>
                             <View style={style.optionItem}>
                                 <Image style={style.reportIcon} source={require("../../assets/imgs/report.png")}></Image>
                                 <Text style={style.report}>举报</Text>
@@ -134,8 +190,8 @@ const RecommandProductItem = memo((props) => {
         <View>
             <RecommandHeader></RecommandHeader>
             <Text style={style.comment}>已入手一双,钱包已掏空</Text>
-            <TouchableHighlight underlayColor="#fff" onPress={()=>toProductDetail(1)}>
-                <ImgList imgList={index % 4 == 1 ? [1] : index % 4 == 2 ? [1, 2] :index % 4 == 3? [1, 2, 3]: [1, 2, 3,4]}></ImgList>
+            <TouchableHighlight underlayColor="#fff" onPress={() => toProductDetail(1)}>
+                <ImgList imgList={index % 4 == 1 ? [1] : index % 4 == 2 ? [1, 2] : index % 4 == 3 ? [1, 2, 3] : [1, 2, 3, 4]}></ImgList>
             </TouchableHighlight>
             <View style={style.recommandBottomWrap}>
                 <TouchableHighlight underlayColor="#fff" onPress={() => { }}>
@@ -144,7 +200,7 @@ const RecommandProductItem = memo((props) => {
                         <Text style={style.loveCount}>1245</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight underlayColor="#fff" onPress={()=>toProductDetail(1)}>
+                <TouchableHighlight underlayColor="#fff" onPress={() => toProductDetail(1)}>
                     <View style={style.bottomOptionItem}>
                         <Image style={style.commentIcon} source={require("../../assets/imgs/comment.png")}></Image>
                         <Text style={style.commentCount}>7245</Text>
@@ -251,25 +307,25 @@ const style = StyleSheet.create({
         flex: 1,
         height: scaleHeight(180),
     },
-    imgWrap:{
-        position:"relative",
+    imgWrap: {
+        position: "relative",
         flex: 1,
         width: "100%",
     },
-    imgMask:{
+    imgMask: {
         borderRadius: scaleSize(15),
-        position:"absolute",
-        left:0,
-        top:0,
-        width:"100%",
-        height:"100%",
-        backgroundColor:"rgba(0,0,0,0.5)",
-        justifyContent:"center",
-        alignItems:"center"
+        position: "absolute",
+        left: 0,
+        top: 0,
+        width: "100%",
+        height: "100%",
+        backgroundColor: "rgba(0,0,0,0.5)",
+        justifyContent: "center",
+        alignItems: "center"
     },
-    imgMore:{
-        fontSize:setSpText2(14),
-        color:"#fff"
+    imgMore: {
+        fontSize: setSpText2(14),
+        color: "#fff"
     },
     pic3_2: {
         flex: 1,

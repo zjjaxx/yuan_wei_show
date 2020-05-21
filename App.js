@@ -10,6 +10,7 @@ import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 
 const background = Platform.Version >= 23 ? "#fff" : 'gray'
 console.disableYellowBox = true
+
 export default function App() {
   return (
     <ApplicationProvider {...eva} theme={eva.light}>
