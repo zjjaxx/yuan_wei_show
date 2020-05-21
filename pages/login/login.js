@@ -16,7 +16,7 @@ function Login({ dispatch, navigation, device_code }) {
     const setLogin = useCallback((values) => {
         let password = MD5(MD5(values.password))
         loginApi({ mobile: values.mobile, password, device_code: device_code }).then(({ data: { result } }) => {
-            dispatch(login(result.token))
+            dispatch(login(result.token,{userId:result.userId}))
         })
     }, [dispatch])
     const _handleSubmit = useCallback((values, errors, handleSubmit) => {

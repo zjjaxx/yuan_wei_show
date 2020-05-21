@@ -1,10 +1,12 @@
-import {  getLocalStorage, setLocalStorage } from "../utils/common"
+import { getLocalStorage, setLocalStorage } from "../utils/common"
 export const SET_LOGIN = "SET_LOGIN"
 export const SET_LOADING = "SET_LOADING"
 export const SET_TOKEN = "SET_TOKEN"
 export const SET_WEBSOCKET = "SET_WEBSOCKET"
-import { wsURL,TOKEN_KEY,VALID_TIME,validTimeCount } from "../utils/config"
-import {showToast} from "../utils/common"
+export const SET_USER_INFO="SET_USER_INFO"
+import { wsURL, TOKEN_KEY, VALID_TIME, validTimeCount, baseURL,USER_INFO } from "../utils/config"
+import { showToast } from "../utils/common"
+import axios from "axios"
 
 export function asyncToken() {
     return (dispatch, getState) => {
@@ -12,26 +14,26 @@ export function asyncToken() {
             type: SET_LOADING,
             payload: true
         })
-        let _token=""
+        let _token = ""
         getLocalStorage(TOKEN_KEY).then(token => {
             if (token) {
-                _token=token
-                return getLocalStorage(VALID_TIME)
+                _token = token
+                return Promise.all([getLocalStorage(VALID_TIME),getLocalStorage(USER_INFO)])
             }
-            else{
+            else {
                 throw "no token"
             }
         })
-            .then(validTime => {
+            .then(([validTime,userInfo]) => {
                 let now = new Date().getTime()
                 if (now - parseInt(validTime) > validTimeCount) {
                     dispatch(logout())
                 }
                 else {
-                    dispatch(login(_token))
+                    dispatch(login(_token,JSON.parse(userInfo)))
                 }
             })
-            .catch(res=>{
+            .catch(res => {
                 console.log(res)
             })
             .finally(res => {
@@ -44,7 +46,7 @@ export function asyncToken() {
             })
     }
 }
-export function login(token) {
+export function login(token,userInfo) {
     return (dispatch, getState) => {
         setLocalStorage(TOKEN_KEY, token).then(res => {
             dispatch({
@@ -55,8 +57,15 @@ export function login(token) {
                 type: SET_TOKEN,
                 payload: token
             })
+            dispatch({
+                type: SET_USER_INFO,
+                payload: userInfo
+            })
         })
-        setLocalStorage(VALID_TIME, new Date().getTime()+"").then(res => {
+        setLocalStorage(VALID_TIME, new Date().getTime() + "").then(res => {
+
+        })
+        setLocalStorage(USER_INFO, JSON.stringify(userInfo)).then(res => {
 
         })
         dispatch(initWebSocket(token))
@@ -76,17 +85,19 @@ export function logout() {
         })
         setLocalStorage(VALID_TIME, "").then(res => {
         })
+        setLocalStorage(USER_INFO, "").then(res => {
+        })
     }
 
 }
 export function initWebSocket(token) {
     return (dispatch, getState) => {
-        console.log("token",token)
+        console.log("token", token)
         const ws = new WebSocket(wsURL);
         ws.onopen = () => {
-            let param = JSON.stringify({ channel: 'auth', data: { token:token, content: "auth" } });
+            let param = JSON.stringify({ channel: 'auth', data: { token: token, content: "auth" } });
             ws.send(param);
-            console.log("send",param)
+            console.log("send", param)
             dispatch({
                 type: SET_WEBSOCKET,
                 payload: ws
@@ -99,7 +110,28 @@ export function initWebSocket(token) {
             showToast(e.message)
         };
         ws.onclose = (e) => {
-            showToast(e.code+e.reason)
+            showToast(e.code + e.reason)
         };
+    }
+}
+
+export function imgUpload(imgData) {
+    return (dispatch, getState) => {
+        const { token } = getState()
+        let formData = new FormData();
+        formData.append("img", imgData.file);
+        formData.append("tack", imgData.tack);
+        console.log("formData",formData)
+        axios.post(baseURL + "/api/v1/image/upload", formData, {
+            headers: {
+                authorization: "bearer " + token,
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res => {
+            console.log(res)
+        })
+        .catch(res=>{
+            console.log(res)
+        });
     }
 }

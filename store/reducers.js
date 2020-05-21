@@ -2,6 +2,7 @@ import {
     SET_LOGIN,
     SET_LOADING,
     SET_TOKEN,
+    SET_USER_INFO,
 } from "./action"
 
 export default {
@@ -43,5 +44,14 @@ export default {
     },
     device_code(state=8,action){
         return 8
+    },
+    userInfo(state=0,action){
+        const { type, payload } = action
+        switch (type) {
+            case SET_USER_INFO:
+                return payload
+            default:
+                return state
+        }
     }
 }

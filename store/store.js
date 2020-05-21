@@ -4,6 +4,13 @@ import reducers from "./reducers"
 import thunk from "redux-thunk"
 
 const reducer = combineReducers(reducers)
-const store = createStore(reducer,{isLoading:true,isLogin:false,token:"",webSocket:null,device_code:8}, applyMiddleware(thunk))
+const store = createStore(reducer, {
+    isLoading: true,
+    isLogin: false,
+    token: "",
+    webSocket: null,
+    device_code: 8,
+    userInfo:{userId: 0}
+}, applyMiddleware(thunk))
 
 export default store
