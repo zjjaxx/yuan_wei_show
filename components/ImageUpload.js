@@ -3,7 +3,6 @@ import { View, Image, StyleSheet, ScrollView, TouchableHighlight } from "react-n
 import { setSpText2, scaleSize, scaleHeight } from "../utils/ScreenUtil"
 import ImagePicker from 'react-native-image-crop-picker';
 import Spinner from 'react-native-spinkit';
-import RNFS from 'react-native-fs';
 import { connect } from "react-redux"
 import {imgUpload} from "../store/action"
 
@@ -17,20 +16,13 @@ function ImageUpload(props) {
         ImagePicker.openPicker({
             multiple: true
         }).then(images => {
-            console.log("images", images,"userInfo",userInfo)
+            let _images=images.map(item=>({uri:`file:///${item.path}`}))
+            setImageList(imageList=>[...imageList,..._images])
             let tack=userInfo.userId+new Date().getTime()
             setTack(tack)
             images.map(item => {
                 let file = { uri: item.path, type: "multipart/form-data", name:item.mime };
                 dispatch(imgUpload({file,tack}))
-                RNFS.readFile(item.path, 'base64')
-                    .then((content) => {
-                        console.log("trigger",content)
-                        setImageList(imageList=>[...imageList,{ uri: "data:image/png;base64,"+content}]);
-                    })
-                    .catch((err) => {
-                        console.log("图片读取失败")
-                    });
             })
         })
             .catch(res => {
