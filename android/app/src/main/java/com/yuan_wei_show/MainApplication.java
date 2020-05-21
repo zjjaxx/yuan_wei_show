@@ -11,11 +11,16 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import androidx.multidex.MultiDexApplication;
+import cn.reactnative.modules.update.UpdateContext;
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
+        @Override
+        protected String getJSBundleFile() {
+            return UpdateContext.getBundleUrl(MainApplication.this);
+        }
         @Override
         public boolean getUseDeveloperSupport() {
           return BuildConfig.DEBUG;
