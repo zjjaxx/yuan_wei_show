@@ -35,6 +35,7 @@ function Category({ navigation }) {
                     </TouchableHighlight>
                 </View>
                 <ScrollableTabView
+                    showsHorizontalScrollIndicator={false}
                     ref={scrollTabRef}
                     style={style.viewPager}
                     renderTabBar={() => <CustomTab ref={customTabRef} tabIndex={tabIndex} scrollTabRef={scrollTabRef} tabList={tabList} tabChange={tabChange}></CustomTab>}
@@ -48,6 +49,7 @@ function Category({ navigation }) {
                             return (
                                 <View style={{ flex: 1 }} key={pageIndex} tabLabel={"item" + pageIndex}>
                                     <FlatList
+                                        showsVerticalScrollIndicator = {false}
                                         style={style.flatList}
                                         data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                                         numColumns={2}
@@ -67,7 +69,7 @@ function Category({ navigation }) {
 }
 const Recommand = memo((props) => {
     const {toProductDetail} =props
-    return (<ScrollView style={style.scrollView}>
+    return (<ScrollView showsVerticalScrollIndicator={false} style={style.scrollView}>
         <Swiper></Swiper>
         <Text style={style.recommandText}>为你推荐</Text>
         <View style={style.recommandProductWrap}>

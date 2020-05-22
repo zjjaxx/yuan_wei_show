@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react"
-import { View, Image, StyleSheet, ScrollView, TouchableHighlight } from "react-native"
+import { View, Image, StyleSheet, ScrollView, TouchableHighlight,Platform } from "react-native"
 import { setSpText2, scaleSize, scaleHeight } from "../utils/ScreenUtil"
 import ImagePicker from 'react-native-image-crop-picker';
 import Spinner from 'react-native-spinkit';
@@ -16,7 +16,7 @@ function ImageUpload(props) {
         ImagePicker.openPicker({
             multiple: true
         }).then(images => {
-            let _images=images.map(item=>({uri:`file:///${item.path}`}))
+            let _images=images.map(item=>({uri:Platform.OS === "ios"?`file:///${item.path}`:item.path}))
             setImageList(imageList=>[...imageList,..._images])
             let tack=userInfo.userId+new Date().getTime()
             setTack(tack)
