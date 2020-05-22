@@ -30,7 +30,7 @@ function AddressPopup(props) {
         setTabIndex(index)
     }, [addressSelectItem])
     const flatListData = useCallback((index) => {
-        const { areaList, cityList, provinceList } = addressData
+        const { areaList=[], cityList=[], provinceList=[] } = addressData
         switch (index) {
             case 0:
                 return provinceList;

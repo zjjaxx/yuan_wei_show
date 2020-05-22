@@ -16,6 +16,11 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* yuan_wei_showTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* yuan_wei_showTests.m */; };
+		A08EBC022477BC7300B5C25C /* Bugly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A08EBC012477BC7300B5C25C /* Bugly.framework */; };
+		A08EBC042477BE1500B5C25C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A08EBC032477BE1500B5C25C /* SystemConfiguration.framework */; };
+		A08EBC062477BE2000B5C25C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A08EBC052477BE2000B5C25C /* Security.framework */; };
+		A08EBC082477BE8C00B5C25C /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A08EBC072477BE8C00B5C25C /* libz.tbd */; };
+		A08EBC0A2477BE9800B5C25C /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A08EBC092477BE9800B5C25C /* libc++.tbd */; };
 		B1F7C57C3725280B00E4F422 /* libPods-yuan_wei_show-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C1A9A75A5771C8FC5C76772D /* libPods-yuan_wei_show-tvOSTests.a */; };
 		D1E163B0A3A86F09B1AAF04C /* libPods-yuan_wei_show.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D60B7AECFE91FC80D4C772F /* libPods-yuan_wei_show.a */; };
 		E8F9C35AF77CA0A1986CBA77 /* libPods-yuan_wei_show-yuan_wei_showTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34570C2E20B7D1F244F6FDFD /* libPods-yuan_wei_show-yuan_wei_showTests.a */; };
@@ -60,6 +65,11 @@
 		662EEEA271A603785D3384E1 /* Pods-yuan_wei_show-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-yuan_wei_show-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-yuan_wei_show-tvOSTests/Pods-yuan_wei_show-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		69746F159D6E37496986696A /* Pods-yuan_wei_show-yuan_wei_showTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-yuan_wei_show-yuan_wei_showTests.debug.xcconfig"; path = "Target Support Files/Pods-yuan_wei_show-yuan_wei_showTests/Pods-yuan_wei_show-yuan_wei_showTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8D60B7AECFE91FC80D4C772F /* libPods-yuan_wei_show.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-yuan_wei_show.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A08EBC012477BC7300B5C25C /* Bugly.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bugly.framework; sourceTree = "<group>"; };
+		A08EBC032477BE1500B5C25C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		A08EBC052477BE2000B5C25C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		A08EBC072477BE8C00B5C25C /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		A08EBC092477BE9800B5C25C /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		A6B9C5FFB95FB70142897B44 /* Pods-yuan_wei_show-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-yuan_wei_show-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-yuan_wei_show-tvOSTests/Pods-yuan_wei_show-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B7F338B3A3781BA1DF6B40D5 /* Pods-yuan_wei_show-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-yuan_wei_show-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-yuan_wei_show-tvOS/Pods-yuan_wei_show-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		C1A9A75A5771C8FC5C76772D /* libPods-yuan_wei_show-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-yuan_wei_show-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,6 +92,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A08EBC0A2477BE9800B5C25C /* libc++.tbd in Frameworks */,
+				A08EBC082477BE8C00B5C25C /* libz.tbd in Frameworks */,
+				A08EBC062477BE2000B5C25C /* Security.framework in Frameworks */,
+				A08EBC042477BE1500B5C25C /* SystemConfiguration.framework in Frameworks */,
+				A08EBC022477BC7300B5C25C /* Bugly.framework in Frameworks */,
 				D1E163B0A3A86F09B1AAF04C /* libPods-yuan_wei_show.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -139,6 +154,10 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A08EBC092477BE9800B5C25C /* libc++.tbd */,
+				A08EBC072477BE8C00B5C25C /* libz.tbd */,
+				A08EBC052477BE2000B5C25C /* Security.framework */,
+				A08EBC032477BE1500B5C25C /* SystemConfiguration.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				8D60B7AECFE91FC80D4C772F /* libPods-yuan_wei_show.a */,
@@ -174,6 +193,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				A08EBC012477BC7300B5C25C /* Bugly.framework */,
 				13B07FAE1A68108700A75B9A /* yuan_wei_show */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* yuan_wei_showTests */,
@@ -678,6 +698,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 52Y83JGHN7;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
@@ -705,6 +729,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 52Y83JGHN7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = yuan_wei_show/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (

@@ -8,10 +8,13 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.tencent.bugly.crashreport.CrashReport;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import androidx.multidex.MultiDexApplication;
 import cn.reactnative.modules.update.UpdateContext;
+
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 
@@ -51,6 +54,11 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+
+    CrashReport.initCrashReport(getApplicationContext(), "67ed41158a", false);
+
+
+
   }
 
   /**

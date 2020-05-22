@@ -1,6 +1,6 @@
 #import "RCTPushy.h"
 #import "AppDelegate.h"
-
+#import <Bugly/Bugly.h>
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -44,6 +44,7 @@ static void InitializeFlipper(UIApplication *application) {
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  [Bugly startWithAppId:@"401e2ad5d4"];
   return YES;
 }
 

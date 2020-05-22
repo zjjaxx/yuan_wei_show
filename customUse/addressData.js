@@ -8,6 +8,7 @@ function useAddressData() {
         getLocalStorage("area").then(data => {
             if (data) {
                 setAddressData(JSON.parse(data))
+                throw "complate"
             }
             else {
                 return area()
@@ -16,6 +17,9 @@ function useAddressData() {
             .then(({ data: { result } }) => {
                 setAddressData(result)
                 setLocalStorage("area",JSON.stringify(result))
+            })
+            .catch(res=>{
+                console.log(res)
             })
     }, [])
     return addressData
