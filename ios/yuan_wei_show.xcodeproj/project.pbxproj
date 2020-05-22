@@ -21,6 +21,7 @@
 		A08EBC062477BE2000B5C25C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A08EBC052477BE2000B5C25C /* Security.framework */; };
 		A08EBC082477BE8C00B5C25C /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A08EBC072477BE8C00B5C25C /* libz.tbd */; };
 		A08EBC0A2477BE9800B5C25C /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A08EBC092477BE9800B5C25C /* libc++.tbd */; };
+		A08EBC0C2477C39900B5C25C /* bundle in Resources */ = {isa = PBXBuildFile; fileRef = A08EBC0B2477C39900B5C25C /* bundle */; };
 		B1F7C57C3725280B00E4F422 /* libPods-yuan_wei_show-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C1A9A75A5771C8FC5C76772D /* libPods-yuan_wei_show-tvOSTests.a */; };
 		D1E163B0A3A86F09B1AAF04C /* libPods-yuan_wei_show.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D60B7AECFE91FC80D4C772F /* libPods-yuan_wei_show.a */; };
 		E8F9C35AF77CA0A1986CBA77 /* libPods-yuan_wei_show-yuan_wei_showTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34570C2E20B7D1F244F6FDFD /* libPods-yuan_wei_show-yuan_wei_showTests.a */; };
@@ -70,6 +71,7 @@
 		A08EBC052477BE2000B5C25C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		A08EBC072477BE8C00B5C25C /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		A08EBC092477BE9800B5C25C /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		A08EBC0B2477C39900B5C25C /* bundle */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bundle; sourceTree = "<group>"; };
 		A6B9C5FFB95FB70142897B44 /* Pods-yuan_wei_show-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-yuan_wei_show-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-yuan_wei_show-tvOSTests/Pods-yuan_wei_show-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B7F338B3A3781BA1DF6B40D5 /* Pods-yuan_wei_show-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-yuan_wei_show-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-yuan_wei_show-tvOS/Pods-yuan_wei_show-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		C1A9A75A5771C8FC5C76772D /* libPods-yuan_wei_show-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-yuan_wei_show-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -193,6 +195,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				A08EBC0B2477C39900B5C25C /* bundle */,
 				A08EBC012477BC7300B5C25C /* Bugly.framework */,
 				13B07FAE1A68108700A75B9A /* yuan_wei_show */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -361,6 +364,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				A08EBC0C2477C39900B5C25C /* bundle in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -708,6 +712,7 @@
 				);
 				INFOPLIST_FILE = yuan_wei_show/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -735,6 +740,7 @@
 				);
 				INFOPLIST_FILE = yuan_wei_show/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
