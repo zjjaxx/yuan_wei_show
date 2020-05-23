@@ -52,7 +52,7 @@ function Home({ navigation }) {
         }
     };
     const doCheckUpdate = async () => {
-        if (__DEV__) {
+        if (__DEV__||Platform.OS=="ios") {
             // 开发模式不支持热更新，跳过检查
             return;
         }

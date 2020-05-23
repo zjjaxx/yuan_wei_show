@@ -37,12 +37,10 @@ export function asyncToken() {
                 console.log(res)
             })
             .finally(res => {
-                setTimeout(() => {
                     dispatch({
                         type: SET_LOADING,
                         payload: false
                     })
-                }, 3000)
             })
     }
 }

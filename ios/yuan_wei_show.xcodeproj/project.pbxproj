@@ -698,6 +698,7 @@
 			baseConfigurationReference = EEB0D30EDEAC4C61B38E1E59 /* Pods-yuan_wei_show.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 52Y83JGHN7;
@@ -731,6 +732,7 @@
 			baseConfigurationReference = 127C1ABD376D9E6D03A3B09B /* Pods-yuan_wei_show.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 52Y83JGHN7;
