@@ -19,7 +19,6 @@ function useAddressData() {
                 setLocalStorage("area",JSON.stringify(result))
             })
             .catch(res=>{
-                console.log(res)
             })
     }, [])
     return addressData

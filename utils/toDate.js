@@ -3,13 +3,10 @@ var hour = minute * 60;
 var day = hour * 24;
 var halfamonth = day * 15;
 var month = day * 30;
-export default (dateTimeStamp) => {
-    dateTimeStamp = dateTimeStamp.replace(/\-/g, "/");
-    var sTime = new Date(dateTimeStamp).getTime();//把时间pretime的值转为时间戳
+export default (sTime) => {
     var now = new Date().getTime();//获取当前时间的时间戳
-    var diffValue = now - sTime;
+    var diffValue = now - sTime*1000;
     if (diffValue < 0) {
-    
     }
     var monthC = diffValue / month;
     var weekC = diffValue / (7 * day);

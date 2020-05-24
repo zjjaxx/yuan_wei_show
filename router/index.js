@@ -25,6 +25,7 @@ import DeliveryScreen from "../pages/order/delivery"
 import SearchScreen from "../pages/category/search"
 import MyPublishScreen from "../pages/publish/myPublish"
 import UnshelveScreen from "../pages/person/unshelve"
+import CustomTagsScreen from "../pages/publish/customTags"
 import { connect } from "react-redux"
 import { asyncToken } from "../store/action"
 //tab 路由容器
@@ -36,7 +37,7 @@ function TabContainer() {
                 return <Image style={style.icon} source={focused ? require("../assets/imgs/tab/homeSelected.png") : require("../assets/imgs/tab/home.png")}></Image>
             } else if (route.name === 'category') {
                 return <Image style={style.icon} source={focused ? require("../assets/imgs/tab/categorySelected.png") : require("../assets/imgs/tab/category.png")}></Image>
-            }else if (route.name === 'person') {
+            } else if (route.name === 'person') {
                 return <Image style={style.icon} source={focused ? require("../assets/imgs/tab/personSelected.png") : require("../assets/imgs/tab/person.png")}></Image>
             } else if (route.name === 'message') {
                 return <Image style={style.icon} source={focused ? require("../assets/imgs/tab/messageSelected.png") : require("../assets/imgs/tab/message.png")}></Image>
@@ -51,10 +52,10 @@ function TabContainer() {
             style: {
             }
         }} >
-            <Tab.Screen name="home" component={HomeScreen} options={{ headerShown: false ,title:"爆款推荐"}} />
-            <Tab.Screen name="category" component={CategoryScreen} options={{ headerShown: false ,title:"分类"}} />
-            <Tab.Screen name="message" component={MessageScreen} options={{ headerShown: false,title:"消息中心" }} />
-            <Tab.Screen name="person" component={PersonScreen} options={{ headerShown: false,title:"个人中心"}} />
+            <Tab.Screen name="home" component={HomeScreen} options={{ headerShown: false, title: "爆款推荐" }} />
+            <Tab.Screen name="category" component={CategoryScreen} options={{ headerShown: false, title: "分类" }} />
+            <Tab.Screen name="message" component={MessageScreen} options={{ headerShown: false, title: "消息中心" }} />
+            <Tab.Screen name="person" component={PersonScreen} options={{ headerShown: false, title: "个人中心" }} />
         </Tab.Navigator>
     )
 }
@@ -90,16 +91,17 @@ function AppStackScreen({ isLoading, isLogin, dispatch }) {
                         <AppStack.Screen name="orderList" component={OrderListScreen} ></AppStack.Screen>
                         <AppStack.Screen name="orderState" component={OrderStautsScreen}></AppStack.Screen>
                         <AppStack.Screen name="delivery" component={DeliveryScreen}></AppStack.Screen>
-                        <AppStack.Screen name="search" component={SearchScreen}></AppStack.Screen>  
-                        <AppStack.Screen name="myPublish" component={MyPublishScreen}></AppStack.Screen>  
-                        <AppStack.Screen name="unshelve" component={UnshelveScreen}></AppStack.Screen>  
+                        <AppStack.Screen name="search" component={SearchScreen}></AppStack.Screen>
+                        <AppStack.Screen name="myPublish" component={MyPublishScreen}></AppStack.Screen>
+                        <AppStack.Screen name="unshelve" component={UnshelveScreen}></AppStack.Screen>
+                        <AppStack.Screen name="customTags" component={CustomTagsScreen}></AppStack.Screen>
                     </>
                 ) : (
                         <>
                             <AppStack.Screen name="login" component={LoginScreen}></AppStack.Screen>
                             <AppStack.Screen name="register" component={RegisterScreen}></AppStack.Screen>
                             <AppStack.Screen name="forgetPassword" component={ForgetPasswordScreen}></AppStack.Screen>
-                           
+
                         </>
                     )
             }

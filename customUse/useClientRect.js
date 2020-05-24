@@ -36,6 +36,5 @@ export function useNodeDiffListRect(length) {
             }
         }));
     }, [rect]))
-    console.log("rect",rect)
     return [rect, ref];
 }

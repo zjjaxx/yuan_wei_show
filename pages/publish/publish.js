@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import { View, Text, SafeAreaView, Alert, StyleSheet, ScrollView, TextInput, Button, Image, TouchableHighlight, KeyboardAvoidingView, Switch } from "react-native"
 import Header from "../../components/Header"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
@@ -6,12 +6,13 @@ import ImageUpload from "../../components/ImageUpload"
 import { Formik } from 'formik';
 import * as yup from "yup"
 import { CheckBox } from '@ui-kitten/components';
+import { publish } from "../../api/api"
 
 function Publish({ navigation, route }) {
     //图片数组
     const [imageList, setImageList] = useState([])
     //标签数组
-    const [labelList, setLabelList] = useState([{ checked: false, text: "潮流", id: 1 }, { checked: false, text: "时尚", id: 2 }, { checked: false, text: "迷你", id: 3 }])
+    const [labelList, setLabelList] = useState([])
     //是否包邮
     const [isFreeDelivery, setIsFreeDelivery] = useState(true)
     //toggle checkbox
@@ -24,18 +25,15 @@ function Publish({ navigation, route }) {
                 return item
             }
         }))
-    }, [])
+    }, [labelList])
     //返回事件
     const _goBack = useCallback(() => {
         navigation.goBack()
     }, [])
-    //跳转分类事件
-    const toCategories = useCallback(() => {
-        navigation.navigate("categories")
-    }, [])
     //重置分类
     const resetCategories = useCallback(() => {
-        navigation.setParams({ categories: "" })
+        navigation.setParams({ categories: "", tags: "", customTags:""})
+        setLabelList([])
     }, [])
     //发布事件校验
     const _handleSubmit = useCallback((values, errors, handleSubmit) => {
@@ -61,7 +59,7 @@ function Publish({ navigation, route }) {
             )
             return
         }
-        if(!isFreeDelivery&&!values.deliverFee){
+        if (!isFreeDelivery && !values.deliverFee) {
             Alert.alert(
                 '提示',
                 "请输入运费~",
@@ -86,19 +84,55 @@ function Publish({ navigation, route }) {
             }
         }
         handleSubmit()
-    }, [route.params, imageList,isFreeDelivery])
+    }, [route.params, imageList, isFreeDelivery])
     //发布事件
-    const publish=useCallback((values)=>{
-        let _labelList=labelList.filter(item=>item.checked)
-        console.log("_labelList",_labelList)
-    },[labelList])
+    const publishEvent = useCallback((values) => {
+        let _labelList =labelList.filter(item => item.checked)
+        let platform=_labelList.filter(item=>item.id)||[]
+        let customTags=_labelList.filter(item=>!item.id)||[]
+        let tagList=JSON.stringify({
+            platform,
+            customTags
+        })
+        let images = JSON.stringify(imageList.map(item => item.uri))
+        let shipping_fee = isFreeDelivery ? 0 : values.deliverFee
+        publish({
+            type: 1,
+            content: values.publishValue,
+            cat_id: route.params.categories.id,
+            images,
+            shipping_fee,
+            price: values.price,
+            tags: tagList
+        }).then(({data:{result}}) => {
+            Alert.alert(
+                '提示',
+                result,
+                [
+                    { text: 'OK', onPress: () => { navigation.goBack()} },
+                ],
+
+            )
+
+        })
+    }, [labelList, imageList, isFreeDelivery])
+    //标签数组 
+    useEffect(() => {
+        if (route.params?.tags) {
+            setLabelList(route.params.tags.map(item => ({ ...item, checked: false })))
+        }
+        if(route.params?.customTags){
+            let _labelList=route.params.customTags.map(item=>({customTag:item,name:item, checked: true}))
+            setLabelList(labelList=>[...labelList,..._labelList])
+        }
+    }, [route.params?.tags,route.params?.customTags])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-            <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS == "android" ?"":"padding"} enabled >
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS == "android" ? "" : "padding"} enabled >
                 <View style={style.container}>
                     <Formik
                         initialValues={{ publishValue: '', price: "", deliverFee: "" }}
-                        onSubmit={(values) => publish(values)}
+                        onSubmit={(values) => publishEvent(values)}
                         validationSchema={
                             yup.object().shape({
                                 publishValue: yup
@@ -134,17 +168,17 @@ function Publish({ navigation, route }) {
                                     <Text style={style.categoriesTitle}>分类</Text>
                                     {route.params && route.params.categories ? <View style={{ flexDirection: "row" }}>
                                         <View style={style.selectCategoriesWrap}>
-                                            <Text style={style.categories}>{route.params.categories}</Text>
+                                            <Text style={style.categories}>{route.params.categories.cate_name}</Text>
                                             <TouchableHighlight style={style.remove} underlayColor="#fca413" onPress={resetCategories}>
                                                 <Image style={style.removeIcon} source={require("../../assets/imgs/removeCategories.png")}></Image>
                                             </TouchableHighlight>
                                         </View>
-                                    </View> : <TouchableHighlight underlayColor="#fff" onPress={toCategories}>
+                                    </View> : <TouchableHighlight underlayColor="#fff" onPress={()=>navigation.navigate("categories")}>
                                             <View style={style.categoriesWrap}>
                                                 <Text style={style.all}>全部  > </Text>
                                             </View>
                                         </TouchableHighlight>}
-                                    {route.params && route.params.categories ? (
+                                    {route.params && route.params.tags ? (
                                         <>
                                             <Text style={style.categoriesTitle}>标签</Text>
                                             <View style={style.labelListWrap}>
@@ -155,10 +189,14 @@ function Publish({ navigation, route }) {
                                                         status="warning"
                                                         checked={item.checked}
                                                         onChange={nextChecked => toggleLabelChecked(nextChecked, index)}>
-                                                        <Text style={style.labelText}>{item.text}</Text>
+                                                        <Text style={style.labelText}>{item.name}</Text>
                                                     </CheckBox>
                                                 ))}
+                                                <TouchableHighlight style={style.customTagWrap} underlayColor="#fff" onPress={() => navigation.navigate("customTags")}>
+                                                    <Text style={style.all}>添加标签 ></Text>
+                                                </TouchableHighlight>
                                             </View>
+
                                         </>
                                     ) : null}
                                     <View style={style.priceWrap}>
@@ -215,7 +253,7 @@ const style = StyleSheet.create({
         borderBottomWidth: scaleSize(0.5),
         fontSize: setSpText2(14),
         height: scaleHeight(150),
-        color:"#333"
+        color: "#333"
     },
     categoriesTitle: {
         marginTop: scaleHeight(20),
@@ -230,13 +268,22 @@ const style = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center"
     },
+    customTagWrap: {
+        height: scaleHeight(25),
+        width: scaleSize(100),
+        backgroundColor: "#fca413",
+        borderRadius: scaleSize(15),
+        alignItems: "center",
+        justifyContent: "center"
+    },
     labelListWrap: {
         paddingVertical: scaleHeight(10),
         flexDirection: "row",
-        flexWrap: "wrap"
+        flexWrap: "wrap",
+        alignItems:"center"
     },
-    checkbox:{
-        marginBottom:scaleHeight(10)
+    checkbox: {
+        marginBottom: scaleHeight(10)
     },
     labelText: {
         fontSize: setSpText2(14)
@@ -287,7 +334,7 @@ const style = StyleSheet.create({
         textAlign: "right",
         fontSize: setSpText2(14),
         fontWeight: "500",
-        color:"#333"
+        color: "#333"
     },
     isFreeDeliveryWrap: {
         marginTop: scaleHeight(10),
@@ -319,7 +366,7 @@ const style = StyleSheet.create({
         textAlign: "right",
         fontSize: setSpText2(14),
         fontWeight: "500",
-        color:"#333"
+        color: "#333"
     }
 })
 

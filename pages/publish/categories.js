@@ -2,6 +2,7 @@ import React, { useEffect, memo, useState, useCallback } from "react"
 import { Text, View, ScrollView, SafeAreaView, StyleSheet, TouchableHighlight } from "react-native"
 import Header from "../../components/Header"
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
+import {category,tags} from "../../api/api"
 
 function Categories({ navigation }) {
     //分类列表
@@ -12,8 +13,21 @@ function Categories({ navigation }) {
     }, [])
     //返回发布页面
     const toPublish=useCallback(()=>{
-        navigation.navigate("publish",{categories:"超短群"})
+        // navigation.navigate("publish",{categories:"超短群"})
     },[])
+    //获取标签
+    const getTags=useCallback((selectItem)=>{
+        tags({cat_id:selectItem.id}).then(({data:{result}})=>{
+            navigation.navigate("publish",{categories:selectItem,tags:result})
+        })
+    },[])
+    //获取分类数据
+    useEffect(()=>{
+        category().then(({data:{result}})=>{
+            setCategoriesList(result)
+        })
+    },[])
+
     return (
         <SafeAreaView style={style.safeView}>
             <View style={style.container}>
@@ -22,26 +36,29 @@ function Categories({ navigation }) {
                     title="分类"
                 ></Header>
                 <ScrollView style={style.scrollView}>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => <CategoriesItem toPublish={toPublish} key={index}></CategoriesItem>)}
+                    {categoriesList.map((item, index) => <CategoriesItem categoriesItemData={item} getTags={getTags} key={index}></CategoriesItem>)}
                 </ScrollView>
             </View>
         </SafeAreaView>
     )
 }
 const CategoriesItem = memo((props) => {
-    const {toPublish}=props
+    const {getTags,categoriesItemData}=props
     const [isExpend, setIsExpend] = useState(false)
     const toggleIsExpend = useCallback(() => {
+        if(!categoriesItemData.child.length){
+            getTags(categoriesItemData)
+        }
         setIsExpend(!isExpend)
     }, [isExpend])
     return (
         <TouchableHighlight underlayColor="#fff" onPress={toggleIsExpend}>
             <View style={style.categoriesItemWrap}>
-                <Text style={[style.title,isExpend?style.selectColor:{}]}>鞋服</Text>
+                <Text style={[style.title,isExpend?style.selectColor:{}]}>{categoriesItemData.cate_name}</Text>
                 {isExpend ? <View style={style.expendWrap}>
-                    {[1, 2, 3, 4, 5, 6].map((item, index) =>
-                      <TouchableHighlight underlayColor="#fff" key={index} onPress={toPublish}>
-                        <Text style={style.categoriesDetailItem}>超短裙</Text>
+                    {categoriesItemData.child.map((item, index) =>
+                      <TouchableHighlight underlayColor="#fff" key={index} onPress={()=>getTags(item)}>
+                        <Text style={style.categoriesDetailItem}>{item.cate_name}</Text>
                         </TouchableHighlight>
                     )}
                 </View> : null}
@@ -70,7 +87,8 @@ const style = StyleSheet.create({
         justifyContent: "center"
     },
     title: {
-        fontSize: setSpText2(14)
+        fontSize: setSpText2(14),
+        flexShrink:0
     },
     expendWrap: {
         marginTop: scaleHeight(10),

@@ -50,9 +50,7 @@ function ProductDetail({ navigation }) {
     }, [])
     //保存图片到本地
     const _onSaveToCamera = useCallback((url) => {
-        console.log("url", url)
         CameraRoll.saveToCameraRoll(url).then(path => {
-            console.log("path", path)
         })
     }, [imgList])
     //查看更多

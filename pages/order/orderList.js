@@ -27,7 +27,6 @@ function OrderList({ navigation }) {
     }, [])
     //跳转订单详情
     const toOrderStatus = useCallback(() => {
-        console.log("enter")
         navigation.navigate("orderState")
     }, [])
     //tab切换

@@ -51,7 +51,6 @@ function ForgetPassword({ dispatch, navigation, device_code }) {
         }
         for (let [key, value] of Object.entries(errors)) {
             if (value) {
-                console.log("value", value)
                 Alert.alert(
                     '提示',
                     value,

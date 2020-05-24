@@ -8,6 +8,7 @@ import axios from "axios"
 import Qs from "querystring";
 import { baseURL } from "../utils/config"
 import {showToast} from "../utils/common"
+import store from "../store/store"
 const instance = axios.create({
     //表单格式
     headers: {
@@ -25,9 +26,10 @@ const instance = axios.create({
 instance.defaults.baseURL = baseURL;
 instance.defaults.timeout = 10000;
 instance.interceptors.request.use(function (config) {
-    // if (store.state.token) {
-    //     config.headers["authorization"] = "bearer " + store.state.token
-    // }
+    const {token}=store.getState()
+    if (token) {
+        config.headers["authorization"] = "bearer " +token
+    }
     return config;
 }, function (error) {
     showToast(error)
@@ -44,7 +46,6 @@ instance.interceptors.response.use(function (response) {
     // }
 
 }, function (error) {
-    console.log("response error", error)
     // Add a Toast on screen.
     showToast(error.response.data.result)
     return Promise.reject(error.response.data.result);

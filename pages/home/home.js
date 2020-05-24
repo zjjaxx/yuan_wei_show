@@ -1,5 +1,5 @@
 import React, { useMemo, memo, useCallback, useState, useEffect, useRef } from "react"
-import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight,Alert } from "react-native"
+import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight, Alert } from "react-native"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import { Popover } from '@ui-kitten/components';
 import toDate from "../../utils/toDate"
@@ -17,7 +17,12 @@ import {
     markSuccess,
 } from 'react-native-update';
 const { appKey } = APP_KEY_CONFIG[Platform.OS];
+import { home } from "../../api/api"
 function Home({ navigation }) {
+    //分页
+    const [page, setPage] = useState(0)
+    const [lastPage, setLastPage] = useState(1)
+    const [homeDataList, setHomeDataList] = useState([])
     //下拉刷新flag
     const [refreshing, setRefreshing] = useState(false)
     //下拉刷新事件
@@ -52,7 +57,7 @@ function Home({ navigation }) {
         }
     };
     const doCheckUpdate = async () => {
-        if (__DEV__||Platform.OS=="ios") {
+        if (__DEV__ || Platform.OS == "ios") {
             // 开发模式不支持热更新，跳过检查
             return;
         }
@@ -71,15 +76,21 @@ function Home({ navigation }) {
             // Alert.alert('提示', '您的应用版本已是最新.');
         } else {
             Alert.alert('提示', '检查到新的版本' + info.name + ',是否下载?\n' + info.description, [
-                { text: '是', onPress: () => {doUpdate(info) } },
+                { text: '是', onPress: () => { doUpdate(info) } },
                 { text: '否', },
             ]);
         }
     };
-    useEffect( () => {
-         doCheckUpdate()
+    useEffect(() => {
+        doCheckUpdate()
     }, [])
- 
+    //首页数据请求
+    useEffect(() => {
+        home({ page: page + 1 }).then(({ data: { result } }) => {
+            setHomeDataList(result)
+        })
+    }, [page])
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
@@ -90,14 +101,14 @@ function Home({ navigation }) {
                     </TouchableHighlight>
                 </View>
                 <FlatList
-                    showsVerticalScrollIndicator = {false}
+                    showsVerticalScrollIndicator={false}
                     style={style.flatList}
                     onEndReached={_scrollEnd}
                     onEndReachedThreshold={0.1}
                     refreshing={refreshing}
                     onRefresh={_onRefresh}
-                    data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                    renderItem={({ item, index }) => <RecommandProductItem toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
+                    data={homeDataList}
+                    renderItem={({ item, index }) => <RecommandProductItem productItemData={item} toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
                 />
             </View>
         </SafeAreaView>
@@ -105,10 +116,11 @@ function Home({ navigation }) {
 }
 //推荐Item
 const RecommandProductItem = memo((props) => {
-    const { index, toProductDetail } = props
+    const { index, toProductDetail, productItemData } = props
     //推荐头部组件
     const RecommandHeader = memo((props) => {
-        const [menuSelect, setMenuSelect] = useState(false)
+        const { productItemData } = props
+        const [menuSelect, setMenuSelect,] = useState(false)
         const showPopup = useCallback(() => {
             setMenuSelect(true)
         }, [menuSelect])
@@ -118,10 +130,10 @@ const RecommandProductItem = memo((props) => {
 
         return (
             <View style={style.recommonHeaderWrap}>
-                <Image source={require("../../assets/imgs/avatar.jpeg")} style={style.avatar}></Image>
+                <Image source={{ uri: productItemData.user.avatar }} style={style.avatar}></Image>
                 <View style={style.nickerWrap}>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={style.nick}>小可爱</Text>
-                    <Text style={style.time}>{toDate("2020-05-02 15:20:45")}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={style.nick}>{productItemData.user.nickname}</Text>
+                    <Text style={style.time}>{toDate(productItemData.add_time)}</Text>
                 </View>
                 <Popover
                     placement="left"
@@ -155,27 +167,27 @@ const RecommandProductItem = memo((props) => {
             switch (imgList.length) {
                 case 1:
                     return (<View style={style.picWrap}>
-                        <Image style={style.pic1} source={require("../../assets/imgs/pic1.jpg")}></Image>
+                        <Image style={style.pic1} source={{ uri: imgList[0] }}></Image>
                     </View>)
                 case 2:
                     return (<View style={style.picWrap}>
-                        {imgList.map((item, index) => <Image key={index} style={[style.pic2, index == 0 ? style.mr10 : {}]} source={require("../../assets/imgs/pic1.jpg")}></Image>)}
+                        {imgList.map((item, index) => <Image key={index} style={[style.pic2, index == 0 ? style.mr10 : {}]} source={{ uri: item }}></Image>)}
                     </View>)
                 case 3:
                     return (<View style={style.picWrap}>
-                        <Image style={style.pic3_1} source={require("../../assets/imgs/pic3.jpg")}></Image>
+                        <Image style={style.pic3_1} source={{ uri: imgList[0] }}></Image>
                         <View style={style.rightWrap}>
-                            <Image style={[style.pic3_2, style.mb10]} source={require("../../assets/imgs/pic2.jpg")}></Image>
-                            <Image style={style.pic3_2} source={require("../../assets/imgs/pic1.jpg")}></Image>
+                            <Image style={[style.pic3_2, style.mb10]} source={{ uri: imgList[1] }}></Image>
+                            <Image style={style.pic3_2} source={{ uri: imgList[2] }}></Image>
                         </View>
                     </View>)
                 default:
                     return (<View style={style.picWrap}>
-                        <Image style={style.pic3_1} source={require("../../assets/imgs/pic3.jpg")}></Image>
+                        <Image style={style.pic3_1} source={{ uri: imgList[0] }}></Image>
                         <View style={style.rightWrap}>
-                            <Image style={[style.pic3_2, style.mb10]} source={require("../../assets/imgs/pic2.jpg")}></Image>
+                            <Image style={[style.pic3_2, style.mb10]} source={{ uri: imgList[1] }}></Image>
                             <View style={style.imgWrap}>
-                                <Image style={style.pic3_2} source={require("../../assets/imgs/pic1.jpg")}></Image>
+                                <Image style={style.pic3_2} source={{ uri: imgList[2] }}></Image>
                                 <View style={style.imgMask}>
                                     <Text style={style.imgMore}>更多</Text>
                                 </View>
@@ -188,22 +200,22 @@ const RecommandProductItem = memo((props) => {
     })
     return (
         <View>
-            <RecommandHeader></RecommandHeader>
-            <Text style={style.comment}>已入手一双,钱包已掏空</Text>
+            <RecommandHeader productItemData={productItemData}></RecommandHeader>
+            <Text style={style.comment}>{productItemData.store_info}</Text>
             <TouchableHighlight underlayColor="#fff" onPress={() => toProductDetail(1)}>
-                <ImgList imgList={index % 4 == 1 ? [1] : index % 4 == 2 ? [1, 2] : index % 4 == 3 ? [1, 2, 3] : [1, 2, 3, 4]}></ImgList>
+                <ImgList imgList={productItemData.images}></ImgList>
             </TouchableHighlight>
             <View style={style.recommandBottomWrap}>
                 <TouchableHighlight underlayColor="#fff" onPress={() => { }}>
                     <View style={style.bottomOptionItem}>
                         <Image style={style.loveIcon} source={require("../../assets/imgs/love.png")}></Image>
-                        <Text style={style.loveCount}>1245</Text>
+                        <Text style={style.loveCount}>{productItemData.like}</Text>
                     </View>
                 </TouchableHighlight>
                 <TouchableHighlight underlayColor="#fff" onPress={() => toProductDetail(1)}>
                     <View style={style.bottomOptionItem}>
                         <Image style={style.commentIcon} source={require("../../assets/imgs/comment.png")}></Image>
-                        <Text style={style.commentCount}>7245</Text>
+                        <Text style={style.commentCount}>{productItemData.reply}</Text>
                     </View>
                 </TouchableHighlight>
             </View>
