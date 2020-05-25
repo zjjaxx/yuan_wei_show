@@ -40,7 +40,7 @@ function ImageUpload(props) {
 
     }, [imageList])
     const pickerImg = useCallback(() => {
-        SyanImagePicker.asyncShowImagePicker({ imageCount: 20 ,enableBase64:true})
+        SyanImagePicker.asyncShowImagePicker({ imageCount:1,isCrop:true ,enableBase64:true})
             .then(photos => {
                 let _images = photos.map((item, index) => {
                     imgUpload({base64:item.base64,type:item.type}, imageList.length + index)

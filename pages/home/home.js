@@ -260,7 +260,7 @@ const style = StyleSheet.create({
         borderRadius: scaleSize(20)
     },
     recommonHeaderWrap: {
-        height: scaleHeight(80),
+        height: scaleHeight(50),
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between"
@@ -303,7 +303,7 @@ const style = StyleSheet.create({
     },
     pic2: {
         flex: 1,
-        height: scaleHeight(180),
+        height: scaleHeight(120),
         borderRadius: scaleSize(15)
     },
     mr10: {
