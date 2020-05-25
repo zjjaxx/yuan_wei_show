@@ -4,7 +4,7 @@ import { setSpText2, scaleSize, scaleHeight } from "../utils/ScreenUtil"
 import SyanImagePicker from 'react-native-syan-image-picker';
 import Spinner from 'react-native-spinkit';
 import { connect } from "react-redux"
-import axios from "axios"
+import {upload} from "../api/api"
 import { baseURL } from "../utils/config"
 function ImageUpload(props) {
     const [isLoading, setIsloading] = useState(false)
@@ -40,13 +40,10 @@ function ImageUpload(props) {
 
     }, [imageList])
     const pickerImg = useCallback(() => {
-        SyanImagePicker.asyncShowImagePicker({ imageCount: 20 })
+        SyanImagePicker.asyncShowImagePicker({ imageCount: 20 ,enableBase64:true})
             .then(photos => {
                 let _images = photos.map((item, index) => {
-                    console.log("item", item)
-                    let file = { uri: Platform.OS === "ios" ? "file:///" + item.uri : item.original_uri, type: "image/jpeg", name: "image.png" };
-                    
-                    imgUpload({ file }, imageList.length + index)
+                    imgUpload({base64:item.base64,type:item.type}, imageList.length + index)
                     return { status: "loading", message: "上传中" }
                 })
                 setImageList(imageList => [...imageList, ..._images])
@@ -57,15 +54,7 @@ function ImageUpload(props) {
             })
     }, [])
     const imgUpload = useCallback((imgData, index) => {
-        let formData = new FormData();
-        formData.append("img", imgData.file);
-        console.log("formData",formData)
-        axios.post(baseURL + "/api/v1/image/upload", formData, {
-            headers: {
-                authorization: "bearer " + token,
-                'Content-Type': 'multipart/form-data'
-            }
-        }).then(({ data: { result } }) => {
+        upload(imgData).then(({ data: { result } }) => {
             setImageList(imageList => imageList.map((item, _index) => {
                 if (_index == index) {
                     return {
