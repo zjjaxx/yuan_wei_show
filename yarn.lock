@@ -5331,11 +5331,6 @@ react-native-gesture-handler@^1.6.1:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-image-crop-picker@^0.30.0:
-  version "0.30.0"
-  resolved "https://registry.npm.taobao.org/react-native-image-crop-picker/download/react-native-image-crop-picker-0.30.0.tgz#65a450d315abb3558ad40444b8765e4b7a097243"
-  integrity sha1-ZaRQ0xWrs1WK1AREuHZeS3oJckM=
-
 react-native-image-pan-zoom@^2.1.9:
   version "2.1.12"
   resolved "https://registry.npm.taobao.org/react-native-image-pan-zoom/download/react-native-image-pan-zoom-2.1.12.tgz#eb98bf56fb5610379bdbfdb63219cc1baca98fd2"
@@ -5437,6 +5432,11 @@ react-native-swipe-list-view@^3.0.1:
   version "3.1.0"
   resolved "https://registry.npm.taobao.org/react-native-swipe-list-view/download/react-native-swipe-list-view-3.1.0.tgz#4c59a8b6358d203f406d199463e2347283ac08d1"
   integrity sha1-TFmotjWNID9AbRmUY+I0coOsCNE=
+
+react-native-syan-image-picker@^0.4.8:
+  version "0.4.8"
+  resolved "https://registry.npm.taobao.org/react-native-syan-image-picker/download/react-native-syan-image-picker-0.4.8.tgz#b01f30ffa68ea52add034f7073631a2bddd2d194"
+  integrity sha1-sB8w/6aOpSrdA09wc2MaK93S0ZQ=
 
 react-native-update@^5.5.10:
   version "5.5.10"

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react"
 import { View, Image, StyleSheet, ScrollView, TouchableHighlight, Platform, Text, Alert } from "react-native"
 import { setSpText2, scaleSize, scaleHeight } from "../utils/ScreenUtil"
-import ImagePicker from 'react-native-image-crop-picker';
+import SyanImagePicker from 'react-native-syan-image-picker';
 import Spinner from 'react-native-spinkit';
 import { connect } from "react-redux"
 import axios from "axios"
@@ -11,22 +11,39 @@ function ImageUpload(props) {
     const { imageCount = 20, imageList = [], setImageList, userInfo, token } = props
     //选择图片
     const selectImg = useCallback(() => {
-        ImagePicker.openPicker({
-            multiple: true
-        }).then(images => {
-            let _images = images.map((item, index) => {
-                console.log("item",item)
-                let file = { uri: Platform.OS === "ios" ? "file:///" + item.path : item.path, type: "multipart/form-data", name: item.filename||"image" };
-              
-                imgUpload({ file }, imageList.length + index)
-                return { status: "loading", message: "上传中" }
+        // promise-then
+        SyanImagePicker.asyncShowImagePicker({ imageCount: 20 })
+            .then(photos => {
+                let _images = photos.map((item, index) => {
+                    console.log("item", item)
+                    let file = { uri: Platform.OS === "ios" ? "file:///" + item.uri : item.path, type: "multipart/form-data", name: "image.png" };
+
+                    imgUpload({ file }, imageList.length + index)
+                    return { status: "loading", message: "上传中" }
+                })
+                setImageList(imageList => [...imageList, ..._images])
+                // 选择成功
             })
-            setImageList(imageList => [...imageList, ..._images])
-        })
-            .catch(res => {
+            .catch(err => {
+                // 取消选择，err.message为"取消"
             })
-            .finally(res => {
-            });
+
+        // ImagePicker.openPicker({
+        //     multiple: true
+        // }).then(images => {
+        //     let _images = images.map((item, index) => {
+        //         console.log("item",item)
+        //         let file = { uri: Platform.OS === "ios" ? "file:///" + item.path : item.path, type: "multipart/form-data", name: item.filename||"image" };
+
+        //         imgUpload({ file }, imageList.length + index)
+        //         return { status: "loading", message: "上传中" }
+        //     })
+        //     setImageList(imageList => [...imageList, ..._images])
+        // })
+        //     .catch(res => {
+        //     })
+        //     .finally(res => {
+        //     });
     }, [imageList])
     const imgUpload = useCallback((imgData, index) => {
         let formData = new FormData();
@@ -158,7 +175,7 @@ const style = StyleSheet.create({
         color: "#fff"
     },
     uploadWrap: {
-        marginRight:scaleSize(20),
+        marginRight: scaleSize(20),
         marginTop: scaleHeight(10),
         borderRadius: scaleSize(5),
         height: scaleSize(90),

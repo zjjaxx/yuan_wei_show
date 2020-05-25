@@ -6,7 +6,6 @@ import { ChatScreen } from 'react-native-easy-chat-ui'
 import { AudioRecorder, AudioUtils } from 'react-native-audio'
 import RNFS from 'react-native-fs'
 import Sound from 'react-native-sound'
-import ImagePicker from 'react-native-image-crop-picker';
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
 import chatBg from '../../assets/imgs/pic1.jpg'
 const { width, height } = Dimensions.get('window')
@@ -179,19 +178,6 @@ function MessageDetail({ navigation }) {
   }, [])
   //选取相册
   const PanelMenuEvent = useCallback((index) => {
-    switch (index) {
-      case 0:
-        ImagePicker.openPicker({}).then(image => {
-          console.log(" openPicker image", image)
-        })
-        break
-      case 1:
-        ImagePicker.openCamera({}).then(image => {
-          console.log(" openPicker image", image);
-        });
-      default:
-        break
-    }
 
   }, [])
   //渲染底部菜单栏
