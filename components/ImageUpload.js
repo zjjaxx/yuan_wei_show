@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react"
-import { View, Image, StyleSheet, ScrollView, TouchableHighlight, Platform, Text, Alert } from "react-native"
+import { View, Image, StyleSheet, ScrollView, TouchableHighlight, Platform, Text, Alert, PermissionsAndroid } from "react-native"
 import { setSpText2, scaleSize, scaleHeight } from "../utils/ScreenUtil"
 import SyanImagePicker from 'react-native-syan-image-picker';
 import Spinner from 'react-native-spinkit';
@@ -10,14 +10,42 @@ function ImageUpload(props) {
     const [isLoading, setIsloading] = useState(false)
     const { imageCount = 20, imageList = [], setImageList, userInfo, token } = props
     //选择图片
-    const selectImg = useCallback(() => {
-        // promise-then
+    const selectImg = useCallback(async () => {
+        if (Platform.OS ==="ios") {
+            pickerImg()
+        }
+        else {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: '申请读写手机存储权限',
+                        message:
+                            '一个很牛逼的应用想借用你的摄像头，' +
+                            '然后你就可以拍出酷炫的皂片啦。',
+                        buttonNeutral: '等会再问我',
+                        buttonNegative: '不行',
+                        buttonPositive: '好吧',
+                    },
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    pickerImg()
+                } else {
+                    console.log('用户并不给你');
+                }
+            } catch (err) {
+                console.warn(err);
+            }
+        }
+
+    }, [imageList])
+    const pickerImg = useCallback(() => {
         SyanImagePicker.asyncShowImagePicker({ imageCount: 20 })
             .then(photos => {
                 let _images = photos.map((item, index) => {
                     console.log("item", item)
-                    let file = { uri: Platform.OS === "ios" ? "file:///" + item.uri : item.path, type: "multipart/form-data", name: "image.png" };
-
+                    let file = { uri: Platform.OS === "ios" ? "file:///" + item.uri : item.original_uri, type: "image/jpeg", name: "image.png" };
+                    
                     imgUpload({ file }, imageList.length + index)
                     return { status: "loading", message: "上传中" }
                 })
@@ -27,27 +55,11 @@ function ImageUpload(props) {
             .catch(err => {
                 // 取消选择，err.message为"取消"
             })
-
-        // ImagePicker.openPicker({
-        //     multiple: true
-        // }).then(images => {
-        //     let _images = images.map((item, index) => {
-        //         console.log("item",item)
-        //         let file = { uri: Platform.OS === "ios" ? "file:///" + item.path : item.path, type: "multipart/form-data", name: item.filename||"image" };
-
-        //         imgUpload({ file }, imageList.length + index)
-        //         return { status: "loading", message: "上传中" }
-        //     })
-        //     setImageList(imageList => [...imageList, ..._images])
-        // })
-        //     .catch(res => {
-        //     })
-        //     .finally(res => {
-        //     });
-    }, [imageList])
+    }, [])
     const imgUpload = useCallback((imgData, index) => {
         let formData = new FormData();
         formData.append("img", imgData.file);
+        console.log("formData",formData)
         axios.post(baseURL + "/api/v1/image/upload", formData, {
             headers: {
                 authorization: "bearer " + token,
