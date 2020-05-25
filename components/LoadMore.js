@@ -45,7 +45,7 @@ const style = StyleSheet.create({
     imgWrap: {
         position: "relative",
         width: "100%",
-        height: scaleSize(350),
+        height: scaleSize(280),
         borderRadius: scaleSize(5),
     },
     loadMore: {

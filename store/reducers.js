@@ -3,6 +3,7 @@ import {
     SET_LOADING,
     SET_TOKEN,
     SET_USER_INFO,
+    SET_YW,
 } from "./action"
 
 export default {
@@ -49,6 +50,15 @@ export default {
         const { type, payload } = action
         switch (type) {
             case SET_USER_INFO:
+                return payload
+            default:
+                return state
+        }
+    },
+    yw(state="",action){
+        const { type, payload } = action
+        switch (type) {
+            case SET_YW:
                 return payload
             default:
                 return state

@@ -10,6 +10,7 @@ const store = createStore(reducer, {
     token: "",
     webSocket: null,
     device_code: 8,
+    yw:"",
     userInfo:{userId: 0}
 }, applyMiddleware(thunk))
 

@@ -4,6 +4,7 @@ export const SET_LOADING = "SET_LOADING"
 export const SET_TOKEN = "SET_TOKEN"
 export const SET_WEBSOCKET = "SET_WEBSOCKET"
 export const SET_USER_INFO = "SET_USER_INFO"
+export const SET_YW="SET_YW"
 import { wsURL, TOKEN_KEY, VALID_TIME, validTimeCount, baseURL, USER_INFO } from "../utils/config"
 import { showToast } from "../utils/common"
 
@@ -43,7 +44,7 @@ export function asyncToken() {
             })
     }
 }
-export function login(token, userInfo) {
+export function login(token, userInfo,yw="") {
     return (dispatch, getState) => {
         setLocalStorage(TOKEN_KEY, token).then(res => {
             dispatch({
@@ -58,6 +59,12 @@ export function login(token, userInfo) {
                 type: SET_USER_INFO,
                 payload: userInfo
             })
+            if(yw){
+                dispatch({
+                    type: SET_YW,
+                    payload: yw
+                })
+            }
         })
         setLocalStorage(VALID_TIME, new Date().getTime() + "").then(res => {
 
@@ -113,6 +120,7 @@ export function initWebSocket(token) {
         };
     }
 }
+
 
 
 

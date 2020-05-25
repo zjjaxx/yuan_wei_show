@@ -27,17 +27,27 @@ function Home({ navigation }) {
     const [refreshing, setRefreshing] = useState(false)
     //下拉刷新事件
     const _onRefresh = useCallback(() => {
+        if (refreshing) {
+            return
+        }
         setRefreshing(true)
         setTimeout(() => {
-            setRefreshing(false)
-        }, 1000)
+            setHomeDataList([])
+            setPage(0)
+            setLastPage(1)
+            _api(0)
+        }, 1000);
     }, [refreshing])
     //上拉加载更多事件
     const _scrollEnd = useCallback(() => {
-    }, [])
+        if (page >= lastPage) {
+            return
+        }
+        _api(page)
+    }, [page, lastPage])
     //跳转产品详情页
-    const _toProductDetail = useCallback((id) => {
-        navigation.navigate("productDetail", { id })
+    const _toProductDetail = useCallback((goods_id) => {
+        navigation.navigate("productDetail", { goods_id })
     }, [])
     //跳转发布页
     const _toPublish = useCallback(() => {
@@ -86,11 +96,23 @@ function Home({ navigation }) {
     }, [])
     //首页数据请求
     useEffect(() => {
-        home({ page: page + 1 }).then(({ data: { result } }) => {
-            setHomeDataList(result)
+        _api(0)
+    }, [])
+    const _api = useCallback((_page) => {
+        home({ page: _page + 1 }).then(({ data: { result } }) => {
+            if (result.length) {
+                setHomeDataList(homeDataList => [...homeDataList, ...result])
+                setPage(page => page + 1)
+                setLastPage(lastPage => lastPage + 1)
+            }
+            else {
+                setLastPage(page)
+            }
         })
-    }, [page])
-
+            .finally(res => {
+                setRefreshing(false)
+            })
+    }, [])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
@@ -162,7 +184,7 @@ const RecommandProductItem = memo((props) => {
     })
     //推荐图片组件
     const ImgList = memo((props) => {
-        const { imgList } = props
+        const { imgList, images_total } = props
         const _list = () => {
             switch (imgList.length) {
                 case 1:
@@ -174,13 +196,29 @@ const RecommandProductItem = memo((props) => {
                         {imgList.map((item, index) => <Image key={index} style={[style.pic2, index == 0 ? style.mr10 : {}]} source={{ uri: item }}></Image>)}
                     </View>)
                 case 3:
-                    return (<View style={style.picWrap}>
-                        <Image style={style.pic3_1} source={{ uri: imgList[0] }}></Image>
-                        <View style={style.rightWrap}>
-                            <Image style={[style.pic3_2, style.mb10]} source={{ uri: imgList[1] }}></Image>
-                            <Image style={style.pic3_2} source={{ uri: imgList[2] }}></Image>
-                        </View>
-                    </View>)
+                    if (images_total <=3) {
+                        return (<View style={style.picWrap}>
+                            <Image style={style.pic3_1} source={{ uri: imgList[0] }}></Image>
+                            <View style={style.rightWrap}>
+                                <Image style={[style.pic3_2, style.mb10]} source={{ uri: imgList[1] }}></Image>
+                                <Image style={style.pic3_2} source={{ uri: imgList[2] }}></Image>
+                            </View>
+                        </View>)
+                    }
+                    else {
+                        return (<View style={style.picWrap}>
+                            <Image style={style.pic3_1} source={{ uri: imgList[0] }}></Image>
+                            <View style={style.rightWrap}>
+                                <Image style={[style.pic3_2, style.mb10]} source={{ uri: imgList[1] }}></Image>
+                                <View style={style.imgWrap}>
+                                    <Image style={style.pic3_2} source={{ uri: imgList[2] }}></Image>
+                                    <View style={style.imgMask}>
+                                        <Text style={style.imgMore}>+ {images_total}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>)
+                    }
                 default:
                     return (<View style={style.picWrap}>
                         <Image style={style.pic3_1} source={{ uri: imgList[0] }}></Image>
@@ -189,7 +227,7 @@ const RecommandProductItem = memo((props) => {
                             <View style={style.imgWrap}>
                                 <Image style={style.pic3_2} source={{ uri: imgList[2] }}></Image>
                                 <View style={style.imgMask}>
-                                    <Text style={style.imgMore}>更多</Text>
+                                    <Text style={style.imgMore}>+{images_total}</Text>
                                 </View>
                             </View>
                         </View>
@@ -201,9 +239,9 @@ const RecommandProductItem = memo((props) => {
     return (
         <View>
             <RecommandHeader productItemData={productItemData}></RecommandHeader>
-            <Text style={style.comment}>{productItemData.store_info}</Text>
-            <TouchableHighlight underlayColor="#fff" onPress={() => toProductDetail(1)}>
-                <ImgList imgList={productItemData.images}></ImgList>
+            <Text numberOfLines={2} ellipsizeMode="tail" style={style.comment}>{productItemData.store_info}</Text>
+            <TouchableHighlight underlayColor="#fff" onPress={() => toProductDetail(productItemData.id)}>
+                <ImgList images_total={productItemData.images_info.images_total} imgList={productItemData.images_info.images}></ImgList>
             </TouchableHighlight>
             <View style={style.recommandBottomWrap}>
                 <TouchableHighlight underlayColor="#fff" onPress={() => { }}>
@@ -336,7 +374,7 @@ const style = StyleSheet.create({
         alignItems: "center"
     },
     imgMore: {
-        fontSize: setSpText2(14),
+        fontSize: setSpText2(18),
         color: "#fff"
     },
     pic3_2: {

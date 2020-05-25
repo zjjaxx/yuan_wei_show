@@ -26,9 +26,12 @@ const instance = axios.create({
 instance.defaults.baseURL = baseURL;
 instance.defaults.timeout = 10000;
 instance.interceptors.request.use(function (config) {
-    const {token}=store.getState()
+    const {token,yw}=store.getState()
     if (token) {
         config.headers["authorization"] = "bearer " +token
+    }
+    if (yw) {
+        config.headers["yw"] =yw
     }
     return config;
 }, function (error) {

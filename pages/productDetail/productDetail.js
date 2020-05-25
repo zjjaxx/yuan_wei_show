@@ -1,5 +1,5 @@
-import React, { useCallback, useState, memo } from "react"
-import { Text, View, StyleSheet, Image, ScrollView, TouchableHighlight, SafeAreaView, TextInput, KeyboardAvoidingView, Modal,Alert } from "react-native"
+import React, { useCallback, useState, memo, useEffect } from "react"
+import { Text, View, StyleSheet, Image, ScrollView, TouchableHighlight, SafeAreaView, TextInput, KeyboardAvoidingView, Modal, Alert } from "react-native"
 import Header from "../../components/Header"
 import CameraRoll from "@react-native-community/cameraroll";
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
@@ -7,8 +7,9 @@ import Carousel from 'react-native-snap-carousel';
 import { sliderWidth, itemWidth } from '../../swiperLib/SliderEntry.style';
 import LoadMore from "../../components/LoadMore"
 import ImageViewer from 'react-native-image-zoom-viewer'
+import {productDetail} from "../../api/api"
 const mockData = [0, 1, 2]
-function ProductDetail({ navigation }) {
+function ProductDetail({ navigation,route}) {
     //是否预览
     const [imgPreviewFlag, setImgPreviewFlag] = useState(false)
     //产品图片
@@ -30,6 +31,8 @@ function ProductDetail({ navigation }) {
     ])
     //是否收藏
     const [isSave, setSave] = useState(false)
+    //是否点赞
+    const [isThumb, setIsThumb] = useState(false)
     //是否显示留言框
     const [isShowLeaveMessage, setIsShowLeaveMessage] = useState(false)
     //返回事件
@@ -38,8 +41,12 @@ function ProductDetail({ navigation }) {
     }, [])
     //收藏事件
     const toggleSave = useCallback(() => {
-        setSave(!isSave)
+        setSave(isSave => !isSave)
     }, [isSave])
+    //点赞
+    const toggleLove = useCallback(() => {
+        setIsThumb(isThumb => !isThumb)
+    }, [])
     //留言事件
     const leaveMessage = useCallback(() => {
         setIsShowLeaveMessage(true)
@@ -54,20 +61,28 @@ function ProductDetail({ navigation }) {
         })
     }, [imgList])
     //查看更多
-    const checkMore=useCallback(()=>{
+    const checkMore = useCallback(() => {
         Alert.alert(
             '提示',
             "需开通vip才能查看更多",
             [
-                { text: 'OK', onPress: () => {} },
-                { text: 'Cancel', onPress: () => {} },
+                { text: 'OK', onPress: () => { } },
+                { text: 'Cancel', onPress: () => { } },
             ],
 
         )
-    },[])
-    const toInfo=useCallback(()=>{
+    }, [])
+    const toInfo = useCallback(() => {
         navigation.navigate("info")
-    },[])
+    }, [])
+    //产品详情数据
+    useEffect(()=>{
+        if(route.params?.goods_id){
+            productDetail({goods_id:route.params.goods_id}).then(res=>{
+
+            })
+        }
+    },[route.params?.goods_id])
     const CustomMenus = memo((props) => {
         const { saveToLocal, cancel } = props
         return <View style={style.customMenus}>
@@ -89,22 +104,23 @@ function ProductDetail({ navigation }) {
                     <TouchableHighlight underlayColor="#fff" onPress={toInfo}>
                         <UserInfo></UserInfo>
                     </TouchableHighlight>
-                    <Text style={style.productName}>AIR JODOY DANCE</Text>
-                    <Text style={style.price}>￥ 278.00</Text>
-                    {/* <Text style={style.discTitle}>介绍</Text> */}
                     <Text style={style.productDisc}>SALEWA(沙乐华)1935年起源于德国 ，是欧洲著名的e68a84e8a2ad7a6431333433626539户外运动品牌。SA意为Saddler(制造马鞍的)、LE意为Leather(皮革)、WA意为Wares(制品)。SALEWA滑雪板及滑雪杆也在市场上取得成功，逐渐成为公司最主要的收入来源。适合各个年龄段的人群。</Text>
+                    <View style={style.priceWrap}>
+                        <Text style={style.price}>￥ 278.00</Text>
+                       <Text style={style.deliveryFee}>包邮</Text>
+                    </View>
                     <View style={style.imgList}>
                         {[1, 2, 3].map((item, index) => {
                             if (index == 2) {
                                 return <LoadMore key={index}>
                                     <TouchableHighlight underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
-                                        <Image resizeMode="stretch" style={[style.detailImg, { marginBottom: 0 }]} source={require("../../assets/imgs/avatar.jpeg")}></Image>
+                                        <Image style={[style.detailImg, { marginBottom: 0 }]} source={require("../../assets/imgs/avatar.jpeg")}></Image>
                                     </TouchableHighlight>
                                 </LoadMore>
                             }
                             else {
                                 return <TouchableHighlight key={index} underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
-                                    <Image resizeMode="stretch" style={style.detailImg} source={require("../../assets/imgs/avatar.jpeg")}></Image>
+                                    <Image style={style.detailImg} source={require("../../assets/imgs/avatar.jpeg")}></Image>
                                 </TouchableHighlight>
                             }
                         })}
@@ -118,6 +134,8 @@ function ProductDetail({ navigation }) {
                     <LeaveMessageList leaveMessageList={[[2, 4, 3], [3, 45, 5]]}></LeaveMessageList>
                 </ScrollView>
                 <BottomBar
+                    toggleLove={toggleLove}
+                    isThumb={isThumb}
                     isSave={isSave}
                     isShowLeaveMessage={isShowLeaveMessage}
                     setIsShowLeaveMessage={setIsShowLeaveMessage}
@@ -142,7 +160,7 @@ const UserInfo = memo((props) => {
 })
 //底部栏
 const BottomBar = React.memo(function (props) {
-    const { isSave, isShowLeaveMessage, toggleSave, setIsShowLeaveMessage, leaveMessage, payConfirm } = props
+    const { isSave, isThumb, isShowLeaveMessage, toggleLove, toggleSave, setIsShowLeaveMessage, leaveMessage, payConfirm } = props
     //留言输入框
     const [leaveInputValue, setLeaveInputValue] = useState("")
     //留言框change事件
@@ -153,6 +171,7 @@ const BottomBar = React.memo(function (props) {
     const leaveInputOnBlur = useCallback(() => {
         setIsShowLeaveMessage(false)
     }, [])
+
     return (
         <>
             {isShowLeaveMessage ? <KeyboardAvoidingView keyboardVerticalOffset={scaleHeight(32)} behavior={Platform.OS == "android" ? '' : 'position'} enabled contentContainerStyle={{ backgroundColor: "#fff" }}>
@@ -170,20 +189,26 @@ const BottomBar = React.memo(function (props) {
                     ></TextInput>
                 </View>
             </KeyboardAvoidingView> : <View style={style.buttomWrap}>
-                    <TouchableHighlight underlayColor="#fff" onPress={toggleSave}>
+                    <TouchableHighlight style={{ flex: 2 }} underlayColor="#fff" onPress={toggleSave}>
                         <View style={style.saveWrap}>
-                            <Image style={style.saveIcon} source={isSave ? require("../../assets/imgs/saved.png") : require("../../assets/imgs/unsave.png")}></Image>
+                            <Image style={style.menuIcon} source={isSave ? require("../../assets/imgs/saved.png") : require("../../assets/imgs/unsave.png")}></Image>
+                            <Text style={style.bottomMenuText}>收藏</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor="#fff" onPress={leaveMessage}>
+                    <TouchableHighlight style={{ flex: 2 }} underlayColor="#fff" onPress={leaveMessage}>
                         <View style={style.leaveMessageWrap}>
-                            <Text style={style.leaveMessage}>留言</Text>
+                            <Image style={style.menuIcon} source={require("../../assets/imgs/message.png")}></Image>
+                            <Text style={style.bottomMenuText}>留言</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor="#fff" onPress={payConfirm}>
-                        <View style={style.payWrap}>
-                            <Text style={style.pay}>我想要</Text>
+                    <TouchableHighlight style={{ flex: 2 }} underlayColor="#fff" onPress={toggleLove}>
+                        <View style={style.thumbWrap}>
+                            <Image style={style.menuIcon} source={isThumb ? require("../../assets/imgs/loved.png") : require("../../assets/imgs/unlove.png")}></Image>
+                            <Text style={style.bottomMenuText}>点赞</Text>
                         </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight style={style.payWrap} underlayColor="#fff" onPress={payConfirm}>
+                        <Text style={style.pay}>我想要</Text>
                     </TouchableHighlight>
                 </View>}
         </>
@@ -262,8 +287,8 @@ const style = StyleSheet.create({
         marginVertical: scaleHeight(10),
         alignSelf: "center",
         borderRadius: scaleSize(15),
-        width: scaleSize(100),
-        height: scaleHeight(30),
+        width: scaleSize(80),
+        height: scaleHeight(25),
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#fca413"
@@ -274,7 +299,7 @@ const style = StyleSheet.create({
     },
     detailImg: {
         width: "100%",
-        height: scaleSize(350),
+        height: scaleSize(280),
         borderRadius: scaleSize(5),
         marginBottom: scaleHeight(20)
     },
@@ -292,12 +317,24 @@ const style = StyleSheet.create({
         fontSize: setSpText2(16),
         fontWeight: "500"
     },
+    priceWrap:{
+        marginTop: scaleSize(10),
+        flexDirection:"row",
+        alignItems:"center"
+    },
     price: {
         marginLeft: scaleSize(20),
-        marginTop: scaleSize(10),
         fontWeight: "500",
         fontSize: setSpText2(16),
-        color: "#fca413"
+        color: "#f40"
+    },
+    deliveryFee: {
+        marginLeft: scaleSize(10),
+        backgroundColor: "#fca413",
+        paddingVertical: scaleHeight(2),
+        paddingHorizontal: scaleSize(5),
+        color: "#000",
+        fontSize: setSpText2(10),
     },
     discTitle: {
         marginTop: scaleHeight(20),
@@ -315,25 +352,28 @@ const style = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         paddingHorizontal: scaleSize(20),
-        height: scaleHeight(50),
+        height: scaleHeight(40),
         alignItems: "center",
         width: "100%"
     },
     saveWrap: {
-        width: scaleSize(70),
-        height: scaleHeight(40),
-        backgroundColor: "#f6f6f6",
-        borderRadius: scaleSize(5),
+        width: "100%",
+        height: "100%",
+        flexDirection: "row",
         justifyContent: "center",
         alignItems: "center"
     },
     leaveMessageWrap: {
-        marginRight: scaleSize(20),
-        marginLeft: scaleSize(10),
-        width: scaleSize(70),
-        height: scaleHeight(40),
-        backgroundColor: "#f6f6f6",
-        borderRadius: scaleSize(5),
+        width: "100%",
+        height: "100%",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    thumbWrap: {
+        width: "100%",
+        height: "100%",
+        flexDirection: "row",
         justifyContent: "center",
         alignItems: "center"
     },
@@ -341,8 +381,9 @@ const style = StyleSheet.create({
         fontSize: setSpText2(16)
     },
     payWrap: {
-        width: scaleSize(140),
-        height: scaleHeight(40),
+        marginLeft: scaleSize(20),
+        flex: 3,
+        height: scaleHeight(30),
         backgroundColor: "#fca413",
         borderRadius: scaleSize(5),
         justifyContent: "center",
@@ -352,9 +393,14 @@ const style = StyleSheet.create({
         fontSize: setSpText2(16),
         color: "#fff"
     },
-    saveIcon: {
+    menuIcon: {
+        marginRight: scaleSize(5),
         height: scaleSize(20),
         width: scaleSize(20)
+    },
+    bottomMenuText: {
+        fontSize: setSpText2(12),
+        color: "#333"
     },
     leaveInputWrap: {
         paddingHorizontal: scaleSize(10),
@@ -373,24 +419,24 @@ const style = StyleSheet.create({
         paddingHorizontal: scaleSize(10),
         backgroundColor: "#eee",
         fontSize: setSpText2(14),
-        color:"#333",
+        color: "#333",
         borderRadius: scaleSize(4)
     },
     leaveTitleWrap: {
         marginTop: scaleHeight(10),
         paddingLeft: scaleSize(20),
-        height: scaleHeight(40),
+        height: scaleHeight(30),
         justifyContent: "center"
     },
     leaveTitle: {
         fontSize: setSpText2(16),
     },
     leaveMessageListWrap: {
-        marginTop: scaleHeight(10),
+        marginTop: scaleHeight(5),
         paddingHorizontal: scaleSize(20)
     },
     leaveMessageItemWrap: {
-        marginBottom: scaleHeight(20)
+        marginBottom: scaleHeight(10)
     },
     leaveMessageHeadWrap: {
         flexDirection: "row",
@@ -429,7 +475,7 @@ const style = StyleSheet.create({
         color: "#fca413"
     },
     leaveMessageContent: {
-        marginTop: scaleHeight(10),
+        marginTop: scaleHeight(5),
         paddingLeft: scaleSize(40),
         fontSize: setSpText2(14)
     },
@@ -437,7 +483,7 @@ const style = StyleSheet.create({
         paddingLeft: scaleSize(40)
     },
     replay: {
-        marginTop: scaleHeight(10),
+        marginTop: scaleHeight(5),
         paddingLeft: scaleSize(40),
         fontSize: setSpText2(14)
     },
