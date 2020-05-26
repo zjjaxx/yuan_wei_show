@@ -1,7 +1,9 @@
 package com.yuan_wei_show;
 
 import com.facebook.react.ReactActivity;
-
+import android.os.Bundle; // here
+// react-native-splash-screen >= 0.3.1
+import org.devio.rn.splashscreen.SplashScreen; // here
 public class MainActivity extends ReactActivity {
 
   /**
@@ -12,4 +14,9 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "yuan_wei_show";
   }
+   @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen.show(this);  // here
+        super.onCreate(savedInstanceState);
+    }
 }

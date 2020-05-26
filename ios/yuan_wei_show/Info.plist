@@ -49,6 +49,8 @@
 	<string>请允许访问相册以选取照片</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>请允许访问相册以选取照片</string>
+	<key>UILaunchStoryboardName</key>
+	<string>Launch Screen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

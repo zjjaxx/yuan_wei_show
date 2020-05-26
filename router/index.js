@@ -28,6 +28,7 @@ import UnshelveScreen from "../pages/person/unshelve"
 import CustomTagsScreen from "../pages/publish/customTags"
 import { connect } from "react-redux"
 import { asyncToken } from "../store/action"
+import SplashScreen from 'react-native-splash-screen'
 //tab 路由容器
 const Tab = createBottomTabNavigator();
 function TabContainer() {
@@ -66,14 +67,11 @@ const AppStack = createStackNavigator()
 function AppStackScreen({ isLoading, isLogin, dispatch }) {
     useEffect(() => {
         dispatch(asyncToken())
-    }, [dispatch])
+    }, [])
     if (isLoading) {
-        return (
-            <AppStack.Navigator>
-                <AppStack.Screen name="flash" component={FlashScreen} options={{ headerShown: false }}></AppStack.Screen>
-            </AppStack.Navigator>
-        )
+        return null
     }
+    SplashScreen.hide();
     return (
         <AppStack.Navigator screenOptions={{ headerBackTitle: "返回", headerShown: false }}>
             {

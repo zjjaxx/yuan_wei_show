@@ -4,7 +4,7 @@ export const SET_LOADING = "SET_LOADING"
 export const SET_TOKEN = "SET_TOKEN"
 export const SET_WEBSOCKET = "SET_WEBSOCKET"
 export const SET_USER_INFO = "SET_USER_INFO"
-export const SET_YW="SET_YW"
+export const SET_YW = "SET_YW"
 import { wsURL, TOKEN_KEY, VALID_TIME, validTimeCount, baseURL, USER_INFO } from "../utils/config"
 import { showToast } from "../utils/common"
 
@@ -35,67 +35,73 @@ export function asyncToken() {
                 }
             })
             .catch(res => {
-            })
-            .finally(res => {
                 dispatch({
                     type: SET_LOADING,
                     payload: false
                 })
             })
+            .finally(res => {
+
+            })
     }
 }
-export function login(token, userInfo,yw="") {
+export function login(token, userInfo, yw = "") {
     return (dispatch, getState) => {
-        setLocalStorage(TOKEN_KEY, token).then(res => {
-            dispatch({
-                type: SET_LOGIN,
-                payload: true
-            })
-            dispatch({
-                type: SET_TOKEN,
-                payload: token
-            })
-            dispatch({
-                type: SET_USER_INFO,
-                payload: userInfo
-            })
-            if(yw){
+        Promise.all([
+            setLocalStorage(TOKEN_KEY, token),
+            setLocalStorage(VALID_TIME, new Date().getTime() + ""),
+            setLocalStorage(USER_INFO, JSON.stringify(userInfo))
+        ])
+            .then(res => {
                 dispatch({
-                    type: SET_YW,
-                    payload: yw
+                    type: SET_LOGIN,
+                    payload: true
                 })
-            }
-        })
-        setLocalStorage(VALID_TIME, new Date().getTime() + "").then(res => {
-
-        })
-        setLocalStorage(USER_INFO, JSON.stringify(userInfo)).then(res => {
-
-        })
+                dispatch({
+                    type: SET_TOKEN,
+                    payload: token
+                })
+                dispatch({
+                    type: SET_USER_INFO,
+                    payload: userInfo
+                })
+                dispatch({
+                    type: SET_LOADING,
+                    payload: false
+                })
+                if (yw) {
+                    dispatch({
+                        type: SET_YW,
+                        payload: yw
+                    })
+                }
+            })
         dispatch(initWebSocket(token))
 
     }
 }
 export function logout() {
     return (dispatch, getState) => {
-        setLocalStorage(TOKEN_KEY, "").then(res => {
-            dispatch({
-                type: SET_LOGIN,
-                payload: false
+        Promise.all([setLocalStorage(TOKEN_KEY, ""), setLocalStorage(VALID_TIME, ""), setLocalStorage(USER_INFO, "")])
+            .then(res => {
+                dispatch({
+                    type: SET_LOGIN,
+                    payload: false
+                })
+                dispatch({
+                    type: SET_TOKEN,
+                    payload: ""
+                })
+                dispatch({
+                    type: SET_USER_INFO,
+                    payload: {}
+                })
+                dispatch({
+                    type: SET_LOADING,
+                    payload: false
+                })
             })
-            dispatch({
-                type: SET_TOKEN,
-                payload: ""
-            })
-            dispatch({
-                type: SET_USER_INFO,
-                payload: {}
-            })
-        })
-        setLocalStorage(VALID_TIME, "").then(res => {
-        })
-        setLocalStorage(USER_INFO, "").then(res => {
-        })
+
     }
 
 }

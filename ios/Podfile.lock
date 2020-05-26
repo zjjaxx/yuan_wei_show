@@ -250,6 +250,8 @@ PODS:
     - React
   - react-native-spinkit (1.4.1):
     - React
+  - react-native-splash-screen (3.2.0):
+    - React
   - react-native-update (5.5.10):
     - React
     - react-native-update/BSDiff (= 5.5.10)
@@ -402,6 +404,7 @@ DEPENDENCIES:
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-spinkit (from `../node_modules/react-native-spinkit`)
+  - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - react-native-update (from `../node_modules/react-native-update`)
   - "react-native-viewpager (from `../node_modules/@react-native-community/viewpager`)"
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -485,6 +488,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-spinkit:
     :path: "../node_modules/react-native-spinkit"
+  react-native-splash-screen:
+    :path: "../node_modules/react-native-splash-screen"
   react-native-update:
     :path: "../node_modules/react-native-update"
   react-native-viewpager:
@@ -565,6 +570,7 @@ SPEC CHECKSUMS:
   react-native-cameraroll: 53663a679e973ff98b60708d93a9f203d7b41b8d
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
+  react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   react-native-update: b557f44e9d700bbae07cd27fb97682756cb79bb3
   react-native-viewpager: 88f4269c19d626d2ccd5f7c7f5f7f76422ddb9e3
   React-RCTActionSheet: f41ea8a811aac770e0cc6e0ad6b270c644ea8b7c
@@ -597,4 +603,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 6b4d72d2483b2be51df8a92a44b302971c7d75c3
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.8.4
