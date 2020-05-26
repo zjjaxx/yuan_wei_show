@@ -1,6 +1,8 @@
 import React, { useMemo, memo, useCallback, useState, useEffect, useRef } from "react"
 import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight, Alert } from "react-native"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
+import { WaterfallList } from "react-native-largelist-v3";
+import RefreshHeader from "../../components/RefreshHeader"
 import { Popover } from '@ui-kitten/components';
 import toDate from "../../utils/toDate"
 //热更新
@@ -19,6 +21,7 @@ import {
 const { appKey } = APP_KEY_CONFIG[Platform.OS];
 import { home } from "../../api/api"
 function Home({ navigation }) {
+    const listRef = useRef()
     //分页
     const [page, setPage] = useState(0)
     const [lastPage, setLastPage] = useState(1)
@@ -51,7 +54,7 @@ function Home({ navigation }) {
     }, [])
     //跳转发布页
     const _toPublish = useCallback(() => {
-        navigation.navigate("publish")
+        navigation.navigate("test")
     }, [])
     //热更新
     const doUpdate = async (info) => {
@@ -110,6 +113,7 @@ function Home({ navigation }) {
             }
         })
             .finally(res => {
+                listRef.current.endRefresh();
                 setRefreshing(false)
             })
     }, [])
@@ -122,7 +126,17 @@ function Home({ navigation }) {
                         <Image style={style.camera} source={require("../../assets/imgs/camera.png")}></Image>
                     </TouchableHighlight>
                 </View>
-                <FlatList
+                <WaterfallList
+                    ref={listRef}
+                    data={homeDataList}
+                    heightForItem={() => scaleHeight(300)}
+                    numColumns={1}
+                    // preferColumnWidth={150}
+                    renderItem={(item, index) => <RecommandProductItem productItemData={item} toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
+                    refreshHeader={RefreshHeader}
+                    onRefresh={_onRefresh}
+                />
+                {/* <FlatList
                     showsVerticalScrollIndicator={false}
                     style={style.flatList}
                     onEndReached={_scrollEnd}
@@ -131,7 +145,7 @@ function Home({ navigation }) {
                     onRefresh={_onRefresh}
                     data={homeDataList}
                     renderItem={({ item, index }) => <RecommandProductItem productItemData={item} toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
-                />
+                /> */}
             </View>
         </SafeAreaView>
     )
@@ -196,7 +210,7 @@ const RecommandProductItem = memo((props) => {
                         {imgList.map((item, index) => <Image key={index} style={[style.pic2, index == 0 ? style.mr10 : {}]} source={{ uri: item }}></Image>)}
                     </View>)
                 case 3:
-                    if (images_total <=3) {
+                    if (images_total <= 3) {
                         return (<View style={style.picWrap}>
                             <Image style={style.pic3_1} source={{ uri: imgList[0] }}></Image>
                             <View style={style.rightWrap}>
@@ -237,7 +251,7 @@ const RecommandProductItem = memo((props) => {
         return _list()
     })
     return (
-        <View>
+        <View style={{ flex: 1,paddingHorizontal: scaleSize(15) }}>
             <RecommandHeader productItemData={productItemData}></RecommandHeader>
             <Text numberOfLines={2} ellipsizeMode="tail" style={style.comment}>{productItemData.store_info}</Text>
             <TouchableHighlight underlayColor="#fff" onPress={() => toProductDetail(productItemData.id)}>
@@ -331,7 +345,7 @@ const style = StyleSheet.create({
         lineHeight: setSpText2(18)
     },
     picWrap: {
-        marginTop: scaleSize(8),
+        marginTop: scaleHeight(8),
         flexDirection: "row"
     },
     pic1: {
@@ -386,7 +400,7 @@ const style = StyleSheet.create({
         marginBottom: scaleSize(10)
     },
     recommandBottomWrap: {
-        marginTop: scaleSize(10),
+        marginTop: scaleHeight(10),
         flexDirection: "row",
         alignItems: "center",
     },

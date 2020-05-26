@@ -347,6 +347,8 @@ PODS:
     - RNSound/Core (= 0.11.0)
   - RNSound/Core (0.11.0):
     - React
+  - RNSpringScrollView (2.0.23):
+    - React
   - RNSVG (12.1.0):
     - React
   - RNSyanImagePicker (0.4.8):
@@ -427,6 +429,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSound (from `../node_modules/react-native-sound`)
+  - RNSpringScrollView (from `../node_modules/react-native-spring-scrollview/ios`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNSyanImagePicker (from `../node_modules/react-native-syan-image-picker/ios`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -532,6 +535,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSound:
     :path: "../node_modules/react-native-sound"
+  RNSpringScrollView:
+    :path: "../node_modules/react-native-spring-scrollview/ios"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNSyanImagePicker:
@@ -592,6 +597,7 @@ SPEC CHECKSUMS:
   RNReanimated: 955cf4068714003d2f1a6e2bae3fb1118f359aff
   RNScreens: cf198f915f8a2bf163de94ca9f5bfc8d326c3706
   RNSound: da030221e6ac7e8290c6b43f2b5f2133a8e225b0
+  RNSpringScrollView: 8b0af44fda8b131d845b93bf5b1d0710152e4e61
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNSyanImagePicker: 5f1e6ff8824e0b1d157314be1d313d33b942491e
   SDWebImage: d9ea4959d99c52276dfada481987018fcaea3d58
