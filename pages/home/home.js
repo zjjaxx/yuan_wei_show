@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlig
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import { WaterfallList } from "react-native-largelist-v3";
 import RefreshHeader from "../../components/RefreshHeader"
+import { ChineseWithLastDateFooter } from "react-native-spring-scrollview/Customize";
 import { Popover } from '@ui-kitten/components';
 import toDate from "../../utils/toDate"
 //热更新
@@ -28,6 +29,8 @@ function Home({ navigation }) {
     const [homeDataList, setHomeDataList] = useState([])
     //下拉刷新flag
     const [refreshing, setRefreshing] = useState(false)
+    //上拉加载
+    const [isLoading, setIsLoading] = useState(false)
     //下拉刷新事件
     const _onRefresh = useCallback(() => {
         if (refreshing) {
@@ -41,20 +44,27 @@ function Home({ navigation }) {
             _api(0)
         }, 1000);
     }, [refreshing])
+    const calcItemHeight = useCallback((item, index) => {
+        let height1 = scaleHeight(50) + setSpText2(36) + scaleHeight(120) + scaleHeight(8) + scaleHeight(30)
+        let height2 = scaleHeight(50) + setSpText2(36) + scaleHeight(180) + scaleHeight(8) + scaleHeight(30)
+        return item.images_info.images_total == 2 ? height1 : height2
+    }, [])
     //上拉加载更多事件
     const _scrollEnd = useCallback(() => {
-        if (page >= lastPage) {
+        if (page >= lastPage || isLoading) {
+            listRef.current.endLoading();
             return
         }
+        setIsLoading(true)
         _api(page)
-    }, [page, lastPage])
+    }, [page, lastPage, isLoading])
     //跳转产品详情页
     const _toProductDetail = useCallback((goods_id) => {
         navigation.navigate("productDetail", { goods_id })
     }, [])
     //跳转发布页
     const _toPublish = useCallback(() => {
-        navigation.navigate("test")
+        navigation.navigate("publish")
     }, [])
     //热更新
     const doUpdate = async (info) => {
@@ -114,7 +124,9 @@ function Home({ navigation }) {
         })
             .finally(res => {
                 listRef.current.endRefresh();
+                listRef.current.endLoading();
                 setRefreshing(false)
+                setIsLoading(false)
             })
     }, [])
     return (
@@ -129,12 +141,18 @@ function Home({ navigation }) {
                 <WaterfallList
                     ref={listRef}
                     data={homeDataList}
-                    heightForItem={() => scaleHeight(300)}
+                    heightForItem={(item, index) => calcItemHeight(item, index)}
                     numColumns={1}
-                    // preferColumnWidth={150}
+                    loadingFooter={ChineseWithLastDateFooter}
                     renderItem={(item, index) => <RecommandProductItem productItemData={item} toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
                     refreshHeader={RefreshHeader}
                     onRefresh={_onRefresh}
+                    allLoaded={page >= lastPage}
+                    onLoading={() => {
+                        setTimeout(() => {
+                            _scrollEnd()
+                        }, 1000)
+                    }}
                 />
                 {/* <FlatList
                     showsVerticalScrollIndicator={false}
@@ -251,7 +269,7 @@ const RecommandProductItem = memo((props) => {
         return _list()
     })
     return (
-        <View style={{ flex: 1,paddingHorizontal: scaleSize(15) }}>
+        <View style={{ flex: 1, paddingHorizontal: scaleSize(15) }}>
             <RecommandHeader productItemData={productItemData}></RecommandHeader>
             <Text numberOfLines={2} ellipsizeMode="tail" style={style.comment}>{productItemData.store_info}</Text>
             <TouchableHighlight underlayColor="#fff" onPress={() => toProductDetail(productItemData.id)}>

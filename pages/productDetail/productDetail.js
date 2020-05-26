@@ -207,7 +207,7 @@ const BottomBar = React.memo(function (props) {
                             <Text style={style.bottomMenuText}>点赞</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight style={style.payWrap} underlayColor="#fff" onPress={payConfirm}>
+                    <TouchableHighlight style={style.payWrap} underlayColor="#fca413" onPress={payConfirm}>
                         <Text style={style.pay}>我想要</Text>
                     </TouchableHighlight>
                 </View>}
@@ -351,7 +351,7 @@ const style = StyleSheet.create({
     buttomWrap: {
         flexDirection: "row",
         justifyContent: "space-between",
-        paddingHorizontal: scaleSize(20),
+        paddingHorizontal: scaleSize(15),
         height: scaleHeight(40),
         alignItems: "center",
         width: "100%"

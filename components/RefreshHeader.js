@@ -1,5 +1,5 @@
 import React from "react"
-import {View,Animated} from "react-native"
+import {View,Animated,ImageBackground} from "react-native"
 import { RefreshHeader } from "react-native-spring-scrollview/RefreshHeader";
 import {scaleHeight,scaleSize} from "../utils/ScreenUtil"
 class ZRefreshHeader extends RefreshHeader {
@@ -12,10 +12,14 @@ class ZRefreshHeader extends RefreshHeader {
     // {transform:[{scaleX:this.props.offset/100},{scaleY:this.props.offset/100}]}
     render() {
         let progress = this.props.offset.interpolate({
-            inputRange: [0, scaleHeight(100)],
+            inputRange: [0, ZRefreshHeader.height],
             outputRange: [0, 1]
         });
-        return <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        let rotateProgress = this.props.offset.interpolate({
+            inputRange: [0, ZRefreshHeader.height],
+            outputRange: ["0deg", "180deg"]
+        });
+        return <ImageBackground source={require("../assets/imgs/refresh_bg.jpg")} style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
             <Animated.Image
                 source={require("../assets/imgs/avatar.jpeg")}
                 style={{
@@ -23,12 +27,12 @@ class ZRefreshHeader extends RefreshHeader {
                     width: scaleSize(50),
                     borderRadius:scaleSize(25),
                     transform: [
-                        { rotate: "180deg" },
+                        { rotate: rotateProgress },
                         { scaleX: progress },
                         { scaleY: progress },
                     ]
                 }} />
-        </View>
+        </ImageBackground>
     }
 }
 export default ZRefreshHeader
