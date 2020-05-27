@@ -1,4 +1,4 @@
-import React, { useCallback, useState, memo, useEffect } from "react"
+import React, { useCallback, useState, memo, useEffect, useMemo } from "react"
 import { Text, View, StyleSheet, Image, ScrollView, TouchableHighlight, SafeAreaView, TextInput, KeyboardAvoidingView, Modal, Alert } from "react-native"
 import Header from "../../components/Header"
 import CameraRoll from "@react-native-community/cameraroll";
@@ -7,34 +7,25 @@ import Carousel from 'react-native-snap-carousel';
 import { sliderWidth, itemWidth } from '../../swiperLib/SliderEntry.style';
 import LoadMore from "../../components/LoadMore"
 import ImageViewer from 'react-native-image-zoom-viewer'
-import {productDetail} from "../../api/api"
+import { productDetail, comment } from "../../api/api"
+import FastImage from 'react-native-fast-image'
+import { connect } from "react-redux"
 const mockData = [0, 1, 2]
-function ProductDetail({ navigation,route}) {
+function ProductDetail({ navigation, route, userInfo }) {
+    const [productDetailData, setProductDetailData] = useState({})
     //是否预览
     const [imgPreviewFlag, setImgPreviewFlag] = useState(false)
     //产品图片
-    const [imgList, setImgList] = useState([
-        {
-            url: "https://cdn.weile999.com/upload/common/1587452044.jpg",
-            props: {
-                // Or you can set source directory.
-                source: require('../../assets/imgs/avatar.jpeg')
-            }
-        },
-        {
-            url: "https://cdn.weile999.com/upload/common/1588835954.png",
-            props: {
-                // Or you can set source directory.
-                source: require('../../assets/imgs/avatar.jpeg')
-            }
-        },
-    ])
+    const productImg = useMemo(() => {
+        return productDetailData.images ? productDetailData.images.map(item => ({ url: item.att_dir })) : []
+    }, [productDetailData.images])
     //是否收藏
     const [isSave, setSave] = useState(false)
     //是否点赞
     const [isThumb, setIsThumb] = useState(false)
-    //是否显示留言框
-    const [isShowLeaveMessage, setIsShowLeaveMessage] = useState(false)
+    //留言placeholder
+    const [inputPlaceholder, setInputPlaceHolder] = useState("看对眼就留言，问问更多细节~")
+
     //返回事件
     const leftEvent = useCallback(() => {
         navigation.goBack()
@@ -47,9 +38,19 @@ function ProductDetail({ navigation,route}) {
     const toggleLove = useCallback(() => {
         setIsThumb(isThumb => !isThumb)
     }, [])
-    //留言事件
-    const leaveMessage = useCallback(() => {
-        setIsShowLeaveMessage(true)
+    //发送留言
+    const sendComment = useCallback(({ nativeEvent: { text, eventCount, target } }, comment_id = "") => {
+        comment({ goods_id: route.params?.goods_id, comment_id, content: text })
+            .then(({data:{result}}) => {
+                Alert.alert(
+                    '提示',
+                    result,
+                    [
+                        { text: 'OK', onPress: () => { } },
+                    ],
+    
+                )
+            })
     }, [])
     //点击购买事件
     const payConfirm = useCallback(() => {
@@ -58,8 +59,16 @@ function ProductDetail({ navigation,route}) {
     //保存图片到本地
     const _onSaveToCamera = useCallback((url) => {
         CameraRoll.saveToCameraRoll(url).then(path => {
+            Alert.alert(
+                '提示',
+                "保存成功!",
+                [
+                    { text: 'OK', onPress: () => { } },
+                ],
+
+            )
         })
-    }, [imgList])
+    }, [])
     //查看更多
     const checkMore = useCallback(() => {
         Alert.alert(
@@ -73,16 +82,15 @@ function ProductDetail({ navigation,route}) {
         )
     }, [])
     const toInfo = useCallback(() => {
-        navigation.navigate("info")
     }, [])
     //产品详情数据
-    useEffect(()=>{
-        if(route.params?.goods_id){
-            productDetail({goods_id:route.params.goods_id}).then(res=>{
-
+    useEffect(() => {
+        if (route.params?.goods_id) {
+            productDetail({ goods_id: route.params.goods_id }).then(({ data: { result } }) => {
+                setProductDetailData(result)
             })
         }
-    },[route.params?.goods_id])
+    }, [route.params?.goods_id])
     const CustomMenus = memo((props) => {
         const { saveToLocal, cancel } = props
         return <View style={style.customMenus}>
@@ -100,33 +108,37 @@ function ProductDetail({ navigation,route}) {
                 <Header title="产品详情" leftEvent={leftEvent} right={<Image style={style.share} source={require("../../assets/imgs/share.png")}></Image>}>
                 </Header>
                 <ScrollView style={style.scrollView}>
-                    {/* <Swiper></Swiper> */}
                     <TouchableHighlight underlayColor="#fff" onPress={toInfo}>
-                        <UserInfo></UserInfo>
+                        <UserInfo productDetailData={productDetailData}></UserInfo>
                     </TouchableHighlight>
-                    <Text style={style.productDisc}>SALEWA(沙乐华)1935年起源于德国 ，是欧洲著名的e68a84e8a2ad7a6431333433626539户外运动品牌。SA意为Saddler(制造马鞍的)、LE意为Leather(皮革)、WA意为Wares(制品)。SALEWA滑雪板及滑雪杆也在市场上取得成功，逐渐成为公司最主要的收入来源。适合各个年龄段的人群。</Text>
+                    <Text style={style.productDisc}>{productDetailData.store_info}</Text>
                     <View style={style.priceWrap}>
-                        <Text style={style.price}>￥ 278.00</Text>
-                       <Text style={style.deliveryFee}>包邮</Text>
+                        <Text style={style.price}>￥ {productDetailData.price}</Text>
+                        <Text style={style.deliveryFee}>包邮</Text>
                     </View>
                     <View style={style.imgList}>
-                        {[1, 2, 3].map((item, index) => {
-                            if (index == 2) {
+                        {productDetailData.images && productDetailData.images.map((item, index) => {
+                            if (index == productDetailData.images.length - 1) {
                                 return <LoadMore key={index}>
                                     <TouchableHighlight underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
-                                        <Image style={[style.detailImg, { marginBottom: 0 }]} source={require("../../assets/imgs/avatar.jpeg")}></Image>
+                                        <FastImage style={[style.detailImg, { marginBottom: 0 }]} source={{ uri: item.att_dir }}></FastImage>
                                     </TouchableHighlight>
                                 </LoadMore>
                             }
                             else {
                                 return <TouchableHighlight key={index} underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
-                                    <Image style={style.detailImg} source={require("../../assets/imgs/avatar.jpeg")}></Image>
+                                    <FastImage style={style.detailImg} source={{ uri: item.att_dir }}></FastImage>
                                 </TouchableHighlight>
                             }
                         })}
                     </View>
                     <Modal visible={imgPreviewFlag} transparent={true}>
-                        <ImageViewer onSave={_onSaveToCamera} menus={({ cancel, saveToLocal }) => <CustomMenus cancel={cancel} saveToLocal={saveToLocal}></CustomMenus>} onClick={() => setImgPreviewFlag(false)} imageUrls={imgList} />
+                        <ImageViewer
+                            onSave={_onSaveToCamera}
+                            menus={({ cancel, saveToLocal }) => <CustomMenus cancel={cancel} saveToLocal={saveToLocal}></CustomMenus>}
+                            onClick={() => setImgPreviewFlag(false)}
+                            imageUrls={productImg}
+                        />
                     </Modal>
                     <TouchableHighlight underlayColor="#fca413" onPress={checkMore} style={style.checkMoreWrap}>
                         <Text style={style.checkMore}>查看更多</Text>
@@ -134,25 +146,26 @@ function ProductDetail({ navigation,route}) {
                     <LeaveMessageList leaveMessageList={[[2, 4, 3], [3, 45, 5]]}></LeaveMessageList>
                 </ScrollView>
                 <BottomBar
+                    sendComment={sendComment}
                     toggleLove={toggleLove}
                     isThumb={isThumb}
                     isSave={isSave}
-                    isShowLeaveMessage={isShowLeaveMessage}
-                    setIsShowLeaveMessage={setIsShowLeaveMessage}
                     toggleSave={toggleSave}
-                    leaveMessage={leaveMessage}
-                    payConfirm={payConfirm}>
+                    inputPlaceholder={inputPlaceholder}
+                    payConfirm={payConfirm}
+                >
                 </BottomBar>
             </View>
         </SafeAreaView>
     )
 }
 const UserInfo = memo((props) => {
+    const { productDetailData } = props
     return (
         <View style={style.userWrap}>
-            <Image style={style.userAvatar} source={require("../../assets/imgs/avatar.jpeg")}></Image>
+            <FastImage style={style.userAvatar} source={{ uri: productDetailData.user && productDetailData.user.avatar }}></FastImage>
             <View style={style.userMsg}>
-                <Text numberOfLines={1} ellipsizeMode="tail" style={style.userName}>小可爱</Text>
+                <Text numberOfLines={1} ellipsizeMode="tail" style={style.userName}>{productDetailData.user && productDetailData.user.nickname}</Text>
                 <Text style={style.time}>连续3天来过</Text>
             </View>
         </View>
@@ -160,13 +173,17 @@ const UserInfo = memo((props) => {
 })
 //底部栏
 const BottomBar = React.memo(function (props) {
-    const { isSave, isThumb, isShowLeaveMessage, toggleLove, toggleSave, setIsShowLeaveMessage, leaveMessage, payConfirm } = props
-    //留言输入框
-    const [leaveInputValue, setLeaveInputValue] = useState("")
-    //留言框change事件
-    const leaveInputValueChange = useCallback((value) => {
-        setLeaveInputValue(value)
-    }, [])
+    const {
+        isSave,//是否收藏
+        isThumb,//是否点赞
+        toggleLove, //toggle 点赞
+        toggleSave,//toggle 收藏
+        payConfirm, //想要
+        sendComment, //发送留言
+        inputPlaceholder//留言输入框placeholder
+    } = props
+    //是否显示留言框
+    const [isShowLeaveMessage, setIsShowLeaveMessage] = useState(false)
     //留言框失去焦点事件
     const leaveInputOnBlur = useCallback(() => {
         setIsShowLeaveMessage(false)
@@ -182,10 +199,9 @@ const BottomBar = React.memo(function (props) {
                         returnKeyType="send"
                         returnKeyLabel="发送"
                         placeholderTextColor="#999"
-                        placeholder="看对眼就留言，问问更多细节~"
-                        onChangeText={leaveInputValueChange}
+                        placeholder={inputPlaceholder}
                         onBlur={leaveInputOnBlur}
-                        value={leaveInputValue}
+                        onSubmitEditing={sendComment}
                     ></TextInput>
                 </View>
             </KeyboardAvoidingView> : <View style={style.buttomWrap}>
@@ -195,7 +211,7 @@ const BottomBar = React.memo(function (props) {
                             <Text style={style.bottomMenuText}>收藏</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight style={{ flex: 2 }} underlayColor="#fff" onPress={leaveMessage}>
+                    <TouchableHighlight style={{ flex: 2 }} underlayColor="#fff" onPress={() => setIsShowLeaveMessage(true)}>
                         <View style={style.leaveMessageWrap}>
                             <Image style={style.menuIcon} source={require("../../assets/imgs/message.png")}></Image>
                             <Text style={style.bottomMenuText}>留言</Text>
@@ -317,10 +333,10 @@ const style = StyleSheet.create({
         fontSize: setSpText2(16),
         fontWeight: "500"
     },
-    priceWrap:{
+    priceWrap: {
         marginTop: scaleSize(10),
-        flexDirection:"row",
-        alignItems:"center"
+        flexDirection: "row",
+        alignItems: "center"
     },
     price: {
         marginLeft: scaleSize(20),
@@ -381,7 +397,7 @@ const style = StyleSheet.create({
         fontSize: setSpText2(16)
     },
     payWrap: {
-        marginLeft: scaleSize(20),
+        marginLeft: scaleSize(40),
         flex: 3,
         height: scaleHeight(30),
         backgroundColor: "#fca413",
@@ -390,7 +406,7 @@ const style = StyleSheet.create({
         alignItems: "center"
     },
     pay: {
-        fontSize: setSpText2(16),
+        fontSize: setSpText2(14),
         color: "#fff"
     },
     menuIcon: {
@@ -403,6 +419,7 @@ const style = StyleSheet.create({
         color: "#333"
     },
     leaveInputWrap: {
+        paddingVertical: scaleHeight(5),
         paddingHorizontal: scaleSize(10),
         flexDirection: "row",
         alignItems: "center"
@@ -414,7 +431,7 @@ const style = StyleSheet.create({
         width: scaleSize(30)
     },
     leaveInput: {
-        paddingVertical: scaleHeight(10),
+        paddingVertical: scaleHeight(8),
         flex: 1,
         paddingHorizontal: scaleSize(10),
         backgroundColor: "#eee",
@@ -517,4 +534,4 @@ const style = StyleSheet.create({
     }
 
 })
-export default ProductDetail
+export default connect(state => state, dispatch => ({ dispatch }))(ProductDetail) 

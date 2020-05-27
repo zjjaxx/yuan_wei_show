@@ -30,9 +30,9 @@ instance.interceptors.request.use(function (config) {
     if (token) {
         config.headers["authorization"] = "bearer " +token
     }
-    if (yw) {
-        config.headers["yw"] =yw
-    }
+    // if (yw) {
+        config.headers["yw"] ="yw"
+    // }
     return config;
 }, function (error) {
     showToast(error)

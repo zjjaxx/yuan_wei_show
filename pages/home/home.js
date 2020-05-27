@@ -6,6 +6,7 @@ import RefreshHeader from "../../components/RefreshHeader"
 import { ChineseWithLastDateFooter } from "react-native-spring-scrollview/Customize";
 import { Popover } from '@ui-kitten/components';
 import toDate from "../../utils/toDate"
+import FastImage from 'react-native-fast-image'
 //热更新
 import { APP_KEY_CONFIG } from "../../utils/config"
 import {
@@ -37,22 +38,19 @@ function Home({ navigation }) {
             return
         }
         setRefreshing(true)
-        setTimeout(() => {
-            setHomeDataList([])
-            setPage(0)
-            setLastPage(1)
-            _api(0)
-        }, 1000);
+        setHomeDataList([])
+        setPage(0)
+        setLastPage(1)
+        _api(0)
     }, [refreshing])
     const calcItemHeight = useCallback((item, index) => {
-        let height1 = scaleHeight(50) + setSpText2(36) + scaleHeight(120) + scaleHeight(8) + scaleHeight(30)
+        let height1 = scaleHeight(50) + setSpText2(36) + scaleHeight(140) + scaleHeight(8) + scaleHeight(30)
         let height2 = scaleHeight(50) + setSpText2(36) + scaleHeight(180) + scaleHeight(8) + scaleHeight(30)
         return item.images_info.images_total == 2 ? height1 : height2
     }, [])
     //上拉加载更多事件
     const _scrollEnd = useCallback(() => {
         if (page >= lastPage || isLoading) {
-            listRef.current.endLoading();
             return
         }
         setIsLoading(true)
@@ -139,6 +137,7 @@ function Home({ navigation }) {
                     </TouchableHighlight>
                 </View>
                 <WaterfallList
+                    style={{flex:1}}
                     ref={listRef}
                     data={homeDataList}
                     heightForItem={(item, index) => calcItemHeight(item, index)}
@@ -146,24 +145,17 @@ function Home({ navigation }) {
                     loadingFooter={ChineseWithLastDateFooter}
                     renderItem={(item, index) => <RecommandProductItem productItemData={item} toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
                     refreshHeader={RefreshHeader}
-                    onRefresh={_onRefresh}
-                    allLoaded={page >= lastPage}
+                    onRefresh={()=> 
+                        setTimeout(() => {
+                            _onRefresh()
+                        },1000)
+                    }
                     onLoading={() => {
                         setTimeout(() => {
                             _scrollEnd()
                         }, 1000)
                     }}
                 />
-                {/* <FlatList
-                    showsVerticalScrollIndicator={false}
-                    style={style.flatList}
-                    onEndReached={_scrollEnd}
-                    onEndReachedThreshold={0.1}
-                    refreshing={refreshing}
-                    onRefresh={_onRefresh}
-                    data={homeDataList}
-                    renderItem={({ item, index }) => <RecommandProductItem productItemData={item} toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
-                /> */}
             </View>
         </SafeAreaView>
     )
@@ -184,7 +176,7 @@ const RecommandProductItem = memo((props) => {
 
         return (
             <View style={style.recommonHeaderWrap}>
-                <Image source={{ uri: productItemData.user.avatar }} style={style.avatar}></Image>
+                <FastImage source={{ uri: productItemData.user.avatar }} style={style.avatar}></FastImage>
                 <View style={style.nickerWrap}>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={style.nick}>{productItemData.user.nickname}</Text>
                     <Text style={style.time}>{toDate(productItemData.add_time)}</Text>
@@ -221,7 +213,7 @@ const RecommandProductItem = memo((props) => {
             switch (imgList.length) {
                 case 1:
                     return (<View style={style.picWrap}>
-                        <Image style={style.pic1} source={{ uri: imgList[0] }}></Image>
+                        <FastImage style={style.pic1} source={{ uri: imgList[0] }}></FastImage>
                     </View>)
                 case 2:
                     return (<View style={style.picWrap}>
@@ -230,20 +222,20 @@ const RecommandProductItem = memo((props) => {
                 case 3:
                     if (images_total <= 3) {
                         return (<View style={style.picWrap}>
-                            <Image style={style.pic3_1} source={{ uri: imgList[0] }}></Image>
+                            <FastImage style={style.pic3_1} source={{ uri: imgList[0] }}></FastImage>
                             <View style={style.rightWrap}>
-                                <Image style={[style.pic3_2, style.mb10]} source={{ uri: imgList[1] }}></Image>
-                                <Image style={style.pic3_2} source={{ uri: imgList[2] }}></Image>
+                                <FastImage style={[style.pic3_2, style.mb10]} source={{ uri: imgList[1] }}></FastImage>
+                                <FastImage style={style.pic3_2} source={{ uri: imgList[2] }}></FastImage>
                             </View>
                         </View>)
                     }
                     else {
                         return (<View style={style.picWrap}>
-                            <Image style={style.pic3_1} source={{ uri: imgList[0] }}></Image>
+                            <FastImage style={style.pic3_1} source={{ uri: imgList[0] }}></FastImage>
                             <View style={style.rightWrap}>
-                                <Image style={[style.pic3_2, style.mb10]} source={{ uri: imgList[1] }}></Image>
+                                <FastImage style={[style.pic3_2, style.mb10]} source={{ uri: imgList[1] }}></FastImage>
                                 <View style={style.imgWrap}>
-                                    <Image style={style.pic3_2} source={{ uri: imgList[2] }}></Image>
+                                    <FastImage style={style.pic3_2} source={{ uri: imgList[2] }}></FastImage>
                                     <View style={style.imgMask}>
                                         <Text style={style.imgMore}>+ {images_total}</Text>
                                     </View>
@@ -253,11 +245,11 @@ const RecommandProductItem = memo((props) => {
                     }
                 default:
                     return (<View style={style.picWrap}>
-                        <Image style={style.pic3_1} source={{ uri: imgList[0] }}></Image>
+                        <FastImage style={style.pic3_1} source={{ uri: imgList[0] }}></FastImage>
                         <View style={style.rightWrap}>
-                            <Image style={[style.pic3_2, style.mb10]} source={{ uri: imgList[1] }}></Image>
+                            <FastImage style={[style.pic3_2, style.mb10]} source={{ uri: imgList[1] }}></FastImage>
                             <View style={style.imgWrap}>
-                                <Image style={style.pic3_2} source={{ uri: imgList[2] }}></Image>
+                                <FastImage style={style.pic3_2} source={{ uri: imgList[2] }}></FastImage>
                                 <View style={style.imgMask}>
                                     <Text style={style.imgMore}>+{images_total}</Text>
                                 </View>

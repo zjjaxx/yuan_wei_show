@@ -5,7 +5,7 @@ export const SET_TOKEN = "SET_TOKEN"
 export const SET_WEBSOCKET = "SET_WEBSOCKET"
 export const SET_USER_INFO = "SET_USER_INFO"
 export const SET_YW = "SET_YW"
-import { wsURL, TOKEN_KEY, VALID_TIME, validTimeCount, baseURL, USER_INFO } from "../utils/config"
+import { wsURL, TOKEN_KEY, VALID_TIME, validTimeCount, baseURL, USER_INFO, YW_KEY } from "../utils/config"
 import { showToast } from "../utils/common"
 
 
@@ -19,19 +19,20 @@ export function asyncToken() {
         getLocalStorage(TOKEN_KEY).then(token => {
             if (token) {
                 _token = token
-                return Promise.all([getLocalStorage(VALID_TIME), getLocalStorage(USER_INFO)])
+                return Promise.all([getLocalStorage(VALID_TIME), getLocalStorage(USER_INFO), getLocalStorage(YW_KEY)])
             }
             else {
                 throw "no token"
             }
         })
-            .then(([validTime, userInfo]) => {
+            .then(([validTime, userInfo, yw]) => {
+                var _yw = JSON.parse(yw) 
                 let now = new Date().getTime()
                 if (now - parseInt(validTime) > validTimeCount) {
                     dispatch(logout())
                 }
                 else {
-                    dispatch(login(_token, JSON.parse(userInfo)))
+                    dispatch(login(_token, JSON.parse(userInfo), _yw))
                 }
             })
             .catch(res => {
@@ -45,10 +46,12 @@ export function asyncToken() {
             })
     }
 }
-export function login(token, userInfo, yw = "") {
+export function login(token, userInfo, yw) {
     return (dispatch, getState) => {
+        console.log("yw",yw)
         Promise.all([
             setLocalStorage(TOKEN_KEY, token),
+            setLocalStorage(YW_KEY, JSON.stringify(yw)),
             setLocalStorage(VALID_TIME, new Date().getTime() + ""),
             setLocalStorage(USER_INFO, JSON.stringify(userInfo))
         ])
@@ -69,12 +72,11 @@ export function login(token, userInfo, yw = "") {
                     type: SET_LOADING,
                     payload: false
                 })
-                if (yw) {
-                    dispatch({
-                        type: SET_YW,
-                        payload: yw
-                    })
-                }
+                dispatch({
+                    type: SET_YW,
+                    payload: yw
+                })
+
             })
         dispatch(initWebSocket(token))
 
@@ -82,7 +84,7 @@ export function login(token, userInfo, yw = "") {
 }
 export function logout() {
     return (dispatch, getState) => {
-        Promise.all([setLocalStorage(TOKEN_KEY, ""), setLocalStorage(VALID_TIME, ""), setLocalStorage(USER_INFO, "")])
+        Promise.all([setLocalStorage(TOKEN_KEY, ""), setLocalStorage(SET_YW, ""), setLocalStorage(VALID_TIME, ""), setLocalStorage(USER_INFO, "")])
             .then(res => {
                 dispatch({
                     type: SET_LOGIN,
@@ -91,6 +93,10 @@ export function logout() {
                 dispatch({
                     type: SET_TOKEN,
                     payload: ""
+                })
+                dispatch({
+                    type: SET_YW,
+                    payload: false
                 })
                 dispatch({
                     type: SET_USER_INFO,

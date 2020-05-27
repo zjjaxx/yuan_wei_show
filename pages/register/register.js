@@ -26,11 +26,11 @@ function Login({ dispatch, navigation, device_code }) {
             mobile: values.mobile,
             password,
             confirm_password,
-            pid: values.pid,
+            code: values.code,
             msgCode: values.msgCode,
             device_code
         }).then(({ data: { result } }) => {
-            dispatch(login(result.token,{userId:result.userId}))
+            dispatch(login(result.token,{userId:result.userId},result.yw))
         })
     }, [dispatch, key, iv])
     //提交事件
@@ -101,7 +101,7 @@ function Login({ dispatch, navigation, device_code }) {
                 <ScrollView style={style.container}>
                     <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/yuanwei.png")}></Image>
                     <Formik
-                        initialValues={{ mobile: '', password: "", confirm_password: "", msgCode: "", pid: "" }}
+                        initialValues={{ mobile: '', password: "", confirm_password: "", msgCode: "", code: "" }}
                         onSubmit={values => setLogin(values)}
                         validationSchema={
                             yup.object().shape({
@@ -180,8 +180,8 @@ function Login({ dispatch, navigation, device_code }) {
                                         returnKeyType="done"
                                         returnKeyLabel="完成"
                                         style={style.input}
-                                        onChangeText={handleChange('pid')}
-                                        value={values.pid}
+                                        onChangeText={handleChange('code')}
+                                        value={values.code}
                                     />
                                 </View>
                                 <View style={style.submitWrap}>
