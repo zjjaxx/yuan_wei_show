@@ -2,20 +2,39 @@ import React, { useCallback, useEffect, useState } from "react"
 import { View, Text, SafeAreaView, StyleSheet, Image, TouchableHighlight } from "react-native"
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
 import Header from "../../components/Header"
-import { create } from "../../api/api"
+import { create,pay } from "../../api/api"
+import Alipay from '@0x5e/react-native-alipay';
 //渐变
 import LinearGradient from 'react-native-linear-gradient';
 import ProductItem from "../../components/prodcutItem"
 function Order({ navigation, route }) {
-    const [createOrderInfo, setCreateOrderInfo] = useState({totalMoney:{},charge_detail:{}})
+    const [createOrderInfo, setCreateOrderInfo] = useState({ totalMoney: {}, charge_detail: {} })
     //返回事件
     const leftEvent = useCallback(() => {
         navigation.goBack()
     }, [])
     //支付
-    const pay = useCallback(() => {
+    const payConfirm = useCallback(async () => {
+        // APP支付
+        try {
+            pay({goods_id:route.params.goods_id,pay_type:1}).then(res=>{
+                return
+            })
+            console.log("Alipay",Alipay)
+            // 打开沙箱
+            // Alipay.setAlipaySandbox(true)
+            // let orderStr = 'app_id=xxxx&method=alipay.trade.app.pay&charset=utf-8&timestamp=2014-07-24 03:07:50&version=1.0&notify_url=https%3A%2F%2Fapi.xxx.com%2Fnotify&biz_content=%7B%22subject%22%3A%22%E5%A4%A7%E4%B9%90%E9%80%8F%22%2C%22out_trade_no%22%3A%22xxxx%22%2C%22total_amount%22%3A%229.00%22%2C%22product_code%22%3A%22QUICK_MSECURITY_PAY%22%7D&sign_type=RSA2&sign=xxxx'; // get from server, signed
+            // let response = await Alipay.pay(orderStr);
+            // console.info(response);
 
-    }, [])
+            // let { resultStatus, result, memo } = response;
+            // let { code, msg, app_id, out_trade_no, trade_no, total_amount, seller_id, charset, timestamp } = JSON.parse(result);
+
+
+        } catch (error) {
+            console.error(error);
+        }
+    }, [route.params?.goods_id])
     const toAddressList = useCallback(() => {
         navigation.navigate("addressList")
     }, [])
@@ -41,7 +60,7 @@ function Order({ navigation, route }) {
                             </View>
                             <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right-gray.png")}></Image>
                             <Image style={style.bar} source={require("../../assets/imgs/baba.png")}></Image>
-                        </View> :<Text style={style.createAddressTip}>请设置收货地址</Text>
+                        </View> : <Text style={style.createAddressTip}>请设置收货地址</Text>
                     }
                 </TouchableHighlight>
                 <ProductItem productItemData={createOrderInfo.goods}></ProductItem>
@@ -62,7 +81,7 @@ function Order({ navigation, route }) {
                         <Text style={style.priceTail}>.{createOrderInfo.totalMoney.d}</Text>
                     </View>
 
-                    <TouchableHighlight underlayColor="#fff" onPress={pay}>
+                    <TouchableHighlight underlayColor="#fff" onPress={payConfirm}>
                         <LinearGradient useAngle={true} angle={90} colors={["#f2140c", "#f2270c", "#fff"]} style={style.buyBtn}>
                             <Text style={style.buyText}>提交订单</Text>
                         </LinearGradient>
@@ -93,14 +112,14 @@ const style = StyleSheet.create({
         justifyContent: "center",
         backgroundColor: "#fff"
     },
-    createAddressTip:{
-        width:"100%",
-        textAlign:"center",
-        paddingVertical:scaleHeight(10),
-        backgroundColor:"#fff",
-        fontSize:setSpText2(14),
-        fontWeight:"500",
-        color:"#fca143"
+    createAddressTip: {
+        width: "100%",
+        textAlign: "center",
+        paddingVertical: scaleHeight(10),
+        backgroundColor: "#fff",
+        fontSize: setSpText2(14),
+        fontWeight: "500",
+        color: "#fca143"
     },
     addressWrap: {
         position: "relative",

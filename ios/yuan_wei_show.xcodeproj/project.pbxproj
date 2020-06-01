@@ -16,6 +16,16 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* yuan_wei_showTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* yuan_wei_showTests.m */; };
+		A062FBAF2484EF36007FBA8F /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A062FBAE2484EF36007FBA8F /* CFNetwork.framework */; };
+		A062FBB12484EF41007FBA8F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A062FBB02484EF41007FBA8F /* CoreGraphics.framework */; };
+		A062FBB32484EF5B007FBA8F /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A062FBB22484EF5B007FBA8F /* CoreMotion.framework */; };
+		A062FBB52484EF6B007FBA8F /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A062FBB42484EF6B007FBA8F /* CoreTelephony.framework */; };
+		A062FBB72484EF76007FBA8F /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A062FBB62484EF76007FBA8F /* CoreText.framework */; };
+		A062FBB92484EF8D007FBA8F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A062FBB82484EF8D007FBA8F /* Foundation.framework */; };
+		A062FBBB2484EF9B007FBA8F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A062FBBA2484EF9B007FBA8F /* QuartzCore.framework */; };
+		A062FBBD2484EFB1007FBA8F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A062FBBC2484EFB1007FBA8F /* UIKit.framework */; };
+		A062FBC82484F894007FBA8F /* libRCTAlipay.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A062FBC72484F894007FBA8F /* libRCTAlipay.a */; };
+		A062FBCA2484FC54007FBA8F /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A062FBC92484FC54007FBA8F /* WebKit.framework */; };
 		A072D56A247CA934008FD2A9 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A072D569247CA934008FD2A9 /* Launch Screen.storyboard */; };
 		A08EBC022477BC7300B5C25C /* Bugly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A08EBC012477BC7300B5C25C /* Bugly.framework */; };
 		A08EBC042477BE1500B5C25C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A08EBC032477BE1500B5C25C /* SystemConfiguration.framework */; };
@@ -67,6 +77,16 @@
 		662EEEA271A603785D3384E1 /* Pods-yuan_wei_show-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-yuan_wei_show-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-yuan_wei_show-tvOSTests/Pods-yuan_wei_show-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		69746F159D6E37496986696A /* Pods-yuan_wei_show-yuan_wei_showTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-yuan_wei_show-yuan_wei_showTests.debug.xcconfig"; path = "Target Support Files/Pods-yuan_wei_show-yuan_wei_showTests/Pods-yuan_wei_show-yuan_wei_showTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8D60B7AECFE91FC80D4C772F /* libPods-yuan_wei_show.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-yuan_wei_show.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A062FBAE2484EF36007FBA8F /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		A062FBB02484EF41007FBA8F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		A062FBB22484EF5B007FBA8F /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		A062FBB42484EF6B007FBA8F /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		A062FBB62484EF76007FBA8F /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		A062FBB82484EF8D007FBA8F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		A062FBBA2484EF9B007FBA8F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A062FBBC2484EFB1007FBA8F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		A062FBC72484F894007FBA8F /* libRCTAlipay.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRCTAlipay.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A062FBC92484FC54007FBA8F /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		A072D569247CA934008FD2A9 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		A08EBC012477BC7300B5C25C /* Bugly.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bugly.framework; sourceTree = "<group>"; };
 		A08EBC032477BE1500B5C25C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -97,10 +117,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A062FBCA2484FC54007FBA8F /* WebKit.framework in Frameworks */,
+				A062FBC82484F894007FBA8F /* libRCTAlipay.a in Frameworks */,
+				A062FBBD2484EFB1007FBA8F /* UIKit.framework in Frameworks */,
+				A08EBC042477BE1500B5C25C /* SystemConfiguration.framework in Frameworks */,
+				A062FBBB2484EF9B007FBA8F /* QuartzCore.framework in Frameworks */,
+				A062FBB92484EF8D007FBA8F /* Foundation.framework in Frameworks */,
+				A062FBB72484EF76007FBA8F /* CoreText.framework in Frameworks */,
+				A062FBB52484EF6B007FBA8F /* CoreTelephony.framework in Frameworks */,
+				A062FBB32484EF5B007FBA8F /* CoreMotion.framework in Frameworks */,
+				A062FBB12484EF41007FBA8F /* CoreGraphics.framework in Frameworks */,
+				A062FBAF2484EF36007FBA8F /* CFNetwork.framework in Frameworks */,
 				A08EBC0A2477BE9800B5C25C /* libc++.tbd in Frameworks */,
 				A08EBC082477BE8C00B5C25C /* libz.tbd in Frameworks */,
 				A08EBC062477BE2000B5C25C /* Security.framework in Frameworks */,
-				A08EBC042477BE1500B5C25C /* SystemConfiguration.framework in Frameworks */,
 				A08EBC022477BC7300B5C25C /* Bugly.framework in Frameworks */,
 				D1E163B0A3A86F09B1AAF04C /* libPods-yuan_wei_show.a in Frameworks */,
 			);
@@ -159,6 +189,16 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A062FBC92484FC54007FBA8F /* WebKit.framework */,
+				A062FBC72484F894007FBA8F /* libRCTAlipay.a */,
+				A062FBBC2484EFB1007FBA8F /* UIKit.framework */,
+				A062FBBA2484EF9B007FBA8F /* QuartzCore.framework */,
+				A062FBB82484EF8D007FBA8F /* Foundation.framework */,
+				A062FBB62484EF76007FBA8F /* CoreText.framework */,
+				A062FBB42484EF6B007FBA8F /* CoreTelephony.framework */,
+				A062FBB22484EF5B007FBA8F /* CoreMotion.framework */,
+				A062FBB02484EF41007FBA8F /* CoreGraphics.framework */,
+				A062FBAE2484EF36007FBA8F /* CFNetwork.framework */,
 				A08EBC092477BE9800B5C25C /* libc++.tbd */,
 				A08EBC072477BE8C00B5C25C /* libz.tbd */,
 				A08EBC052477BE2000B5C25C /* Security.framework */,
@@ -414,11 +454,13 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-yuan_wei_show-yuan_wei_showTests/Pods-yuan_wei_show-yuan_wei_showTests-resources.sh",
+				"${PODS_ROOT}/../../node_modules/@0x5e/react-native-alipay/ios/AlipaySDK.bundle",
 				"${PODS_ROOT}/TZImagePickerController/TZImagePickerController/TZImagePickerController/TZImagePickerController.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-update/ios/pushy_build_time.txt",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AlipaySDK.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TZImagePickerController.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/pushy_build_time.txt",
 			);
@@ -434,11 +476,13 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-yuan_wei_show/Pods-yuan_wei_show-resources.sh",
+				"${PODS_ROOT}/../../node_modules/@0x5e/react-native-alipay/ios/AlipaySDK.bundle",
 				"${PODS_ROOT}/TZImagePickerController/TZImagePickerController/TZImagePickerController/TZImagePickerController.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-update/ios/pushy_build_time.txt",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AlipaySDK.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TZImagePickerController.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/pushy_build_time.txt",
 			);
@@ -662,6 +706,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = yuan_wei_showTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -682,6 +727,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = yuan_wei_showTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -714,6 +760,7 @@
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = yuan_wei_show/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0.0;
@@ -743,6 +790,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = yuan_wei_show/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0.0;
@@ -771,6 +819,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "yuan_wei_show-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -799,6 +848,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "yuan_wei_show-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -826,6 +876,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "yuan_wei_show-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -853,6 +904,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "yuan_wei_show-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
