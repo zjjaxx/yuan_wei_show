@@ -1,10 +1,17 @@
-import React, { useCallback, useState, memo, useMemo } from "react"
+import React, { useCallback, useState, memo, useMemo, useEffect } from "react"
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableHighlight, TouchableOpacity } from "react-native"
 import Header from "../../components/Header"
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
 import { SwipeListView } from 'react-native-swipe-list-view';
+import {address} from "../../api/api"
 
 function AddressList({ navigation }) {
+    const [addressList,setAddressList]=useState([])
+    const c_addressList=useMemo(()=>{
+        return addressList.map(item=>{
+            return {key:item.id,...item}
+        })
+    },[addressList])
     //批量操作
     const [isBatchOperation, setIsBatchOperation] = useState(false)
     //批量选中的地址数组
@@ -48,6 +55,12 @@ function AddressList({ navigation }) {
             rowMap[rowKey].closeRow();
         }
     },[])
+    //地址列表
+    useEffect(()=>{
+        address().then(({data:{result}})=>{
+            setAddressList(result)
+        })
+    },[])
     return (
         <SafeAreaView style={style.safeAreaView}>
             <View style={style.container}>
@@ -55,7 +68,7 @@ function AddressList({ navigation }) {
                 <SwipeListView
                     style={style.scrollView}
                     rightOpenValue={-scaleSize(140)}
-                    data={[{key:1},{key:2},{key:3},{key:4},{key:5}]}
+                    data={c_addressList}
                     renderItem={(data, rowMap) => (
                         <AddressItem id={data.index} toEditAddress={toEditAddress} isBatchOperation={isBatchOperation} removeBatchAddressList={removeBatchAddressList} addBatchAddressList={addBatchAddressList}></AddressItem>
                     )}

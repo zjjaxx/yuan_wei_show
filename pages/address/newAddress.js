@@ -4,12 +4,12 @@ import Header from "../../components/Header"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import useAddressData from "../../customUse/addressData";
 import AddressComponent from "./addressComponent"
-
+import addressData from "../../utils/address"
+import {store} from "../../api/api"
 function NewAddress({ navigation }) {
     //选择地址模态框
     const [addressPopupFlag, setAddressPopupFlag] = useState(false)
     //地址数据
-    const addressData = useAddressData()
     const leftEvent = useCallback(() => {
         navigation.goBack()
     }, [])
@@ -19,6 +19,24 @@ function NewAddress({ navigation }) {
     const addressText = () => {
         return addressSelectItem.map(item => item.text).join(" ") || "省市区县、乡镇等"
     }
+    //新建地址
+    const createAddress=useCallback((values)=>{
+        store({
+            phone:values.phone,
+            real_name:values.real_name,
+            detail:values.detail,
+            pcd:JSON.stringify(addressSelectItem),
+            is_default:isDefault?1:0
+        }).then(({data:{result}})=>{
+            Alert.alert(
+                '提示',
+                result,
+                [
+                    { text: 'OK', onPress: () => {navigation.goBack() } },
+                ],
+            )
+        })
+    },[addressSelectItem,isDefault])
     //提交
     const _handleSubmit = useCallback((values, errors, handleSubmit) => {
         for (let [key, value] of Object.entries(errors)) {
@@ -40,6 +58,7 @@ function NewAddress({ navigation }) {
             <View style={style.container}>
                 <Header leftEvent={leftEvent} title="新建收货地址"></Header>
                 <AddressComponent
+                    createAddress={createAddress}
                     addressPopupFlag={addressPopupFlag}
                     setAddressPopupFlag={setAddressPopupFlag}
                     isDefault={isDefault}

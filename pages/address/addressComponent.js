@@ -1,5 +1,5 @@
 import React from "react"
-import { View, Text, Image, StyleSheet, ScrollView, Switch, TouchableHighlight,  Modal } from "react-native"
+import { View, Text, Image, StyleSheet, ScrollView, Switch, TouchableHighlight, Modal } from "react-native"
 import { TextInput } from "react-native-gesture-handler"
 import { Formik } from 'formik';
 import * as yup from "yup"
@@ -10,6 +10,7 @@ const phoneRegExp = /^1[3456789]\d{9}$/
 
 function AddressComponent(props) {
     const {
+        createAddress,
         addressPopupFlag,
         setAddressPopupFlag,
         isDefault,
@@ -19,26 +20,26 @@ function AddressComponent(props) {
         addressData,
         addressText,
         _handleSubmit,
-        phone="",
-        name="",
-        addressDetail=""
+        phone = "",
+        real_name = "",
+        detail = ""
     } = props
     return (
         <View style={{ flex: 1 }}>
             <Formik
                 style={{ flex: 1 }}
-                initialValues={{ phone: phone, name:name, addressDetail:addressDetail }}
-                onSubmit={values => setLogin(values)}
+                initialValues={{ phone: phone, real_name: real_name, detail: detail }}
+                onSubmit={values => createAddress(values)}
                 validationSchema={
                     yup.object().shape({
                         phone: yup
                             .string()
                             .matches(phoneRegExp, '手机格式有误')
                             .required("请输入手机号"),
-                        name: yup
+                        real_name: yup
                             .string()
                             .required("请输入姓名"),
-                        addressDetail: yup
+                        detail: yup
                             .string()
                             .required("请输入详细地址")
                     })}
@@ -47,7 +48,7 @@ function AddressComponent(props) {
                     <ScrollView style={style.scrollView}>
                         <View style={style.formItemWrap}>
                             <Text style={style.label}>收货人</Text>
-                            <TextInput value={values.name} placeholder="请填写收货人姓名" onChangeText={handleChange('name')} style={style.nameInput}></TextInput>
+                            <TextInput value={values.real_name} placeholder="请填写收货人姓名" onChangeText={handleChange('real_name')} style={style.nameInput}></TextInput>
                         </View>
                         <View style={style.formItemWrap}>
                             <Text style={style.label}>手机号码</Text>
@@ -63,17 +64,17 @@ function AddressComponent(props) {
                         </View>
                         <View style={style.formItemWrap}>
                             <Text style={style.label}>详细地址</Text>
-                            <TextInput value={values.addressDetail} placeholder="街道、楼牌号等" onChangeText={handleChange('addressDetail')} style={style.addressDetailInput}></TextInput>
+                            <TextInput value={values.detail} placeholder="街道、楼牌号等" onChangeText={handleChange('detail')} style={style.addressDetailInput}></TextInput>
                         </View>
                         <View style={style.formItemWrap}>
                             <View style={style.defaultLabelWrap}>
                                 <Text style={style.defaultLabel}>设置默认地址</Text>
                                 <Text style={style.tip}>提醒：每次下单会默认推荐使用该地址</Text>
                             </View>
-                            <Switch thumbTintColor="#f2140c" value={isDefault} ios_backgroundColor="#eee" onValueChange={() => setIsDefault(isDefault => !isDefault)}  trackColor={{ false: '#eee', true: '#f2140c' }}></Switch>
+                            <Switch thumbTintColor="#fff" value={isDefault} ios_backgroundColor="#eee" onValueChange={() => setIsDefault(isDefault => !isDefault)} trackColor={{ false: '#eee', true: '#f2140c' }}></Switch>
                         </View>
                         <TouchableHighlight style={style.saveWrap} underlayColor="#f2140c" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
-                                <Text style={style.saveTitle}>保存</Text>
+                            <Text style={style.saveTitle}>保存</Text>
                         </TouchableHighlight>
                     </ScrollView>
                 )}
@@ -119,13 +120,13 @@ const style = StyleSheet.create({
         marginRight: scaleSize(20),
         paddingVertical: 0,
         flex: 1,
-        color:"#333"
+        color: "#333"
     },
     phoneInput: {
         marginRight: scaleSize(20),
         paddingVertical: 0,
         flex: 1,
-        color:"#333"
+        color: "#333"
     },
     areTitle: {
         flex: 1,
@@ -143,7 +144,7 @@ const style = StyleSheet.create({
         marginRight: scaleSize(20),
         paddingVertical: 0,
         flex: 1,
-        color:"#333"
+        color: "#333"
     },
     defaultLabelWrap: {
         marginRight: scaleSize(30),

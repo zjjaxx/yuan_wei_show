@@ -7,8 +7,8 @@ import AddressComponent from "./addressComponent"
 
 function EditAddress({ navigation }) {
     const [phone,setPhone]=useState("17855827436")
-    const [name,setName]=useState("绿灯")
-    const [addressDetail,setAddressDetail]=useState("兰江街道 水东村")
+    const [real_name]=useState("绿灯")
+    const [detail,setAddressDetail]=useState("兰江街道 水东村")
     //选择地址模态框
     const [addressPopupFlag, setAddressPopupFlag] = useState(false)
     //地址数据
@@ -53,8 +53,8 @@ function EditAddress({ navigation }) {
                     addressText={addressText}
                     _handleSubmit={_handleSubmit}
                     phone={phone}
-                    name={name}
-                    addressDetail={addressDetail}
+                    real_name={real_name}
+                    detail={detail}
                 ></AddressComponent>
             </View>
         </SafeAreaView>

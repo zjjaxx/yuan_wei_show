@@ -8,6 +8,8 @@ export const comment=(data)=>axios.post("/api/v1/product/comment",data)//留言
 export const like=(data)=>axios.post("/api/v1/product/like",data)//点赞
 export const create=(data)=>axios.get("/api/v1/order/create",{params:data})//创建订单详情
 export const pay=(data)=>axios.post("/api/v1/order/pay",data)//支付
+export const address=()=>axios.get("/api/v1/address")//地址列表
+export const store=(data)=>axios.post("/api/v1/address/store",data)//新建地址列表
 export const category=()=>axios.get("/api/v1/product/category") //分类
 export const tags=(data)=>axios.get("/api/v1/product/tags",{params:data})//获取标签
 export const upload=(data)=>axios.post("/api/v1/image/upload",data)//图片上传
