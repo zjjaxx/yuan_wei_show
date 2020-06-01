@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, memo } from "react"
+import React, { useCallback, useState, useRef, memo,useEffect } from "react"
 import { View, Text, StyleSheet, SafeAreaView, Button, Image, TouchableOpacity, PermissionsAndroid, Dimensions, TouchableHighlight } from "react-native"
 import Header from "../../components/Header"
 import FastImage from 'react-native-fast-image'
@@ -7,9 +7,10 @@ import { AudioRecorder, AudioUtils } from 'react-native-audio'
 import RNFS from 'react-native-fs'
 import Sound from 'react-native-sound'
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
+import {connect} from "react-redux"
 import chatBg from '../../assets/imgs/pic1.jpg'
 const { width, height } = Dimensions.get('window')
-function MessageDetail({ navigation }) {
+function MessageDetail({ navigation,webSocket,route }) {
   //聊天句柄
   const chatRef = useRef()
   //发语音计时器
@@ -379,8 +380,20 @@ function MessageDetail({ navigation }) {
   }, [])
   //立即购买
   const orderConfirm = useCallback(() => {
-    navigation.navigate("order")
-  }, [])
+    navigation.navigate("order",{goods_id:route.params.goods_id})
+  }, [route.params?.goods_id])
+  //接收消息
+  const receiveMessage=useCallback(e=>{
+    console.log("e",e)
+  },[])
+  //获取聊天记录
+  useEffect(() => {
+      if (route.params?.sellId) {
+        webSocket.onmessage =receiveMessage
+        let params={action:'index',content:{}}
+        webSocket.send(JSON.stringify(params))
+      }
+  }, [route.params?.sellId])
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={style.container}>
@@ -523,4 +536,4 @@ const style = StyleSheet.create({
     color: "#fff",
   }
 })
-export default MessageDetail
+export default connect(state => state, dispatch => ({ dispatch }))(MessageDetail)

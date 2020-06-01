@@ -5,6 +5,8 @@ export const msgCode=(data)=>axios.post("/api/v1/auth/msgCode",data)//验证码
 export const home=(data)=>axios.get("/api/v1/home",{params:data})//首页数据
 export const productDetail=(data)=>axios.get("/api/v1/product/detail",{params:data})//产品详情
 export const comment=(data)=>axios.post("/api/v1/product/comment",data)//留言
+export const like=(data)=>axios.post("/api/v1/product/like",data)//点赞
+export const create=(data)=>axios.get("/api/v1/order/create",{params:data})//创建订单详情
 export const category=()=>axios.get("/api/v1/product/category") //分类
 export const tags=(data)=>axios.get("/api/v1/product/tags",{params:data})//获取标签
 export const upload=(data)=>axios.post("/api/v1/image/upload",data)//图片上传

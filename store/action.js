@@ -48,7 +48,6 @@ export function asyncToken() {
 }
 export function login(token, userInfo, yw) {
     return (dispatch, getState) => {
-        console.log("yw",yw)
         Promise.all([
             setLocalStorage(TOKEN_KEY, token),
             setLocalStorage(YW_KEY, JSON.stringify(yw)),
@@ -78,7 +77,7 @@ export function login(token, userInfo, yw) {
                 })
 
             })
-        dispatch(initWebSocket(token))
+        dispatch(initWebSocket(token,yw))
 
     }
 }
@@ -111,18 +110,19 @@ export function logout() {
     }
 
 }
-export function initWebSocket(token) {
+export function initWebSocket(token,yw) {
     return (dispatch, getState) => {
-        const ws = new WebSocket(wsURL);
+        const ws = new WebSocket(wsURL+`?token=${token}&yw=${yw}`);
         ws.onopen = () => {
-            let param = JSON.stringify({ channel: 'auth', data: { token: token, content: "auth" } });
-            ws.send(param);
+            // let params={action:'index',content:{}}
+            // ws.send(JSON.stringify(params))
             dispatch({
                 type: SET_WEBSOCKET,
                 payload: ws
             })
         };
         ws.onmessage = (e) => {
+            console.log("e action",e)
         };
         ws.onerror = (e) => {
             showToast(e.message)

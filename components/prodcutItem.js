@@ -2,20 +2,21 @@ import React from "react"
 import { View, Text, Image, StyleSheet } from "react-native"
 import { scaleSize, scaleHeight, setSpText2 } from "../utils/ScreenUtil"
 
-function ProductItem() {
+function ProductItem(props) {
+    const { productItemData = { user: {}, _price:{} } } = props
     return (
         <View style={style.productInfoWrap}>
             <View style={style.headerWrap}>
-                <Image style={style.avatar} source={require("../assets/imgs/avatar.jpeg")}></Image>
-                <Text numberOfLines={1} ellipsizeMode="tail" style={style.name}>小可爱分为甲方将无法就忘记发文件佛教围殴附近降温哦飞机围殴我金佛我我即佛我家附近</Text>
+                <Image style={style.avatar} source={{ uri: productItemData.user.avatar }}></Image>
+                <Text numberOfLines={1} ellipsizeMode="tail" style={style.name}>{productItemData.user.nickname}</Text>
             </View>
             <View style={style.productInfo}>
-                <Image source={require("../assets/imgs/pic3.jpg")} style={style.productImg}></Image>
+                <Image source={{ uri: productItemData.image }} style={style.productImg}></Image>
                 <View style={style.productMsg}>
-                    <Text numberOfLines={2} ellipsizeMode="tail" style={style.productName}>为甲方将无法就忘记发文件佛教围殴附近降温哦飞机围殴我金佛我我即佛我家附</Text>
+                    <Text numberOfLines={2} ellipsizeMode="tail" style={style.productName}>{productItemData.store_info}</Text>
                     <View style={style.priceWrap}>
-                        <Text style={style.price}>￥9</Text>
-                        <Text style={style.priceTail}>.90</Text>
+                        <Text style={style.price}>￥{productItemData._price.i}</Text>
+                        <Text style={style.priceTail}>.{productItemData._price.d}</Text>
                     </View>
                 </View>
             </View>
@@ -72,8 +73,8 @@ const style = StyleSheet.create({
         height: scaleSize(80),
         borderRadius: scaleSize(5)
     },
-    productMsg:{
-        flex:1
+    productMsg: {
+        flex: 1
     },
 })
 export default ProductItem

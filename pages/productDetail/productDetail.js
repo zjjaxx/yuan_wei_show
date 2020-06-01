@@ -7,10 +7,11 @@ import Carousel from 'react-native-snap-carousel';
 import { sliderWidth, itemWidth } from '../../swiperLib/SliderEntry.style';
 import LoadMore from "../../components/LoadMore"
 import ImageViewer from 'react-native-image-zoom-viewer'
-import { productDetail, comment } from "../../api/api"
+import { productDetail, comment,like} from "../../api/api"
 import FastImage from 'react-native-fast-image'
 import { connect } from "react-redux"
-const mockData = [0, 1, 2]
+import toDate from "../../utils/toDate"
+
 function ProductDetail({ navigation, route, userInfo }) {
     const [productDetailData, setProductDetailData] = useState({})
     //是否预览
@@ -19,12 +20,14 @@ function ProductDetail({ navigation, route, userInfo }) {
     const productImg = useMemo(() => {
         return productDetailData.images ? productDetailData.images.map(item => ({ url: item.att_dir })) : []
     }, [productDetailData.images])
+    //是否显示留言框
+    const [isShowLeaveMessage, setIsShowLeaveMessage] = useState(false)
+    //回复人信息
+    const [replayInfo, setReplayInfo] = useState({})
     //是否收藏
     const [isSave, setSave] = useState(false)
     //是否点赞
     const [isThumb, setIsThumb] = useState(false)
-    //留言placeholder
-    const [inputPlaceholder, setInputPlaceHolder] = useState("看对眼就留言，问问更多细节~")
 
     //返回事件
     const leftEvent = useCallback(() => {
@@ -36,26 +39,34 @@ function ProductDetail({ navigation, route, userInfo }) {
     }, [isSave])
     //点赞
     const toggleLove = useCallback(() => {
-        setIsThumb(isThumb => !isThumb)
-    }, [])
+        let flag=isThumb?0:1
+        like({goods_id:route.params?.goods_id,flag}).then(res=>{
+            setIsThumb(isThumb => !isThumb)
+        })
+    }, [route.params?.goods_id,isThumb])
     //发送留言
-    const sendComment = useCallback(({ nativeEvent: { text, eventCount, target } }, comment_id = "") => {
+    const sendComment = useCallback(({ nativeEvent: { text, eventCount, target } }) => {
+        let comment_id = replayInfo.id ? replayInfo.id : ""
         comment({ goods_id: route.params?.goods_id, comment_id, content: text })
-            .then(({data:{result}}) => {
+            .then(({ data: { result } }) => {
                 Alert.alert(
                     '提示',
                     result,
                     [
-                        { text: 'OK', onPress: () => { } },
+                        {
+                            text: 'OK', onPress: () => {
+                                _api(route.params.goods_id)
+                            }
+                        },
                     ],
-    
+
                 )
             })
-    }, [])
+    }, [route.params?.goods_id, replayInfo])
     //点击购买事件
     const payConfirm = useCallback(() => {
-        navigation.navigate("messageDetail")
-    }, [])
+        navigation.navigate("messageDetail",{sellId:productDetailData.user.uid,goods_id:route.params.goods_id})
+    }, [productDetailData])
     //保存图片到本地
     const _onSaveToCamera = useCallback((url) => {
         CameraRoll.saveToCameraRoll(url).then(path => {
@@ -83,12 +94,16 @@ function ProductDetail({ navigation, route, userInfo }) {
     }, [])
     const toInfo = useCallback(() => {
     }, [])
+    const _api = useCallback((goods_id) => {
+        productDetail({ goods_id }).then(({ data: { result } }) => {
+            setProductDetailData(result)
+            setIsThumb(result.isLike)
+        })
+    }, [])
     //产品详情数据
     useEffect(() => {
         if (route.params?.goods_id) {
-            productDetail({ goods_id: route.params.goods_id }).then(({ data: { result } }) => {
-                setProductDetailData(result)
-            })
+            _api(route.params.goods_id)
         }
     }, [route.params?.goods_id])
     const CustomMenus = memo((props) => {
@@ -143,15 +158,18 @@ function ProductDetail({ navigation, route, userInfo }) {
                     <TouchableHighlight underlayColor="#fca413" onPress={checkMore} style={style.checkMoreWrap}>
                         <Text style={style.checkMore}>查看更多</Text>
                     </TouchableHighlight>
-                    <LeaveMessageList leaveMessageList={[[2, 4, 3], [3, 45, 5]]}></LeaveMessageList>
+                    <LeaveMessageList setReplayInfo={setReplayInfo} productDetailData={productDetailData} setIsShowLeaveMessage={setIsShowLeaveMessage}></LeaveMessageList>
                 </ScrollView>
                 <BottomBar
+                    replayInfo={replayInfo}
+                    setReplayInfo={setReplayInfo}
+                    isShowLeaveMessage={isShowLeaveMessage}
+                    setIsShowLeaveMessage={setIsShowLeaveMessage}
                     sendComment={sendComment}
                     toggleLove={toggleLove}
                     isThumb={isThumb}
                     isSave={isSave}
                     toggleSave={toggleSave}
-                    inputPlaceholder={inputPlaceholder}
                     payConfirm={payConfirm}
                 >
                 </BottomBar>
@@ -174,32 +192,36 @@ const UserInfo = memo((props) => {
 //底部栏
 const BottomBar = React.memo(function (props) {
     const {
+        setReplayInfo,//设置回复人信息
+        replayInfo,//回复人信息
+        isShowLeaveMessage,//是否显示留言输入框
+        setIsShowLeaveMessage,//设置是否显示留言输入框
         isSave,//是否收藏
         isThumb,//是否点赞
         toggleLove, //toggle 点赞
         toggleSave,//toggle 收藏
         payConfirm, //想要
         sendComment, //发送留言
-        inputPlaceholder//留言输入框placeholder
     } = props
-    //是否显示留言框
-    const [isShowLeaveMessage, setIsShowLeaveMessage] = useState(false)
+
     //留言框失去焦点事件
     const leaveInputOnBlur = useCallback(() => {
         setIsShowLeaveMessage(false)
+        setReplayInfo({})
     }, [])
-
+    const relayPlaceHolder = replayInfo.nickname ? "回复@" + replayInfo.nickname + ":" : "看对眼就留言，问问更多细节~"
     return (
         <>
             {isShowLeaveMessage ? <KeyboardAvoidingView keyboardVerticalOffset={scaleHeight(32)} behavior={Platform.OS == "android" ? '' : 'position'} enabled contentContainerStyle={{ backgroundColor: "#fff" }}>
                 <View style={style.leaveInputWrap}>
                     <Image style={style.avatar} source={require("../../assets/imgs/avatar.jpeg")}></Image>
                     <TextInput
+                        autoFocus={true}
                         style={style.leaveInput}
                         returnKeyType="send"
                         returnKeyLabel="发送"
                         placeholderTextColor="#999"
-                        placeholder={inputPlaceholder}
+                        placeholder={relayPlaceHolder}
                         onBlur={leaveInputOnBlur}
                         onSubmitEditing={sendComment}
                     ></TextInput>
@@ -232,37 +254,47 @@ const BottomBar = React.memo(function (props) {
 })
 //全部留言
 const LeaveMessageList = React.memo(function (props) {
-    const { leaveMessageList } = props
+    const { productDetailData, setIsShowLeaveMessage, setReplayInfo } = props
+    let { comments = [], comments_count = 0 } = productDetailData
     const LeaveMessageItem = memo((props) => {
+        const { itemData, setIsShowLeaveMessage } = props
         const Item = memo((props) => {
-            const { type } = props
+            const { type, itemData, setIsShowLeaveMessage, setReplayInfo } = props
+            const replay = useCallback(itemData => {
+                setReplayInfo(itemData)
+                setIsShowLeaveMessage(true)
+            }, [])
             return (<View style={style.leaveMessageItemWrap}>
                 <View style={style.leaveMessageHeadWrap}>
-                    <Image style={style.leaveItemAvatar} source={require("../../assets/imgs/avatar.jpeg")}></Image>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={[style.name, type == 1 ? { marginRight: "auto" } : {}]}>花花有期~纷纷尽我if</Text>
-                    {type == 2 ? <View style={style.sellerWrap}><Text style={style.seller}>主人</Text></View> : null}
+                    <Image style={style.leaveItemAvatar} source={{ uri: itemData.avatar }}></Image>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={[style.name, itemData.is_master == 0 ? { marginRight: "auto" } : {}]}>{itemData.nickname}</Text>
+                    {itemData.is_master == 1 ? <View style={style.sellerWrap}><Text style={style.seller}>主人</Text></View> : null}
                     <Image source={require("../../assets/imgs/thumbs-up.png")} style={style.thumbIcon}></Image>
                 </View>
-                {type == 2 ? <Text style={style.replay}>回复@花花有期~纷纷尽我if:在的</Text> : <Text style={style.leaveMessageContent}>东西还在吗？</Text>}
-                <Text style={style.messageTime}>22天前</Text>
+                <TouchableHighlight underlayColor="#fff" onPress={() => replay(itemData)}>
+                    {type == 2 ? <Text style={style.replay}>回复@{itemData.p_nickname}:{itemData.content}</Text> : <Text style={style.leaveMessageContent}>{itemData.content}</Text>}
+                </TouchableHighlight>
+                <Text style={style.messageTime}>{toDate(itemData.add_time)}</Text>
             </View>)
         })
         return (
             <>
-                <Item type={1}></Item>
-                <View style={style.replayWrap}>
-                    <Item type={2}></Item>
-                </View>
+                <Item itemData={itemData} setIsShowLeaveMessage={setIsShowLeaveMessage} setReplayInfo={setReplayInfo} type={1}></Item>
+                {itemData.child && itemData.child.map((item,index) =>
+                    <View style={style.replayWrap} key={index}>
+                        <Item itemData={item} setIsShowLeaveMessage={setIsShowLeaveMessage} setReplayInfo={setReplayInfo} type={2}></Item>
+                    </View>
+                )}
             </>
         )
     })
     return (
         <>
             <View style={style.leaveTitleWrap}>
-                <Text style={style.leaveTitle}>全部留言 · 18</Text>
+                <Text style={style.leaveTitle}>全部留言 · {comments_count}</Text>
             </View>
             <View style={style.leaveMessageListWrap}>
-                {leaveMessageList.map((item, index) => <LeaveMessageItem key={index}></LeaveMessageItem>)}
+                {comments.map((item, index) => <LeaveMessageItem setReplayInfo={setReplayInfo} setIsShowLeaveMessage={setIsShowLeaveMessage} itemData={item} key={index}></LeaveMessageItem>)}
             </View>
         </>
     )
