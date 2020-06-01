@@ -28,6 +28,7 @@ import CustomTagsScreen from "../pages/publish/customTags"
 import { connect } from "react-redux"
 import { asyncToken } from "../store/action"
 import SplashScreen from 'react-native-splash-screen'
+
 //tab 路由容器
 const Tab = createBottomTabNavigator();
 function TabContainer() {

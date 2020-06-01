@@ -136,6 +136,10 @@ android {
         versionCode 1
         versionName "1.0.0"
         multiDexEnabled true
+        manifestPlaceholders = [
+                  JPUSH_APPKEY: "b4c224bc3d43ed15847b3348",         //在此替换你的APPKey
+                  JPUSH_CHANNEL: "d88ae2774e5035134d9bc771"        //在此替换你的channel
+        ]
     }
     splits {
         abi {
@@ -198,6 +202,8 @@ android {
 }
 
 dependencies {
+    implementation project(':jpush-react-native')  // 添加 jpush 依赖
+    implementation project(':jcore-react-native')  // 添加 jcore 依赖
     compile 'com.tencent.bugly:crashreport:latest.release'
     implementation 'com.android.support:multidex:1.0.3'
     implementation fileTree(dir: "libs", include: ["*.jar"])

@@ -2,6 +2,7 @@ import axios from "./http"
 export const login=(data)=>axios.post("/api/v1/auth/login",data)//登入
 export const register=(data)=>axios.post("/api/v1/auth/register",data)//注册
 export const msgCode=(data)=>axios.post("/api/v1/auth/msgCode",data)//验证码
+export const registrationId=(data)=>axios.post("/api/v1/user/registrationId",data)//极光推送
 export const home=(data)=>axios.get("/api/v1/home",{params:data})//首页数据
 export const productDetail=(data)=>axios.get("/api/v1/product/detail",{params:data})//产品详情
 export const comment=(data)=>axios.post("/api/v1/product/comment",data)//留言

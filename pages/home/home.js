@@ -137,7 +137,7 @@ function Home({ navigation }) {
                     </TouchableHighlight>
                 </View>
                 <WaterfallList
-                    style={{flex:1}}
+                    style={{ flex: 1 }}
                     ref={listRef}
                     data={homeDataList}
                     heightForItem={(item, index) => calcItemHeight(item, index)}
@@ -145,10 +145,10 @@ function Home({ navigation }) {
                     loadingFooter={ChineseWithLastDateFooter}
                     renderItem={(item, index) => <RecommandProductItem productItemData={item} toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
                     refreshHeader={RefreshHeader}
-                    onRefresh={()=> 
+                    onRefresh={() =>
                         setTimeout(() => {
                             _onRefresh()
-                        },1000)
+                        }, 1000)
                     }
                     onLoading={() => {
                         setTimeout(() => {

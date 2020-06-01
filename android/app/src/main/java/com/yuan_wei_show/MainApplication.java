@@ -14,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import androidx.multidex.MultiDexApplication;
 import cn.reactnative.modules.update.UpdateContext;
-// import com.reactlibrary.AlipayPackage;
+import cn.jiguang.plugins.push.JPushModule;
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 
@@ -57,7 +57,8 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
 
     CrashReport.initCrashReport(getApplicationContext(), "67ed41158a", false);
 
-
+  //调用此方法：点击通知让应用从后台切到前台
+    JPushModule.registerActivityLifecycle(this);
 
   }
 

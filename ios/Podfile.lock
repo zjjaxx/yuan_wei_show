@@ -69,6 +69,10 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - JCore (1.8.0):
+    - React
+  - JPush (2.8.1):
+    - React
   - libwebp (1.1.0):
     - libwebp/demux (= 1.1.0)
     - libwebp/mux (= 1.1.0)
@@ -394,6 +398,8 @@ DEPENDENCIES:
   - FlipperKit/SKIOSNetworkPlugin (~> 0.33.1)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - JCore (from `../node_modules/jcore-react-native`)
+  - JPush (from `../node_modules/jpush-react-native`)
   - "RCTAlipay (from `../node_modules/@0x5e/react-native-alipay/ios`)"
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -470,6 +476,10 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  JCore:
+    :path: "../node_modules/jcore-react-native"
+  JPush:
+    :path: "../node_modules/jpush-react-native"
   RCTAlipay:
     :path: "../node_modules/@0x5e/react-native-alipay/ios"
   RCTRequired:
@@ -566,6 +576,8 @@ SPEC CHECKSUMS:
   FlipperKit: 6dc9b8f4ef60d9e5ded7f0264db299c91f18832e
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
+  JCore: 1329e2407872f05e11e127123e9764ca3f9ee124
+  JPush: b389c8181b1a5f8978cd06a3811c76fbd848862c
   libwebp: 04242ef451672185c1fe41b285a034d2fbda483c
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   RCTAlipay: 4f1678dbff3d533d9c934e134350afb3f3a1bddc

@@ -7,6 +7,7 @@ import { login } from "../../store/action"
 import { login as loginApi } from "../../api/api"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import { MD5 } from "../../utils/common"
+import JPush from 'jpush-react-native';
 //阴影
 import { BoxShadow } from 'react-native-shadow'
 const phoneRegExp = /^1[3456789]\d{9}$/
@@ -14,10 +15,15 @@ const passwordRegExp = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
 function Login({ dispatch, navigation, device_code }) {
     //登入
     const setLogin = useCallback((values) => {
-        let password = MD5(MD5(values.password))
-        loginApi({ mobile: values.mobile, password, device_code: device_code }).then(({ data: { result } }) => {
-            dispatch(login(result.token,{userId:result.userId},result.yw))
-        })
+          //极光推送
+          JPush.init();
+          JPush.getRegistrationID(result => {
+              let password = MD5(MD5(values.password))
+              loginApi({ mobile: values.mobile, password, device_code: device_code,registrationId:result.registerID }).then(({ data: { result } }) => {
+                  dispatch(login(result.token,{userId:result.userId},result.yw))
+              })
+          })
+       
     }, [dispatch])
     const _handleSubmit = useCallback((values, errors, handleSubmit) => {
         if (!(values.mobile && values.password)) {
