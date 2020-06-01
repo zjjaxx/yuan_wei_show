@@ -10,3 +10,4 @@
 # Add any project specific keep options here:
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
+-keep class com.alipay.** { *; }

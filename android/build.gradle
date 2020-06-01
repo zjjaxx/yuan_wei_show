@@ -24,7 +24,11 @@ buildscript {
 }
 
 allprojects {
+   
     repositories {
+        flatDir {
+            dirs "$rootDir/../node_modules/@0x5e/react-native-alipay/android/libs"
+        }
         mavenLocal()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
