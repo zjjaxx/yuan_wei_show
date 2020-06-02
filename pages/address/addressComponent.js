@@ -71,7 +71,7 @@ function AddressComponent(props) {
                                 <Text style={style.defaultLabel}>设置默认地址</Text>
                                 <Text style={style.tip}>提醒：每次下单会默认推荐使用该地址</Text>
                             </View>
-                            <Switch thumbTintColor="#fff" value={isDefault} ios_backgroundColor="#eee" onValueChange={() => setIsDefault(isDefault => !isDefault)} trackColor={{ false: '#eee', true: '#f2140c' }}></Switch>
+                            <Switch thumbTintColor="#fff" value={isDefault} ios_backgroundColor="#eee" onValueChange={() => setIsDefault(isDefault => !isDefault)} trackColor={{ false: '#eee', true: '#fca413' }}></Switch>
                         </View>
                         <TouchableHighlight style={style.saveWrap} underlayColor="#f2140c" onPress={() => _handleSubmit(values, errors, handleSubmit)}>
                             <Text style={style.saveTitle}>保存</Text>
@@ -160,7 +160,7 @@ const style = StyleSheet.create({
     saveWrap: {
         marginTop: scaleHeight(250),
         width: scaleSize(340),
-        backgroundColor: "#f2140c",
+        backgroundColor: "#fca413",
         height: scaleHeight(30),
         borderRadius: scaleSize(15),
         alignSelf: "center",

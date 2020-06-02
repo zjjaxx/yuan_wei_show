@@ -65,7 +65,11 @@ function ProductDetail({ navigation, route, userInfo }) {
     }, [route.params?.goods_id, replayInfo])
     //点击购买事件
     const payConfirm = useCallback(() => {
-        navigation.navigate("messageDetail",{sellId:productDetailData.user.uid,goods_id:route.params.goods_id})
+        navigation.navigate("messageDetail",{
+            sellId:productDetailData.user.uid,
+            goods_id:route.params.goods_id,
+            chatTicket:productDetailData.chatTicket
+        })
     }, [productDetailData])
     //保存图片到本地
     const _onSaveToCamera = useCallback((url) => {

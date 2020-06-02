@@ -43,10 +43,10 @@ function Categories({ navigation }) {
     )
 }
 const CategoriesItem = memo((props) => {
-    const {getTags,categoriesItemData}=props
+    const {getTags,categoriesItemData={child:[]}}=props
     const [isExpend, setIsExpend] = useState(false)
     const toggleIsExpend = useCallback(() => {
-        if(!categoriesItemData.child.length){
+        if(categoriesItemData.child&&!categoriesItemData.child.length){
             getTags(categoriesItemData)
         }
         setIsExpend(!isExpend)
@@ -56,7 +56,7 @@ const CategoriesItem = memo((props) => {
             <View style={style.categoriesItemWrap}>
                 <Text style={[style.title,isExpend?style.selectColor:{}]}>{categoriesItemData.cate_name}</Text>
                 {isExpend ? <View style={style.expendWrap}>
-                    {categoriesItemData.child.map((item, index) =>
+                    {categoriesItemData.child&&categoriesItemData.child.map((item, index) =>
                       <TouchableHighlight underlayColor="#fff" key={index} onPress={()=>getTags(item)}>
                         <Text style={style.categoriesDetailItem}>{item.cate_name}</Text>
                         </TouchableHighlight>

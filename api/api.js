@@ -11,6 +11,7 @@ export const create=(data)=>axios.get("/api/v1/order/create",{params:data})//创
 export const pay=(data)=>axios.post("/api/v1/order/pay",data)//支付
 export const address=()=>axios.get("/api/v1/address")//地址列表
 export const store=(data)=>axios.post("/api/v1/address/store",data)//新建地址列表
+export const destroy=(data)=>axios.post("/api/v1/address/destroy",data)//删除地址
 export const category=()=>axios.get("/api/v1/product/category") //分类
 export const tags=(data)=>axios.get("/api/v1/product/tags",{params:data})//获取标签
 export const upload=(data)=>axios.post("/api/v1/image/upload",data)//图片上传

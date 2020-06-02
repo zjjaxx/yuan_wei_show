@@ -13,7 +13,7 @@ function NewAddress({ navigation }) {
     const leftEvent = useCallback(() => {
         navigation.goBack()
     }, [])
-    const [isDefault, setIsDefault] = useState(false)
+    const [isDefault, setIsDefault] = useState(true)
     //地址ID数组
     const [addressSelectItem, setAddressSelectItem] = useState([])
     const addressText = () => {

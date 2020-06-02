@@ -9,7 +9,13 @@ import Sound from 'react-native-sound'
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
 import {connect} from "react-redux"
 import chatBg from '../../assets/imgs/pic1.jpg'
+import pic2 from "../../assets/imgs/pic2.jpg"
 const { width, height } = Dimensions.get('window')
+const  userProfile={
+  id: "10086",
+  avatar: pic2,
+  nickName: "heihei"
+}
 function MessageDetail({ navigation,webSocket,route }) {
   //聊天句柄
   const chatRef = useRef()
@@ -21,14 +27,14 @@ function MessageDetail({ navigation,webSocket,route }) {
       id: `1`,//message id
       type: 'text',//about message type: 'text', 'image', 'voice', 'video', 'location', 'share', 'videoCall', 'voiceCall', 'redEnvelope', 'file', 'system'
       content: 'hello world',
-      targetId: '12345678',//The id of the person who sent the message
+      targetId: '10086',//The id of the person who sent the message
       chatInfo: {//The profile of the person you're chatting with
         avatar: require('../../assets/imgs/avatar.jpeg'),
         id: '12345678',
         nickName: 'Test'
       },
       renderTime: true,//Whether to render time above message
-      sendStatus: 0,//发送方状态0 ---> sending, 1 ---> sendSuccess, -1 ---> You are deleted or on the blacklist, -2 ---> error
+      sendStatus: -1,//发送方状态0 ---> sending, 1 ---> sendSuccess, -1 ---> You are deleted or on the blacklist, -2 ---> error
       time: '1542006036549'
     },
     {
@@ -148,7 +154,7 @@ function MessageDetail({ navigation,webSocket,route }) {
       id: `${new Date().getTime()}`,
       type,
       content,
-      targetId: '88886666',
+      targetId: '10086',
       chatInfo: {
         avatar: require('../../assets/imgs/avatar.jpeg'),
         id: '12345678',
@@ -405,6 +411,7 @@ function MessageDetail({ navigation,webSocket,route }) {
           ref={(e) => chatRef.current = e}
           CustomImageComponent={FastImage}
           messageList={messages}
+          userProfile={userProfile}
           panelSource={panelSource}
           renderPanelRow={renderPanelRow}
           inverted={false}

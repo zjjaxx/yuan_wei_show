@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableHighl
 import Header from "../../components/Header"
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
 import { SwipeListView } from 'react-native-swipe-list-view';
-import {address} from "../../api/api"
+import {address,destroy} from "../../api/api"
 
 function AddressList({ navigation }) {
     const [addressList,setAddressList]=useState([])
@@ -17,13 +17,13 @@ function AddressList({ navigation }) {
     //批量选中的地址数组
     const [batchAddressList, setBatchAddressList] = useState([])
     //移除选中地址
-    const removeBatchAddressList = useCallback((id) => {
-        setBatchAddressList(batchAddressList.filter(item => item.id != id))
-    }, [batchAddressList])
+    const removeBatchAddressList = useCallback((item) => {
+        setBatchAddressList(batchAddressList=>batchAddressList.filter(_item => _item.id != item.id))
+    }, [])
     //添加选中数组
     const addBatchAddressList = useCallback((item) => {
-        setBatchAddressList([...batchAddressList, item])
-    }, [batchAddressList])
+        setBatchAddressList(batchAddressList=>[...batchAddressList,item])
+    }, [])
     //返回上一页
     const leftEvent = useCallback(() => {
         navigation.goBack()
@@ -34,12 +34,15 @@ function AddressList({ navigation }) {
     }, [isBatchOperation])
     const bottomPress = useCallback(() => {
         if (isBatchOperation) {
-
+            let address_id=JSON.stringify(batchAddressList.map(item=>item.id))
+            destroy({address_id}).then(res=>{
+                _api()
+            })
         }
         else {
             navigation.navigate("newAddress")
         }
-    }, [isBatchOperation])
+    }, [isBatchOperation,batchAddressList])
     const toEditAddress = useCallback(() => {
         navigation.navigate("editAddress")
     }, [])
@@ -50,13 +53,20 @@ function AddressList({ navigation }) {
         }
     },[])
     //删除地址
-    const delAddress=useCallback((rowMap, rowKey)=>{
+    const delAddress=useCallback((rowMap, rowKey,dataItem)=>{
         if (rowMap[rowKey]) {
             rowMap[rowKey].closeRow();
         }
+        let address_id=JSON.stringify([dataItem.id])
+        destroy({address_id}).then(res=>{
+            _api()
+        })
     },[])
     //地址列表
     useEffect(()=>{
+        _api()
+    },[])
+    const _api=useCallback(()=>{
         address().then(({data:{result}})=>{
             setAddressList(result)
         })
@@ -70,14 +80,14 @@ function AddressList({ navigation }) {
                     rightOpenValue={-scaleSize(140)}
                     data={c_addressList}
                     renderItem={(data, rowMap) => (
-                        <AddressItem id={data.index} toEditAddress={toEditAddress} isBatchOperation={isBatchOperation} removeBatchAddressList={removeBatchAddressList} addBatchAddressList={addBatchAddressList}></AddressItem>
+                        <AddressItem addressItemData={data.item} id={data.index} toEditAddress={toEditAddress} isBatchOperation={isBatchOperation} removeBatchAddressList={removeBatchAddressList} addBatchAddressList={addBatchAddressList}></AddressItem>
                     )}
                     renderHiddenItem={(data, rowMap) => (
                         <View style={style.addressOptionMenu}>
                             <TouchableHighlight style={style.defaultOption} underlayColor="#fff" onPress={() => setDefault(rowMap, data.item.key)}>
                                 <Text style={style.defaultTitle}>设为默认</Text>
                             </TouchableHighlight>
-                            <TouchableHighlight style={style.delOption} underlayColor="#fff" onPress={()=>delAddress(rowMap, data.item.key)}>
+                            <TouchableHighlight style={style.delOption} underlayColor="#fff" onPress={()=>delAddress(rowMap, data.item.key,data.item)}>
                                 <Text style={style.delTitle}>删除</Text>
                             </TouchableHighlight>
                         </View>
@@ -94,18 +104,18 @@ function AddressList({ navigation }) {
     )
 }
 const AddressItem = memo((props) => {
-    const { isBatchOperation, id, removeBatchAddressList, addBatchAddressList, toEditAddress } = props
+    const { isBatchOperation, id, removeBatchAddressList, addBatchAddressList, toEditAddress,addressItemData={} } = props
     const [isSelect, setIsSelect] = useState(false)
     //取消选中
     const cancelSelect = useCallback(() => {
         setIsSelect(false)
-        removeBatchAddressList(id)
-    })
+        removeBatchAddressList(addressItemData)
+    },[])
     //添加选中
     const addSelect = useCallback(() => {
         setIsSelect(true)
-        addBatchAddressList({ id })
-    })
+        addBatchAddressList(addressItemData)
+    },[])
 
     return (
         <TouchableHighlight underlayColor="#fff" onPress={()=>{}}>
@@ -121,14 +131,14 @@ const AddressItem = memo((props) => {
                     : null}
                 <View style={style.addressItem}>
                     <View style={style.userInfoWrap}>
-                        <Text style={style.userName}>路灯</Text>
-                        <Text style={style.phone}>17855827436</Text>
-                        <View style={style.defaultWrap}>
+                        <Text style={style.userName}>{addressItemData.real_name}</Text>
+                        <Text style={style.phone}>{addressItemData.phone}</Text>
+                       {addressItemData.is_default?<View style={style.defaultWrap}>
                             <Text style={style.default}>默认</Text>
-                        </View>
+                        </View>:null}
                     </View>
                     <View style={style.addressDetailWrap}>
-                        <Text style={style.addressDetail}>浙江省金华市婺城区罗布镇下郑村后后溪路一号</Text>
+                        <Text style={style.addressDetail}>{addressItemData.full_address}</Text>
                         <TouchableHighlight underlayColor="#fff" onPress={toEditAddress}>
                             <Image style={style.editIcon} source={require('../../assets/imgs/edit.png')}></Image>
                         </TouchableHighlight>
@@ -179,7 +189,7 @@ const style = StyleSheet.create({
         paddingHorizontal: scaleSize(4),
         paddingVertical: scaleHeight(2),
         borderRadius: scaleSize(2),
-        backgroundColor: "#f2140c"
+        backgroundColor: "#fca413"
     },
     default: {
         color: "#fff",
@@ -216,7 +226,7 @@ const style = StyleSheet.create({
         marginHorizontal: scaleSize(30),
         height: scaleHeight(28),
         borderRadius: scaleSize(15),
-        backgroundColor: "#f2140c",
+        backgroundColor: "#fca413",
         justifyContent: "center",
         alignItems: "center"
     },
