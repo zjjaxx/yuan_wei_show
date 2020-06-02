@@ -10,6 +10,7 @@ import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
 import {connect} from "react-redux"
 import chatBg from '../../assets/imgs/pic1.jpg'
 import pic2 from "../../assets/imgs/pic2.jpg"
+import {send,parseReceiveMessage} from "../../utils/toBuffer"
 const { width, height } = Dimensions.get('window')
 const  userProfile={
   id: "10086",
@@ -394,12 +395,12 @@ function MessageDetail({ navigation,webSocket,route }) {
   },[])
   //获取聊天记录
   useEffect(() => {
-      if (route.params?.sellId) {
+      if (route.params?.sellId&&route.params?.chatTicket) {
         webSocket.onmessage =receiveMessage
-        let params={action:'index',content:{}}
-        webSocket.send(JSON.stringify(params))
+        let params={y:'main',d:{sellId:route.params.sellId,chatTicket:route.params.chatTicket}}
+        send(params,webSocket)
       }
-  }, [route.params?.sellId])
+  }, [route.params?.sellId,route.params?.chatTicket])
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={style.container}>

@@ -113,6 +113,7 @@ export function logout() {
 export function initWebSocket(token,yw) {
     return (dispatch, getState) => {
         const ws = new WebSocket(wsURL+`?token=${token}&yw=${yw}`);
+        ws.binaryType = "arraybuffer";
         ws.onopen = () => {
             // let params={action:'index',content:{}}
             // ws.send(JSON.stringify(params))
