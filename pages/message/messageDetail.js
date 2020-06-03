@@ -26,7 +26,7 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
     const { type, payload } = action
     //发送消息
     if (type == SEND) {
-      return [...messageList, payload]
+      return [payload,...messageList]
     }
     //接收消息
     else if (type == RECEIVE) {

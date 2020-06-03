@@ -7,6 +7,7 @@ import { ChineseWithLastDateFooter } from "react-native-spring-scrollview/Custom
 import { Popover } from '@ui-kitten/components';
 import toDate from "../../utils/toDate"
 import FastImage from 'react-native-fast-image'
+import JPush from 'jpush-react-native';
 //热更新
 import { APP_KEY_CONFIG } from "../../utils/config"
 import {
@@ -108,6 +109,8 @@ function Home({ navigation }) {
     //首页数据请求
     useEffect(() => {
         _api(0)
+        //极光推送
+        JPush.init();
     }, [])
     const _api = useCallback((_page) => {
         home({ page: _page + 1 }).then(({ data: { result } }) => {

@@ -18,6 +18,7 @@ function Login({ dispatch, navigation, device_code }) {
           //极光推送
           JPush.init();
           JPush.getRegistrationID(result => {
+              console.log("result id",result)
               let password = MD5(MD5(values.password))
               loginApi({ mobile: values.mobile, password, device_code: device_code,registrationId:result.registerID }).then(({ data: { result } }) => {
                   dispatch(login(result.token,{userId:result.userId},result.yw))
