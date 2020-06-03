@@ -43,7 +43,7 @@ function Category({ navigation }) {
                 >
                     {tabList.map((pageItem, pageIndex) => {
                         if (pageIndex == 0) {
-                            return <Recommand toProductDetail={toProductDetail} tabLabel={"item" + pageIndex}></Recommand>
+                            return <Recommand toProductDetail={toProductDetail} tabLabel={"item" + pageIndex} key={pageIndex}></Recommand>
                         }
                         else {
                             return (

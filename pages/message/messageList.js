@@ -1,12 +1,58 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useState, useReducer, useMemo, useEffect } from "react"
 import { View, Text, ScrollView, FlatList, SafeAreaView, StyleSheet, Image, TouchableHighlight } from "react-native"
 import { scaleHeight, scaleSize, setSpText2 } from "../../utils/ScreenUtil"
 import toDate from "../../utils/toDate"
 import { SwipeListView } from 'react-native-swipe-list-view';
-
-function MessageList({ navigation }) {
+import { connect } from "react-redux"
+import { send, parseReceiveMessage } from "../../utils/toBuffer"
+const RECEIVE_ERROR = "1001"
+const RECEIVE_MAIN = "2000"
+const RECEIVE_CHAT = "2001"
+const RECEIVE_CHAT_LIST = "2003"
+const RECEIVE = "RECEIVE"
+const SEND = "SEND"
+const reducers = (messageList, action) => {
+    const { type, payload } = action
+    //发送消息
+    if (type == SEND) {
+    }
+    //接收消息
+    else if (type == RECEIVE) {
+        switch (payload.y) {
+            //初始化
+            case RECEIVE_MAIN:
+                let d = JSON.parse(payload.d)
+                return d.msg
+            case RECEIVE_CHAT_LIST:
+                let chatList = JSON.parse(payload.d)
+                return [...messageList, ...chatList.msg]
+            //接收消息
+            case RECEIVE_CHAT:
+                let msg = JSON.parse(payload.d)
+                return messageList.map(item => {
+                    if (item.id == msg.msgId) {
+                        return { ...item, sendStatus: msg.sendStatus }
+                    }
+                    else {
+                        return item
+                    }
+                })
+            //接收消息 error
+            case RECEIVE_ERROR:
+            default:
+                return messageList
+        }
+    }
+}
+function MessageList({ navigation, webSocket }) {
+    const [messageList, dispatch] = useReducer(reducers, [])
+    const [page, setPage] = useState(0)
+    const [lastPage, setLastPage] = useState(1)
     //下拉刷新flag
     const [refreshing, setRefreshing] = useState(false)
+    const c_messageList = useMemo(() => {
+        return messageList.map(item => ({ key: item.id, ...item }))
+    }, messageList)
     //下拉刷新事件
     const _onRefresh = useCallback(() => {
         setRefreshing(true)
@@ -27,27 +73,39 @@ function MessageList({ navigation }) {
             rowMap[rowKey].closeRow();
         }
     }, [])
+    //接收消息
+    const receiveMessage = useCallback(e => {
+        let parseResult = parseReceiveMessage(e)
+        console.log("parseResult", parseResult)
+        dispatch({ type: RECEIVE, payload: parseResult })
+    }, [])
+    //获取聊天记录
+    useEffect(() => {
+        webSocket.onmessage = receiveMessage
+        let params = { y: 'index', d: JSON.stringify({ page:page+1 }) }
+        send(params, webSocket)
+    }, [page])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
                 <View style={style.headerWrap}>
                     <Text style={style.headerTitle}>消息</Text>
                 </View>
-                    <SwipeListView
-                        style={style.scrollView}
-                        rightOpenValue={-scaleSize(70)}
-                        data={[{ key: 1 }, { key: 2 }, { key: 3 }, { key: 4 }, { key: 5 }]}
-                        renderItem={(data, rowMap) => (
-                            <MessageItem toMessageDetail={toMessageDetail}></MessageItem>
-                        )}
-                        renderHiddenItem={(data, rowMap) => (
-                            <View style={style.addressOptionMenu}>
-                                <TouchableHighlight style={style.delOption} underlayColor="#fff" onPress={() => delAddress(rowMap, data.item.key)}>
-                                    <Text style={style.delTitle}>删除</Text>
-                                </TouchableHighlight>
-                            </View>
-                        )}>
-                    </SwipeListView>
+                <SwipeListView
+                    style={style.scrollView}
+                    rightOpenValue={-scaleSize(70)}
+                    data={c_messageList}
+                    renderItem={(data, rowMap) => (
+                        <MessageItem toMessageDetail={toMessageDetail}></MessageItem>
+                    )}
+                    renderHiddenItem={(data, rowMap) => (
+                        <View style={style.addressOptionMenu}>
+                            <TouchableHighlight style={style.delOption} underlayColor="#fff" onPress={() => delAddress(rowMap, data.item.key)}>
+                                <Text style={style.delTitle}>删除</Text>
+                            </TouchableHighlight>
+                        </View>
+                    )}>
+                </SwipeListView>
             </View>
         </SafeAreaView>
     )
@@ -98,7 +156,7 @@ const style = StyleSheet.create({
         borderBottomWidth: scaleSize(0.5),
     },
     avatar: {
-        marginLeft:scaleSize(15),
+        marginLeft: scaleSize(15),
         marginRight: scaleSize(10),
         height: scaleSize(30),
         width: scaleSize(30),
@@ -123,7 +181,7 @@ const style = StyleSheet.create({
         color: "#999"
     },
     pic: {
-        marginRight:scaleSize(15),
+        marginRight: scaleSize(15),
         height: scaleSize(50),
         width: scaleSize(50),
         borderRadius: scaleSize(4)
@@ -158,4 +216,4 @@ const style = StyleSheet.create({
         fontSize: setSpText2(12)
     }
 })
-export default MessageList
+export default connect(state => state, dispatch => ({ dispatch }))(MessageList)
