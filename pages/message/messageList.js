@@ -102,6 +102,7 @@ function MessageList({ navigation, webSocket }) {
                     renderItem={(data, rowMap) => (
                         <MessageItem messageDataItem={data.item} toMessageDetail={toMessageDetail}></MessageItem>
                     )}
+                    onEndReached={}
                     renderHiddenItem={(data, rowMap) => (
                         <View style={style.addressOptionMenu}>
                             <TouchableHighlight style={style.delOption} underlayColor="#fff" onPress={() => delAddress(rowMap, data.item.key, data.item)}>
