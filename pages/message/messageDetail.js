@@ -18,44 +18,53 @@ const RECEIVE_CHAT_RESULT = "2001"
 const RECEIVE_CHAT_MSG = "2002"
 const RECEIVE = "RECEIVE"
 const SEND = "SEND"
-const reducers = (messageList, action) => {
-  const { type, payload } = action
-  //发送消息
-  if (type == SEND) {
-    return [...messageList, payload]
-  }
-  //接收消息
-  else if (type == RECEIVE) {
-    switch (payload.y) {
-      //初始化
-      case RECEIVE_MAIN:
-        let d = JSON.parse(payload.d)
-        return d.msg
-      //接收发送消息反馈
-      case RECEIVE_CHAT_RESULT:
-        let msg = JSON.parse(payload.d)
-        return messageList.map(item => {
-          if (item.id == msg.msgId) {
-            return { ...item, sendStatus: msg.sendStatus }
-          }
-          else {
-            return item
-          }
-        })
-      case RECEIVE_CHAT_MSG:
-        let _msg = JSON.parse(payload.d)
-        return [...messageList, _msg.msg]
-      //接收消息 error
-      case RECEIVE_ERROR:
-      default:
-        return messageList
-    }
-  }
 
-}
 const { width, height } = Dimensions.get('window')
 
 function MessageDetail({ navigation, webSocket, route, userInfo }) {
+  const reducers = (messageList, action) => {
+    const { type, payload } = action
+    //发送消息
+    if (type == SEND) {
+      return [...messageList, payload]
+    }
+    //接收消息
+    else if (type == RECEIVE) {
+      switch (payload.y) {
+        //初始化
+        case RECEIVE_MAIN:
+          let d = JSON.parse(payload.d)
+          return d.msg
+        //接收发送消息反馈
+        case RECEIVE_CHAT_RESULT:
+          let msg = JSON.parse(payload.d)
+          return messageList.map(item => {
+            if (item.id == msg.msgId) {
+              return { ...item, sendStatus: msg.sendStatus }
+            }
+            else {
+              return item
+            }
+          })
+        case RECEIVE_CHAT_MSG:
+          let _msg = JSON.parse(payload.d)
+          let _d = JSON.stringify({
+            sellId: route.params.sellId,
+            chatTicket: route.params.chatTicket,
+            goodsId: route.params.goodsId,
+            toUid: route.params.toUid
+          })
+          let readParams = { y: 'read', d:_d }
+          send(readParams, webSocket)
+          return [_msg.msg,...messageList]
+        //接收消息 error
+        case RECEIVE_ERROR:
+        default:
+          return messageList
+      }
+    }
+  
+  }
   const userProfile = {
     id: userInfo.userId + "",
     avatar: pic2,
@@ -202,7 +211,7 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
         sellId: route.params.sellId,
         chatTicket: route.params.chatTicket,
         toUid: route.params.toUid,
-        goodsId:route.params.goodsId, 
+        goodsId: route.params.goodsId,
         msgType: type,
         data: content,
         msgId
@@ -456,17 +465,20 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
   }, [])
   //获取聊天记录
   useEffect(() => {
-    if (route.params?.sellId && route.params?.chatTicket&& route.params?.toUid&& route.params?.goodsId) {
+    if (route.params?.sellId && route.params?.chatTicket && route.params?.toUid && route.params?.goodsId) {
       webSocket.onmessage = receiveMessage
-      let params = { y: 'main', d: JSON.stringify({ 
-        sellId: route.params.sellId, 
-        chatTicket: route.params.chatTicket, 
-        goodsId:route.params.goodsId, 
-        toUid: route.params.toUid 
-      }) }
+      let d = JSON.stringify({
+        sellId: route.params.sellId,
+        chatTicket: route.params.chatTicket,
+        goodsId: route.params.goodsId,
+        toUid: route.params.toUid
+      })
+      let params = { y: 'main', d }
       send(params, webSocket)
+      let readParams = { y: 'read', d }
+      send(readParams, webSocket)
     }
-  }, [route.params?.sellId, route.params?.chatTicket, route.params?.toUid,route.params?.goodsId])
+  }, [route.params?.sellId, route.params?.chatTicket, route.params?.toUid, route.params?.goodsId])
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={style.container}>
@@ -481,7 +493,7 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
           userProfile={userProfile}
           panelSource={panelSource}
           renderPanelRow={renderPanelRow}
-          inverted={false}
+          inverted={true}
           chatBackgroundImage={chatBg}
           sendMessage={sendMessage}
           androidHeaderHeight={80}
@@ -505,19 +517,6 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
           voicePlaying={voicePlaying}
           voiceVolume={voiceVolume}
         />
-        <TouchableOpacity
-          onPress={() => receive()}
-          style={{
-            width: 60,
-            height: 60, borderRadius: 30,
-            position: 'absolute', top: 200, right: 0, backgroundColor: 'blue',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-          <Text style={{ color: '#fff' }}>
-            模拟收消息
-          </Text>
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
 

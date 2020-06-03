@@ -6,13 +6,15 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import { connect } from "react-redux"
 import { send, parseReceiveMessage } from "../../utils/toBuffer"
 import { useFocusEffect } from '@react-navigation/native';
+import Dot from "../../components/Dot"
 const RECEIVE_ERROR = "1001"
 const RECEIVE_MAIN = "2000"
 const RECEIVE_CHAT_RESULT = "2001"
 const RECEIVE_CHAT_LIST = "2003"
+const RECEIVE_UPDATE="2005"
 const RECEIVE = "RECEIVE"
 const SEND = "SEND"
-const CLEAR="CLEAR"
+const CLEAR = "CLEAR"
 const reducers = (messageList, action) => {
     const { type, payload } = action
     //发送消息
@@ -22,19 +24,21 @@ const reducers = (messageList, action) => {
     else if (type == RECEIVE) {
         switch (payload.y) {
             //初始化
-            case RECEIVE_MAIN:
-                let d = JSON.parse(payload.d)
-                return d.msg
             case RECEIVE_CHAT_LIST:
                 let chatList = JSON.parse(payload.d)
                 return [...messageList, ...chatList.msg]
+            //更新消息
+            case RECEIVE_UPDATE:
+                let updateItem=JSON.parse(payload.d)
+                let newMessageList=messageList.filter(item=>item.id!=updateItem.id)
+                return [updateItem,...newMessageList]
             //接收消息 error
             case RECEIVE_ERROR:
             default:
                 return messageList
         }
     }
-    else if(type==CLEAR){
+    else if (type == CLEAR) {
         return []
     }
 }
@@ -61,7 +65,7 @@ function MessageList({ navigation, webSocket }) {
     const toMessageDetail = useCallback((messageDataItem) => {
         navigation.navigate("messageDetail", {
             sellId: messageDataItem.m_uid,
-            toUid: messageDataItem.isMer?messageDataItem.c_uid:messageDataItem.m_uid,
+            toUid: messageDataItem.isMer ? messageDataItem.c_uid : messageDataItem.m_uid,
             chatTicket: messageDataItem.chat_ticket,
             goodsId: messageDataItem.product_id
         })
@@ -84,8 +88,9 @@ function MessageList({ navigation, webSocket }) {
             webSocket.onmessage = receiveMessage
             let params = { y: 'index', d: JSON.stringify({ page: page + 1 }) }
             send(params, webSocket)
-            return ()=>{
-                dispatch({type:CLEAR})
+
+            return () => {
+                dispatch({ type: CLEAR })
             }
         }, [page])
     )
@@ -102,7 +107,7 @@ function MessageList({ navigation, webSocket }) {
                     renderItem={(data, rowMap) => (
                         <MessageItem messageDataItem={data.item} toMessageDetail={toMessageDetail}></MessageItem>
                     )}
-                   
+
                     renderHiddenItem={(data, rowMap) => (
                         <View style={style.addressOptionMenu}>
                             <TouchableHighlight style={style.delOption} underlayColor="#fff" onPress={() => delAddress(rowMap, data.item.key, data.item)}>
@@ -122,7 +127,10 @@ const MessageItem = function (props) {
     return (
         <TouchableHighlight underlayColor="#fff" onPress={() => toMessageDetail(messageDataItem)}>
             <View style={style.messageItem}>
-                <Image style={style.avatar} source={{ uri: messageDataItem._avatar }}></Image>
+                <View style={style.avatarWrap}>
+                    <Image style={style.avatar} source={{ uri: messageDataItem._avatar }}></Image>
+                   { messageDataItem._unread?<Dot dot={messageDataItem._unread}></Dot>:null}
+                </View>
                 <View style={style.messageInfo}>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={style.name}>{messageDataItem._nickname}</Text>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={style.message}>{messageDataItem.last_content}</Text>
@@ -161,9 +169,13 @@ const style = StyleSheet.create({
         borderBottomColor: "#eee",
         borderBottomWidth: scaleSize(0.5),
     },
-    avatar: {
+    avatarWrap: {
         marginLeft: scaleSize(15),
         marginRight: scaleSize(10),
+        position: "relative"
+    },
+    avatar: {
+      
         height: scaleSize(30),
         width: scaleSize(30),
         borderRadius: scaleSize(4),
