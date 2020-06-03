@@ -13,23 +13,41 @@ import pic2 from "../../assets/imgs/pic2.jpg"
 import {send,parseReceiveMessage} from "../../utils/toBuffer"
 
 const RECEIVE_ERROR="1001"
-const RECEIVE_SUCCESS="2000"
-const INIT="INIT"
+const RECEIVE_MAIN="2000"
+const RECEIVE_CHAT="2001"
+const RECEIVE="RECEIVE"
 const SEND="SEND"
 const reducers=(messageList, action)=>{
   const {type,payload}=action
-  switch(type){
-    case INIT:
-      if(payload.y==RECEIVE_SUCCESS){
-        let d=JSON.parse(payload.d)
-        return d.msg
-      }
-      else{
-        return messageList
-      }
-    case SEND:
-      return [...messageList,payload]
+  //发送消息
+  if(type==SEND){
+    return [...messageList,payload]
   }
+  //接收消息
+  else if(type==RECEIVE){
+    switch(payload.y){
+      //初始化
+      case RECEIVE_MAIN:
+          let d=JSON.parse(payload.d)
+          return d.msg
+      //接收消息
+      case RECEIVE_CHAT:
+          let msg=JSON.parse(payload.d)
+          return messageList.map(item=>{
+            if(item.id==msg.msgId){
+              return {...item,sendStatus:msg.sendStatus}
+            }
+            else{
+              return item
+            }
+          })
+      //接收消息 error
+      case RECEIVE_ERROR:
+      default:
+        return messageList
+    }
+  }
+  
 }
 const { width, height } = Dimensions.get('window')
 
@@ -174,10 +192,18 @@ function MessageDetail({ navigation,webSocket,route,userInfo }) {
   }])
   //发送消息事件
   const sendMessage = useCallback((type, content, isInverted) => {
-    let params={y:'chat',d:JSON.stringify({sellId:route.params.sellId,chatTicket:route.params.chatTicket,toUid:route.params.sellId,msgType:type,data:content})}
+    let msgId=`${new Date().getTime()}`
+    let params={y:'chat',d:JSON.stringify({
+      sellId:route.params.sellId,
+      chatTicket:route.params.chatTicket,
+      toUid:route.params.sellId,
+      msgType:type,
+      data:content,
+      msgId
+    })}
     send(params,webSocket)
     dispatch({type:SEND,payload:{
-      id: `${new Date().getTime()}`,
+      id:msgId,
       type,
       content,
       chatInfo: {
@@ -417,7 +443,7 @@ function MessageDetail({ navigation,webSocket,route,userInfo }) {
   const receiveMessage=useCallback(e=>{
     let parseResult=parseReceiveMessage(e)
     console.log("parseResult",parseResult)
-    dispatch({type:INIT,payload:parseResult})
+    dispatch({type:RECEIVE,payload:parseResult})
   },[])
   //获取聊天记录
   useEffect(() => {
