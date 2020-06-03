@@ -201,7 +201,7 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
       y: 'chat', d: JSON.stringify({
         sellId: route.params.sellId,
         chatTicket: route.params.chatTicket,
-        toUid: route.params.sellId,
+        toUid: route.params.toUid,
         goodsId:route.params.goodsId, 
         msgType: type,
         data: content,
