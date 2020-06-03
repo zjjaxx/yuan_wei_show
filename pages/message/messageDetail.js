@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, memo,useEffect } from "react"
+import React, { useCallback, useState, useRef, memo,useEffect, useReducer } from "react"
 import { View, Text, StyleSheet, SafeAreaView, Button, Image, TouchableOpacity, PermissionsAndroid, Dimensions, TouchableHighlight } from "react-native"
 import Header from "../../components/Header"
 import FastImage from 'react-native-fast-image'
@@ -11,17 +11,40 @@ import {connect} from "react-redux"
 import chatBg from '../../assets/imgs/pic1.jpg'
 import pic2 from "../../assets/imgs/pic2.jpg"
 import {send,parseReceiveMessage} from "../../utils/toBuffer"
-const { width, height } = Dimensions.get('window')
-const  userProfile={
-  id: "10086",
-  avatar: pic2,
-  nickName: "heihei"
+
+const RECEIVE_ERROR="1001"
+const RECEIVE_SUCCESS="2000"
+const INIT="INIT"
+const SEND="SEND"
+const reducers=(messageList, action)=>{
+  const {type,payload}=action
+  switch(type){
+    case INIT:
+      if(payload.y==RECEIVE_SUCCESS){
+        let d=JSON.parse(payload.d)
+        return d.msg
+      }
+      else{
+        return messageList
+      }
+    case SEND:
+      return [...messageList,payload]
+  }
 }
-function MessageDetail({ navigation,webSocket,route }) {
+const { width, height } = Dimensions.get('window')
+
+function MessageDetail({ navigation,webSocket,route,userInfo }) {
+  const userProfile={
+    id: userInfo.userId,
+    avatar: pic2,
+    nickName: "heihei"
+  }
   //聊天句柄
   const chatRef = useRef()
   //发语音计时器
   const timer = useRef()
+  //聊天数据
+  const [messageList,dispatch]=useReducer(reducers,[])
   //聊天数据
   const [messages, setMessages] = useState([
     {
@@ -151,20 +174,21 @@ function MessageDetail({ navigation,webSocket,route }) {
   }])
   //发送消息事件
   const sendMessage = useCallback((type, content, isInverted) => {
-    setMessages(messages=>[...messages, {
+    let params={y:'chat',d:JSON.stringify({sellId:route.params.sellId,chatTicket:route.params.chatTicket,toUid:route.params.sellId,msgType:type,data:content})}
+    send(params,webSocket)
+    dispatch({type:SEND,payload:{
       id: `${new Date().getTime()}`,
       type,
       content,
-      targetId: '10086',
       chatInfo: {
         avatar: require('../../assets/imgs/avatar.jpeg'),
-        id: '12345678',
-        nickName: 'Test'
+        id: '12345678'
       },
-      renderTime: true,
-      sendStatus: 1,
-      time: `${new Date().getTime()}`
-    }])
+      targetId:userInfo.userId,
+      renderTime: false,
+      sendStatus: 0,
+    }})
+   
   }, [])
   //Callback when check permission on android
   const _requestAndroidPermission = useCallback(async () => {
@@ -391,13 +415,15 @@ function MessageDetail({ navigation,webSocket,route }) {
   }, [route.params?.goods_id])
   //接收消息
   const receiveMessage=useCallback(e=>{
-    console.log("e",e)
+    let parseResult=parseReceiveMessage(e)
+    console.log("parseResult",parseResult)
+    dispatch({type:INIT,payload:parseResult})
   },[])
   //获取聊天记录
   useEffect(() => {
       if (route.params?.sellId&&route.params?.chatTicket) {
         webSocket.onmessage =receiveMessage
-        let params={y:'main',d:{sellId:route.params.sellId,chatTicket:route.params.chatTicket}}
+        let params={y:'main',d:JSON.stringify({sellId:route.params.sellId,chatTicket:route.params.chatTicket,toUid:route.params.sellId})}
         send(params,webSocket)
       }
   }, [route.params?.sellId,route.params?.chatTicket])
@@ -408,10 +434,10 @@ function MessageDetail({ navigation,webSocket,route }) {
         </Header>
         <ProductInfo orderConfirm={orderConfirm}></ProductInfo>
         <ChatScreen
-          chatWindowStyle={{ paddingTop: scaleHeight(50) }}
+          chatWindowStyle={{ paddingTop: scaleHeight(55) }}
           ref={(e) => chatRef.current = e}
           CustomImageComponent={FastImage}
-          messageList={messages}
+          messageList={messageList}
           userProfile={userProfile}
           panelSource={panelSource}
           renderPanelRow={renderPanelRow}

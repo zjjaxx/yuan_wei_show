@@ -4,7 +4,6 @@ const AwesomeMessage = PR.root.lookupType("yd.data")
 
 export function send(data,webSocket){
     let errMsg = AwesomeMessage.verify(data);
-    console.log('errmsg', errMsg)
     if (errMsg){
         data.y = ""+data.y;
         data.d = ""+data.d;
@@ -13,13 +12,11 @@ export function send(data,webSocket){
     let message = AwesomeMessage.create(data);
     console.log('message', message)
     let buffer  = AwesomeMessage.encode(message).finish();
-    console.log('buffer', buffer)
     webSocket.send(buffer)
 }
 
 export function parseReceiveMessage(evt){
     const received_msg = evt.data;
-    console.log('received_msg', received_msg)
     let data
     try {
 
@@ -33,7 +30,5 @@ export function parseReceiveMessage(evt){
             data = JSON.parse(evt.data);
         }
     }
-
-    console.log('DATA', data)
     return data
 }

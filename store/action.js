@@ -7,8 +7,9 @@ export const SET_USER_INFO = "SET_USER_INFO"
 export const SET_YW = "SET_YW"
 import { wsURL, TOKEN_KEY, VALID_TIME, validTimeCount, baseURL, USER_INFO, YW_KEY } from "../utils/config"
 import { showToast } from "../utils/common"
-
-
+import {send,parseReceiveMessage} from "../utils/toBuffer"
+var reconnectCount=10
+var pingId=-1
 export function asyncToken() {
     return (dispatch, getState) => {
         dispatch({
@@ -77,8 +78,9 @@ export function login(token, userInfo, yw) {
                 })
 
             })
-        dispatch(initWebSocket(token,yw))
-
+            if(yw){
+                dispatch(initWebSocket(token,yw))
+            }
     }
 }
 export function logout() {
@@ -112,15 +114,18 @@ export function logout() {
 }
 export function initWebSocket(token,yw) {
     return (dispatch, getState) => {
+        console.log("initWebSocket enter")
         const ws = new WebSocket(wsURL+`?token=${token}&yw=${yw}`);
         ws.binaryType = "arraybuffer";
         ws.onopen = () => {
-            // let params={action:'index',content:{}}
-            // ws.send(JSON.stringify(params))
+            console.log("websocket connect")
             dispatch({
                 type: SET_WEBSOCKET,
                 payload: ws
             })
+            pingId=setInterval(()=>{
+                send({y:'ping',d:{}},ws)
+            },30000)
         };
         ws.onmessage = (e) => {
             console.log("e action",e)
@@ -129,7 +134,16 @@ export function initWebSocket(token,yw) {
             showToast(e.message)
         };
         ws.onclose = (e) => {
-            showToast(e.code + e.reason)
+            console.log("websocket close")
+            clearInterval(pingId)
+            pingId=-1
+            if(reconnectCount<0){
+                return
+            }
+            reconnectCount--
+            setTimeout(()=>{
+                dispatch(initWebSocket(token,yw))
+            },3000)
         };
     }
 }
