@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, memo,useEffect, useReducer } from "react"
+import React, { useCallback, useState, useRef, memo, useEffect, useReducer } from "react"
 import { View, Text, StyleSheet, SafeAreaView, Button, Image, TouchableOpacity, PermissionsAndroid, Dimensions, TouchableHighlight } from "react-native"
 import Header from "../../components/Header"
 import FastImage from 'react-native-fast-image'
@@ -7,53 +7,57 @@ import { AudioRecorder, AudioUtils } from 'react-native-audio'
 import RNFS from 'react-native-fs'
 import Sound from 'react-native-sound'
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
-import {connect} from "react-redux"
+import { connect } from "react-redux"
 import chatBg from '../../assets/imgs/pic1.jpg'
 import pic2 from "../../assets/imgs/pic2.jpg"
-import {send,parseReceiveMessage} from "../../utils/toBuffer"
+import { send, parseReceiveMessage } from "../../utils/toBuffer"
 
-const RECEIVE_ERROR="1001"
-const RECEIVE_MAIN="2000"
-const RECEIVE_CHAT="2001"
-const RECEIVE="RECEIVE"
-const SEND="SEND"
-const reducers=(messageList, action)=>{
-  const {type,payload}=action
+const RECEIVE_ERROR = "1001"
+const RECEIVE_MAIN = "2000"
+const RECEIVE_CHAT_RESULT = "2001"
+const RECEIVE_CHAT_MSG = "2002"
+const RECEIVE = "RECEIVE"
+const SEND = "SEND"
+const reducers = (messageList, action) => {
+  const { type, payload } = action
   //发送消息
-  if(type==SEND){
-    return [...messageList,payload]
+  if (type == SEND) {
+    return [...messageList, payload]
   }
   //接收消息
-  else if(type==RECEIVE){
-    switch(payload.y){
+  else if (type == RECEIVE) {
+    switch (payload.y) {
       //初始化
       case RECEIVE_MAIN:
-          let d=JSON.parse(payload.d)
-          return d.msg
-      //接收消息
-      case RECEIVE_CHAT:
-          let msg=JSON.parse(payload.d)
-          return messageList.map(item=>{
-            if(item.id==msg.msgId){
-              return {...item,sendStatus:msg.sendStatus}
-            }
-            else{
-              return item
-            }
-          })
+        let d = JSON.parse(payload.d)
+        return d.msg
+      //接收发送消息反馈
+      case RECEIVE_CHAT_RESULT:
+        let msg = JSON.parse(payload.d)
+        return messageList.map(item => {
+          if (item.id == msg.msgId) {
+            return { ...item, sendStatus: msg.sendStatus }
+          }
+          else {
+            return item
+          }
+        })
+      case RECEIVE_CHAT_MSG:
+        let _msg = JSON.parse(payload.d)
+        return [...messageList, _msg]
       //接收消息 error
       case RECEIVE_ERROR:
       default:
         return messageList
     }
   }
-  
+
 }
 const { width, height } = Dimensions.get('window')
 
-function MessageDetail({ navigation,webSocket,route,userInfo }) {
-  const userProfile={
-    id: userInfo.userId,
+function MessageDetail({ navigation, webSocket, route, userInfo }) {
+  const userProfile = {
+    id: userInfo.userId + "",
     avatar: pic2,
     nickName: "heihei"
   }
@@ -62,7 +66,7 @@ function MessageDetail({ navigation,webSocket,route,userInfo }) {
   //发语音计时器
   const timer = useRef()
   //聊天数据
-  const [messageList,dispatch]=useReducer(reducers,[])
+  const [messageList, dispatch] = useReducer(reducers, [])
   //聊天数据
   const [messages, setMessages] = useState([
     {
@@ -192,29 +196,33 @@ function MessageDetail({ navigation,webSocket,route,userInfo }) {
   }])
   //发送消息事件
   const sendMessage = useCallback((type, content, isInverted) => {
-    let msgId=`${new Date().getTime()}`
-    let params={y:'chat',d:JSON.stringify({
-      sellId:route.params.sellId,
-      chatTicket:route.params.chatTicket,
-      toUid:route.params.sellId,
-      msgType:type,
-      data:content,
-      msgId
-    })}
-    send(params,webSocket)
-    dispatch({type:SEND,payload:{
-      id:msgId,
-      type,
-      content,
-      chatInfo: {
-        avatar: require('../../assets/imgs/avatar.jpeg'),
-        id: '12345678'
-      },
-      targetId:userInfo.userId,
-      renderTime: false,
-      sendStatus: 0,
-    }})
-   
+    let msgId = `${new Date().getTime()}`
+    let params = {
+      y: 'chat', d: JSON.stringify({
+        sellId: route.params.sellId,
+        chatTicket: route.params.chatTicket,
+        toUid: route.params.sellId,
+        msgType: type,
+        data: content,
+        msgId
+      })
+    }
+    send(params, webSocket)
+    dispatch({
+      type: SEND, payload: {
+        id: msgId,
+        type,
+        content,
+        chatInfo: {
+          avatar: require('../../assets/imgs/avatar.jpeg'),
+          id: '12345678'
+        },
+        targetId: userInfo.userId + "",
+        renderTime: false,
+        sendStatus: 0,
+      }
+    })
+
   }, [])
   //Callback when check permission on android
   const _requestAndroidPermission = useCallback(async () => {
@@ -400,7 +408,7 @@ function MessageDetail({ navigation,webSocket,route,userInfo }) {
   }, [])
   //消息接收事件
   const receive = useCallback(() => {
-    setMessages(messages=>([...messages, {
+    setMessages(messages => ([...messages, {
       id: `${new Date().getTime()}`,
       type: 'text',
       content: '收到一条消息' + new Date().getTime(),
@@ -437,22 +445,22 @@ function MessageDetail({ navigation,webSocket,route,userInfo }) {
   }, [])
   //立即购买
   const orderConfirm = useCallback(() => {
-    navigation.navigate("order",{goods_id:route.params.goods_id})
+    navigation.navigate("order", { goods_id: route.params.goods_id })
   }, [route.params?.goods_id])
   //接收消息
-  const receiveMessage=useCallback(e=>{
-    let parseResult=parseReceiveMessage(e)
-    console.log("parseResult",parseResult)
-    dispatch({type:RECEIVE,payload:parseResult})
-  },[])
+  const receiveMessage = useCallback(e => {
+    let parseResult = parseReceiveMessage(e)
+    console.log("parseResult", parseResult)
+    dispatch({ type: RECEIVE, payload: parseResult })
+  }, [])
   //获取聊天记录
   useEffect(() => {
-      if (route.params?.sellId&&route.params?.chatTicket) {
-        webSocket.onmessage =receiveMessage
-        let params={y:'main',d:JSON.stringify({sellId:route.params.sellId,chatTicket:route.params.chatTicket,toUid:route.params.sellId})}
-        send(params,webSocket)
-      }
-  }, [route.params?.sellId,route.params?.chatTicket])
+    if (route.params?.sellId && route.params?.chatTicket) {
+      webSocket.onmessage = receiveMessage
+      let params = { y: 'main', d: JSON.stringify({ sellId: route.params.sellId, chatTicket: route.params.chatTicket, toUid: route.params.sellId }) }
+      send(params, webSocket)
+    }
+  }, [route.params?.sellId, route.params?.chatTicket])
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={style.container}>

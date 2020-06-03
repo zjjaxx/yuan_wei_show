@@ -7,7 +7,7 @@ import { connect } from "react-redux"
 import { send, parseReceiveMessage } from "../../utils/toBuffer"
 const RECEIVE_ERROR = "1001"
 const RECEIVE_MAIN = "2000"
-const RECEIVE_CHAT = "2001"
+const RECEIVE_CHAT_RESULT = "2001"
 const RECEIVE_CHAT_LIST = "2003"
 const RECEIVE = "RECEIVE"
 const SEND = "SEND"
@@ -26,17 +26,9 @@ const reducers = (messageList, action) => {
             case RECEIVE_CHAT_LIST:
                 let chatList = JSON.parse(payload.d)
                 return [...messageList, ...chatList.msg]
-            //接收消息
-            case RECEIVE_CHAT:
-                let msg = JSON.parse(payload.d)
-                return messageList.map(item => {
-                    if (item.id == msg.msgId) {
-                        return { ...item, sendStatus: msg.sendStatus }
-                    }
-                    else {
-                        return item
-                    }
-                })
+            case RECEIVE_CHAT_MSG:
+                let _msg = JSON.parse(payload.d)
+                return [...messageList, _msg]
             //接收消息 error
             case RECEIVE_ERROR:
             default:
@@ -50,9 +42,9 @@ function MessageList({ navigation, webSocket }) {
     const [lastPage, setLastPage] = useState(1)
     //下拉刷新flag
     const [refreshing, setRefreshing] = useState(false)
-    const c_messageList = useMemo(() => {
-        return messageList.map(item => ({ key: item.id, ...item }))
-    }, messageList)
+    const c_messageList = useCallback(() => {
+        return messageList.map((item, index) => ({ key: index, ...item }))
+    }, [messageList])
     //下拉刷新事件
     const _onRefresh = useCallback(() => {
         setRefreshing(true)
@@ -64,8 +56,11 @@ function MessageList({ navigation, webSocket }) {
     const _scrollEnd = useCallback(() => {
     }, [])
     //跳转聊天页面
-    const toMessageDetail = useCallback(() => {
-        navigation.navigate("messageDetail")
+    const toMessageDetail = useCallback((messageDataItem) => {
+        navigation.navigate("messageDetail", {
+            sellId: messageDataItem.m_uid,
+            chatTicket: messageDataItem.chat_ticket
+        })
     }, [])
     //删除地址
     const delAddress = useCallback((rowMap, rowKey) => {
@@ -82,7 +77,7 @@ function MessageList({ navigation, webSocket }) {
     //获取聊天记录
     useEffect(() => {
         webSocket.onmessage = receiveMessage
-        let params = { y: 'index', d: JSON.stringify({ page:page+1 }) }
+        let params = { y: 'index', d: JSON.stringify({ page: page + 1 }) }
         send(params, webSocket)
     }, [page])
     return (
@@ -94,13 +89,13 @@ function MessageList({ navigation, webSocket }) {
                 <SwipeListView
                     style={style.scrollView}
                     rightOpenValue={-scaleSize(70)}
-                    data={c_messageList}
+                    data={c_messageList()}
                     renderItem={(data, rowMap) => (
-                        <MessageItem toMessageDetail={toMessageDetail}></MessageItem>
+                        <MessageItem messageDataItem={data.item} toMessageDetail={toMessageDetail}></MessageItem>
                     )}
                     renderHiddenItem={(data, rowMap) => (
                         <View style={style.addressOptionMenu}>
-                            <TouchableHighlight style={style.delOption} underlayColor="#fff" onPress={() => delAddress(rowMap, data.item.key)}>
+                            <TouchableHighlight style={style.delOption} underlayColor="#fff" onPress={() => delAddress(rowMap, data.item.key, data.item)}>
                                 <Text style={style.delTitle}>删除</Text>
                             </TouchableHighlight>
                         </View>
@@ -112,15 +107,16 @@ function MessageList({ navigation, webSocket }) {
 }
 //消息item
 const MessageItem = function (props) {
-    const { toMessageDetail } = props
+    const { toMessageDetail, messageDataItem = {} } = props
+    console.log("messageDataItem", messageDataItem)
     return (
-        <TouchableHighlight underlayColor="#fff" onPress={toMessageDetail}>
+        <TouchableHighlight underlayColor="#fff" onPress={() => toMessageDetail(messageDataItem)}>
             <View style={style.messageItem}>
-                <Image style={style.avatar} source={require("../../assets/imgs/avatar.jpeg")}></Image>
+                <Image style={style.avatar} source={{ uri: messageDataItem.c_avatar }}></Image>
                 <View style={style.messageInfo}>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={style.name}>鱼塘群聊</Text>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={style.message}>你有一条新消息</Text>
-                    <Text style={style.time}>{toDate("2020-05-02 15:20:45")}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={style.name}>{messageDataItem.c_nickname}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={style.message}>{messageDataItem.last_content}</Text>
+                    <Text style={style.time}>{toDate(messageDataItem.last_time)}</Text>
                 </View>
                 <Image style={style.pic} source={require("../../assets/imgs/pic1.jpg")}></Image>
             </View>
