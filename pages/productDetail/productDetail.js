@@ -67,7 +67,8 @@ function ProductDetail({ navigation, route, userInfo }) {
     const payConfirm = useCallback(() => {
         navigation.navigate("messageDetail",{
             sellId:productDetailData.user.uid,
-            goods_id:route.params.goods_id,
+            toUid:productDetailData.mer_id,
+            goodsId:route.params.goods_id,
             chatTicket:productDetailData.chatTicket
         })
     }, [productDetailData])

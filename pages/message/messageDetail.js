@@ -202,6 +202,7 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
         sellId: route.params.sellId,
         chatTicket: route.params.chatTicket,
         toUid: route.params.sellId,
+        goodsId:route.params.goodsId, 
         msgType: type,
         data: content,
         msgId
@@ -455,12 +456,17 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
   }, [])
   //获取聊天记录
   useEffect(() => {
-    if (route.params?.sellId && route.params?.chatTicket) {
+    if (route.params?.sellId && route.params?.chatTicket&& route.params?.toUid&& route.params?.goodsId) {
       webSocket.onmessage = receiveMessage
-      let params = { y: 'main', d: JSON.stringify({ sellId: route.params.sellId, chatTicket: route.params.chatTicket, toUid: route.params.sellId }) }
+      let params = { y: 'main', d: JSON.stringify({ 
+        sellId: route.params.sellId, 
+        chatTicket: route.params.chatTicket, 
+        goodsId:route.params.goodsId, 
+        toUid: route.params.toUid 
+      }) }
       send(params, webSocket)
     }
-  }, [route.params?.sellId, route.params?.chatTicket])
+  }, [route.params?.sellId, route.params?.chatTicket, route.params?.toUid,route.params?.goodsId])
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={style.container}>

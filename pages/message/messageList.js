@@ -5,12 +5,14 @@ import toDate from "../../utils/toDate"
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { connect } from "react-redux"
 import { send, parseReceiveMessage } from "../../utils/toBuffer"
+import { useFocusEffect } from '@react-navigation/native';
 const RECEIVE_ERROR = "1001"
 const RECEIVE_MAIN = "2000"
 const RECEIVE_CHAT_RESULT = "2001"
 const RECEIVE_CHAT_LIST = "2003"
 const RECEIVE = "RECEIVE"
 const SEND = "SEND"
+const CLEAR="CLEAR"
 const reducers = (messageList, action) => {
     const { type, payload } = action
     //发送消息
@@ -26,14 +28,14 @@ const reducers = (messageList, action) => {
             case RECEIVE_CHAT_LIST:
                 let chatList = JSON.parse(payload.d)
                 return [...messageList, ...chatList.msg]
-            case RECEIVE_CHAT_MSG:
-                let _msg = JSON.parse(payload.d)
-                return [...messageList, _msg]
             //接收消息 error
             case RECEIVE_ERROR:
             default:
                 return messageList
         }
+    }
+    else if(type==CLEAR){
+        return []
     }
 }
 function MessageList({ navigation, webSocket }) {
@@ -43,7 +45,7 @@ function MessageList({ navigation, webSocket }) {
     //下拉刷新flag
     const [refreshing, setRefreshing] = useState(false)
     const c_messageList = useCallback(() => {
-        return messageList.map((item, index) => ({ key: index, ...item }))
+        return messageList.map((item, index) => ({ key: index + "", ...item }))
     }, [messageList])
     //下拉刷新事件
     const _onRefresh = useCallback(() => {
@@ -59,7 +61,9 @@ function MessageList({ navigation, webSocket }) {
     const toMessageDetail = useCallback((messageDataItem) => {
         navigation.navigate("messageDetail", {
             sellId: messageDataItem.m_uid,
-            chatTicket: messageDataItem.chat_ticket
+            toUid: messageDataItem.c_uid,
+            chatTicket: messageDataItem.chat_ticket,
+            goodsId: messageDataItem.product_id
         })
     }, [])
     //删除地址
@@ -75,11 +79,16 @@ function MessageList({ navigation, webSocket }) {
         dispatch({ type: RECEIVE, payload: parseResult })
     }, [])
     //获取聊天记录
-    useEffect(() => {
-        webSocket.onmessage = receiveMessage
-        let params = { y: 'index', d: JSON.stringify({ page: page + 1 }) }
-        send(params, webSocket)
-    }, [page])
+    useFocusEffect(
+        React.useCallback(() => {
+            webSocket.onmessage = receiveMessage
+            let params = { y: 'index', d: JSON.stringify({ page: page + 1 }) }
+            send(params, webSocket)
+            return ()=>{
+                dispatch({type:CLEAR})
+            }
+        }, [page])
+    )
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
@@ -112,9 +121,9 @@ const MessageItem = function (props) {
     return (
         <TouchableHighlight underlayColor="#fff" onPress={() => toMessageDetail(messageDataItem)}>
             <View style={style.messageItem}>
-                <Image style={style.avatar} source={{ uri: messageDataItem.c_avatar }}></Image>
+                <Image style={style.avatar} source={{ uri: messageDataItem._nickname }}></Image>
                 <View style={style.messageInfo}>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={style.name}>{messageDataItem.c_nickname}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={style.name}>{messageDataItem._nickname}</Text>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={style.message}>{messageDataItem.last_content}</Text>
                     <Text style={style.time}>{toDate(messageDataItem.last_time)}</Text>
                 </View>
