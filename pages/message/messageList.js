@@ -61,7 +61,7 @@ function MessageList({ navigation, webSocket }) {
     const toMessageDetail = useCallback((messageDataItem) => {
         navigation.navigate("messageDetail", {
             sellId: messageDataItem.m_uid,
-            toUid: messageDataItem.c_uid,
+            toUid: messageDataItem.isMer?messageDataItem.c_uid:messageDataItem.m_uid,
             chatTicket: messageDataItem.chat_ticket,
             goodsId: messageDataItem.product_id
         })
@@ -121,7 +121,7 @@ const MessageItem = function (props) {
     return (
         <TouchableHighlight underlayColor="#fff" onPress={() => toMessageDetail(messageDataItem)}>
             <View style={style.messageItem}>
-                <Image style={style.avatar} source={{ uri: messageDataItem._nickname }}></Image>
+                <Image style={style.avatar} source={{ uri: messageDataItem._avatar }}></Image>
                 <View style={style.messageInfo}>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={style.name}>{messageDataItem._nickname}</Text>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={style.message}>{messageDataItem.last_content}</Text>
