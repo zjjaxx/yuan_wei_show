@@ -44,7 +44,7 @@ const reducers = (messageList, action) => {
         })
       case RECEIVE_CHAT_MSG:
         let _msg = JSON.parse(payload.d)
-        return [...messageList, _msg]
+        return [...messageList, _msg.msg]
       //接收消息 error
       case RECEIVE_ERROR:
       default:
