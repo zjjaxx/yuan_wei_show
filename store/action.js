@@ -7,9 +7,9 @@ export const SET_USER_INFO = "SET_USER_INFO"
 export const SET_YW = "SET_YW"
 import { wsURL, TOKEN_KEY, VALID_TIME, validTimeCount, baseURL, USER_INFO, YW_KEY } from "../utils/config"
 import { showToast } from "../utils/common"
-import {send,parseReceiveMessage} from "../utils/toBuffer"
-var reconnectCount=10
-var pingId=-1
+import { send, parseReceiveMessage } from "../utils/toBuffer"
+var reconnectCount = 10
+var pingId = -1
 export function asyncToken() {
     return (dispatch, getState) => {
         dispatch({
@@ -27,7 +27,7 @@ export function asyncToken() {
             }
         })
             .then(([validTime, userInfo, yw]) => {
-                var _yw = JSON.parse(yw) 
+                var _yw = JSON.parse(yw)
                 let now = new Date().getTime()
                 if (now - parseInt(validTime) > validTimeCount) {
                     dispatch(logout())
@@ -78,9 +78,9 @@ export function login(token, userInfo, yw) {
                 })
 
             })
-            if(yw){
-                dispatch(initWebSocket(token,yw))
-            }
+        if (yw) {
+            dispatch(initWebSocket(token, yw))
+        }
     }
 }
 export function logout() {
@@ -112,10 +112,10 @@ export function logout() {
     }
 
 }
-export function initWebSocket(token,yw) {
+export function initWebSocket(token, yw) {
     return (dispatch, getState) => {
         console.log("initWebSocket enter")
-        const ws = new WebSocket(wsURL+`?token=${token}&yw=${yw}`);
+        const ws = new WebSocket(wsURL + `?token=${token}&yw=${yw}`);
         ws.binaryType = "arraybuffer";
         ws.onopen = () => {
             console.log("websocket connect")
@@ -123,28 +123,33 @@ export function initWebSocket(token,yw) {
                 type: SET_WEBSOCKET,
                 payload: ws
             })
-            pingId=setInterval(()=>{
-                send({y:'ping',d:{}},ws)
-            },30000)
+            pingId = setInterval(() => {
+                send({ y: 'ping', d: {} }, ws)
+            }, 30000)
         };
         ws.onmessage = (e) => {
-            console.log("e action",e)
+            console.log("e action", e)
         };
         ws.onerror = (e) => {
-            showToast(e.message)
+            console.log("e onerror", e.message)
         };
         ws.onclose = (e) => {
             console.log("websocket close")
-            clearInterval(pingId)
-            pingId=-1
-            if(reconnectCount<0){
-                return
-            }
-            reconnectCount--
-            setTimeout(()=>{
-                dispatch(initWebSocket(token,yw))
-            },3000)
+            dispatch(reconnect(token, yw))
         };
+    }
+}
+export function reconnect(token, yw) {
+    return (dispatch, getState) => {
+        clearInterval(pingId)
+        pingId = -1
+        if (reconnectCount < 0) {
+            return
+        }
+        reconnectCount--
+        setTimeout(() => {
+            dispatch(initWebSocket(token, yw))
+        }, 3000)
     }
 }
 

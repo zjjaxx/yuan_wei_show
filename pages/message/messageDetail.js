@@ -11,6 +11,7 @@ import { connect } from "react-redux"
 import chatBg from '../../assets/imgs/pic1.jpg'
 import pic2 from "../../assets/imgs/pic2.jpg"
 import { send, parseReceiveMessage } from "../../utils/toBuffer"
+import {reconnect} from "../../store/action"
 
 const RECEIVE_ERROR = "1001"
 const RECEIVE_MAIN = "2000"
@@ -21,7 +22,7 @@ const SEND = "SEND"
 
 const { width, height } = Dimensions.get('window')
 
-function MessageDetail({ navigation, webSocket, route, userInfo }) {
+function MessageDetail({ navigation, webSocket, route, userInfo}) {
   const reducers = (messageList, action) => {
     const { type, payload } = action
     //发送消息
@@ -463,10 +464,15 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
     console.log("parseResult", parseResult)
     dispatch({ type: RECEIVE, payload: parseResult })
   }, [])
+  //websocket断开连接
+  // const onclose=useCallback(e=>{
+  //   dispatch(reconnect())
+  // },[])
   //获取聊天记录
   useEffect(() => {
     if (route.params?.sellId && route.params?.chatTicket && route.params?.toUid && route.params?.goodsId) {
       webSocket.onmessage = receiveMessage
+      // webSocket.onclose=onclose
       let d = JSON.stringify({
         sellId: route.params.sellId,
         chatTicket: route.params.chatTicket,
@@ -478,7 +484,7 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
       let readParams = { y: 'read', d }
       send(readParams, webSocket)
     }
-  }, [route.params?.sellId, route.params?.chatTicket, route.params?.toUid, route.params?.goodsId])
+  }, [route.params?.sellId, route.params?.chatTicket, route.params?.toUid, route.params?.goodsId,webSocket])
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={style.container}>
