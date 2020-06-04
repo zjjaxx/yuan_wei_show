@@ -123,7 +123,6 @@ function MessageList({ navigation, webSocket }) {
 //消息item
 const MessageItem = function (props) {
     const { toMessageDetail, messageDataItem = {} } = props
-    console.log("messageDataItem", messageDataItem)
     return (
         <TouchableHighlight underlayColor="#fff" onPress={() => toMessageDetail(messageDataItem)}>
             <View style={style.messageItem}>

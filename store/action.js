@@ -108,7 +108,6 @@ export function logout() {
                     payload: false
                 })
             })
-
     }
 
 }

@@ -9,10 +9,8 @@ import Sound from 'react-native-sound'
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
 import { connect } from "react-redux"
 import chatBg from '../../assets/imgs/pic1.jpg'
-import pic2 from "../../assets/imgs/pic2.jpg"
 import { send, parseReceiveMessage } from "../../utils/toBuffer"
-import {reconnect} from "../../store/action"
-import {createId} from "../../utils/common"
+import { createId } from "../../utils/common"
 import {
   RECEIVE_ERROR,
   RECEIVE_MAIN,
@@ -24,12 +22,13 @@ import {
 
 const { width, height } = Dimensions.get('window')
 
-function MessageDetail({ navigation, webSocket, route, userInfo}) {
+function MessageDetail({ navigation, webSocket, route, userInfo }) {
+  const [productInfo, setProductInfo] = useState({})
   const reducers = (messageList, action) => {
     const { type, payload } = action
     //发送消息
     if (type == SEND) {
-      return [payload,...messageList]
+      return [payload, ...messageList]
     }
     //接收消息
     else if (type == RECEIVE) {
@@ -37,6 +36,7 @@ function MessageDetail({ navigation, webSocket, route, userInfo}) {
         //初始化
         case RECEIVE_MAIN:
           let d = JSON.parse(payload.d)
+          setProductInfo(d.goods)
           return d.msg
         //接收发送消息反馈
         case RECEIVE_CHAT_RESULT:
@@ -49,24 +49,33 @@ function MessageDetail({ navigation, webSocket, route, userInfo}) {
               return item
             }
           })
+        //接收消息添加到消息列表
         case RECEIVE_CHAT_MSG:
           let _msg = JSON.parse(payload.d)
-          let _d = JSON.stringify({
-            sellId: route.params.sellId,
-            chatTicket: route.params.chatTicket,
-            goodsId: route.params.goodsId,
-            toUid: route.params.toUid
-          })
-          let readParams = { y: 'read', d:_d }
-          send(readParams, webSocket)
-          return [_msg.msg,...messageList]
+          let chatTicket = _msg.msg.chatTicket
+          //根据chatTicket 来判断是否是这个人发送给你的消息
+          console.log("charge",chatTicket,route.params.chatTicket)
+          if (chatTicket == route.params.chatTicket) {
+            let _d = JSON.stringify({
+              sellId: route.params.sellId,
+              chatTicket: route.params.chatTicket,
+              goodsId: route.params.goodsId,
+              toUid: route.params.toUid
+            })
+            let readParams = { y: 'read', d: _d }
+            send(readParams, webSocket)
+            return [_msg.msg, ...messageList]
+          }
+          else {
+            return messageList
+          }
         //接收消息 error
         case RECEIVE_ERROR:
         default:
           return messageList
       }
     }
-  
+
   }
   const userProfile = {
     id: userInfo.userId + "",
@@ -235,7 +244,6 @@ function MessageDetail({ navigation, webSocket, route, userInfo}) {
         sendStatus: 0,
       }
     })
-
   }, [webSocket])
   //Callback when check permission on android
   const _requestAndroidPermission = useCallback(async () => {
@@ -482,13 +490,13 @@ function MessageDetail({ navigation, webSocket, route, userInfo}) {
       let readParams = { y: 'read', d }
       send(readParams, webSocket)
     }
-  }, [route.params?.sellId, route.params?.chatTicket, route.params?.toUid, route.params?.goodsId,webSocket])
+  }, [route.params?.sellId, route.params?.chatTicket, route.params?.toUid, route.params?.goodsId, webSocket])
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={style.container}>
         <Header title="小可爱" leftEvent={leftEvent}>
         </Header>
-        <ProductInfo orderConfirm={orderConfirm}></ProductInfo>
+        <ProductInfo productInfoData={productInfo} orderConfirm={orderConfirm}></ProductInfo>
         <ChatScreen
           chatWindowStyle={{ paddingTop: scaleHeight(55) }}
           ref={(e) => chatRef.current = e}
@@ -527,13 +535,13 @@ function MessageDetail({ navigation, webSocket, route, userInfo}) {
   )
 }
 const ProductInfo = memo((props) => {
-  const { orderConfirm } = props
+  const { orderConfirm, productInfoData } = props
   return (
     <View style={style.productInfoWrap}>
-      <Image style={style.productImg} source={require("../../assets/imgs/pic1.jpg")}></Image>
+      <Image style={style.productImg} source={{ uri: productInfoData.image }}></Image>
       <View style={style.productInfo}>
-        <Text style={style.price}>￥19.90</Text>
-        <Text style={style.deliveryFee}>含运费0.00元</Text>
+        <Text style={style.price}>￥{productInfoData.price}</Text>
+        <Text style={style.deliveryFee}>含运费{productInfoData.postage}元</Text>
         <Text style={style.tip}>交易前聊一聊</Text>
       </View>
       <TouchableHighlight underlayColor="#fff" onPress={orderConfirm}>
