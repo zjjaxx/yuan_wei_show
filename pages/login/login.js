@@ -15,16 +15,23 @@ const passwordRegExp = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
 function Login({ dispatch, navigation, device_code }) {
     //登入
     const setLogin = useCallback((values) => {
-          //极光推送
-          JPush.init();
-          JPush.getRegistrationID(result => {
-              console.log("result id",result)
-              let password = MD5(MD5(values.password))
-              loginApi({ mobile: values.mobile, password, device_code: device_code,registrationId:result.registerID }).then(({ data: { result } }) => {
-                  dispatch(login(result.token,{userId:result.userId},result.yw))
-              })
-          })
-       
+        //极光推送
+        JPush.init();
+        JPush.getRegistrationID(result => {
+            console.log("result id", result)
+            let password = MD5(MD5(values.password))
+            loginApi({ mobile: values.mobile, password, device_code: device_code, registrationId: result.registerID }).then(({ data: { result } }) => {
+                dispatch(login(result.token,
+                    {
+                        userId: result.userId,
+                        user_headimg: result.user_headimg,
+                        nick_name:result.nick_name
+                    },
+                    result.yw
+                ))
+            })
+        })
+
     }, [dispatch])
     const _handleSubmit = useCallback((values, errors, handleSubmit) => {
         if (!(values.mobile && values.password)) {

@@ -30,7 +30,8 @@ function Login({ dispatch, navigation, device_code }) {
             msgCode: values.msgCode,
             device_code
         }).then(({ data: { result } }) => {
-            dispatch(login(result.token,{userId:result.userId},result.yw))
+            // dispatch(login(result.token,{userId:result.userId},result.yw))
+            navigation.navigate("login")
         })
     }, [dispatch, key, iv])
     //提交事件

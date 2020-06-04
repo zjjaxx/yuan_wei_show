@@ -74,3 +74,7 @@ export function encrypt(data, _key, _iv) {
         CryptoJS.enc.Utf8.parse(encrypted)
     ).toString();
 }
+//生成唯一ID
+export function createId(){
+    return Number(Math.random().toString().substr(3, 3) + Date.now()).toString(36);
+}

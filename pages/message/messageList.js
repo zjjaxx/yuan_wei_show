@@ -92,7 +92,7 @@ function MessageList({ navigation, webSocket }) {
             return () => {
                 dispatch({ type: CLEAR })
             }
-        }, [page])
+        }, [page,webSocket])
     )
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>

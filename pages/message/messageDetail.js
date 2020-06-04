@@ -12,6 +12,7 @@ import chatBg from '../../assets/imgs/pic1.jpg'
 import pic2 from "../../assets/imgs/pic2.jpg"
 import { send, parseReceiveMessage } from "../../utils/toBuffer"
 import {reconnect} from "../../store/action"
+import {createId} from "../../utils/common"
 
 const RECEIVE_ERROR = "1001"
 const RECEIVE_MAIN = "2000"
@@ -68,8 +69,8 @@ function MessageDetail({ navigation, webSocket, route, userInfo}) {
   }
   const userProfile = {
     id: userInfo.userId + "",
-    avatar: pic2,
-    nickName: "heihei"
+    avatar: userInfo.user_headimg,
+    nickName: userInfo.nick_name
   }
   //聊天句柄
   const chatRef = useRef()
@@ -206,7 +207,7 @@ function MessageDetail({ navigation, webSocket, route, userInfo}) {
   }])
   //发送消息事件
   const sendMessage = useCallback((type, content, isInverted) => {
-    let msgId = `${new Date().getTime()}`
+    let msgId = `${createId()}`
     let params = {
       y: 'chat', d: JSON.stringify({
         sellId: route.params.sellId,
@@ -234,7 +235,7 @@ function MessageDetail({ navigation, webSocket, route, userInfo}) {
       }
     })
 
-  }, [])
+  }, [webSocket])
   //Callback when check permission on android
   const _requestAndroidPermission = useCallback(async () => {
     try {
@@ -464,10 +465,6 @@ function MessageDetail({ navigation, webSocket, route, userInfo}) {
     console.log("parseResult", parseResult)
     dispatch({ type: RECEIVE, payload: parseResult })
   }, [])
-  //websocket断开连接
-  // const onclose=useCallback(e=>{
-  //   dispatch(reconnect())
-  // },[])
   //获取聊天记录
   useEffect(() => {
     if (route.params?.sellId && route.params?.chatTicket && route.params?.toUid && route.params?.goodsId) {
