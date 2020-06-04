@@ -7,14 +7,14 @@ import { connect } from "react-redux"
 import { send, parseReceiveMessage } from "../../utils/toBuffer"
 import { useFocusEffect } from '@react-navigation/native';
 import Dot from "../../components/Dot"
-const RECEIVE_ERROR = "1001"
-const RECEIVE_MAIN = "2000"
-const RECEIVE_CHAT_RESULT = "2001"
-const RECEIVE_CHAT_LIST = "2003"
-const RECEIVE_UPDATE="2005"
-const RECEIVE = "RECEIVE"
-const SEND = "SEND"
-const CLEAR = "CLEAR"
+import {
+    RECEIVE_ERROR,
+    RECEIVE_CHAT_LIST,
+    RECEIVE_UPDATE,
+    RECEIVE,
+    SEND,
+    CLEAR
+} from "../../utils/config.js"
 const reducers = (messageList, action) => {
     const { type, payload } = action
     //发送消息

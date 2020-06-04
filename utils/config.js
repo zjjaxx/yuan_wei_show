@@ -15,3 +15,14 @@ export const APP_KEY_CONFIG={
         appKey: "9Jh-pkadKvsDeha79eOMJGVzEylTkp4t"
     }
 }
+//聊天字段定义 
+export const RECEIVE_ERROR = "1001" 
+export const RECEIVE_MAIN = "2000" 
+export const RECEIVE_CHAT_RESULT = "2001" 
+export const RECEIVE_CHAT_MSG = "2002" 
+export const RECEIVE_CHAT_LIST = "2003" 
+export const RECEIVE_UPDATE = "2005" 
+export const RECEIVE = "RECEIVE" 
+export const SEND = "SEND" 
+export const CLEAR = "CLEAR"
+

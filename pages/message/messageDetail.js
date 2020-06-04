@@ -13,13 +13,14 @@ import pic2 from "../../assets/imgs/pic2.jpg"
 import { send, parseReceiveMessage } from "../../utils/toBuffer"
 import {reconnect} from "../../store/action"
 import {createId} from "../../utils/common"
-
-const RECEIVE_ERROR = "1001"
-const RECEIVE_MAIN = "2000"
-const RECEIVE_CHAT_RESULT = "2001"
-const RECEIVE_CHAT_MSG = "2002"
-const RECEIVE = "RECEIVE"
-const SEND = "SEND"
+import {
+  RECEIVE_ERROR,
+  RECEIVE_MAIN,
+  RECEIVE_CHAT_RESULT,
+  RECEIVE_CHAT_MSG,
+  RECEIVE,
+  SEND,
+} from "../../utils/config.js"
 
 const { width, height } = Dimensions.get('window')
 
