@@ -103,7 +103,7 @@ const AddressViewPager = memo((props) => {
         const { item, isSelected } = props
         return (
             <View style={style.addressItemWrap}>
-                {isSelected ? <Image style={style.addressSelectIcon} source={require("../assets/imgs/ok-l.png")}></Image> : null}
+                {isSelected ? <Image style={style.addressSelectIcon} source={require("../assets/imgs/ok.png")}></Image> : null}
                 <Text style={style.addressTitle}>{item.text}</Text>
             </View>
         )
@@ -139,7 +139,7 @@ const Tab = memo((props) => {
         return (
             <View style={style.tabItem}>
                 <Text style={style.tabTitle}>{item.value == -1 ? '请选择' : item.text}</Text>
-                {index == tabIndex ? <LinearGradient useAngle={true} angle={90} colors={["#f2140c", "#fff"]} style={style.line}></LinearGradient> : null}
+                {index == tabIndex ? <LinearGradient useAngle={true} angle={90} colors={["#fca413", "#fff"]} style={style.line}></LinearGradient> : null}
             </View>
         )
     })

@@ -7,13 +7,13 @@ import Carousel from 'react-native-snap-carousel';
 import { sliderWidth, itemWidth } from '../../swiperLib/SliderEntry.style';
 import LoadMore from "../../components/LoadMore"
 import ImageViewer from 'react-native-image-zoom-viewer'
-import { productDetail, comment,like} from "../../api/api"
+import { productDetail, comment, like } from "../../api/api"
 import FastImage from 'react-native-fast-image'
 import { connect } from "react-redux"
 import toDate from "../../utils/toDate"
 
 function ProductDetail({ navigation, route, userInfo }) {
-    const [productDetailData, setProductDetailData] = useState({})
+    const [productDetailData, setProductDetailData] = useState({ user: {}, tips: {} })
     //是否预览
     const [imgPreviewFlag, setImgPreviewFlag] = useState(false)
     //产品图片
@@ -39,11 +39,11 @@ function ProductDetail({ navigation, route, userInfo }) {
     }, [isSave])
     //点赞
     const toggleLove = useCallback(() => {
-        let flag=isThumb?0:1
-        like({goods_id:route.params?.goods_id,flag}).then(res=>{
+        let flag = isThumb ? 0 : 1
+        like({ goods_id: route.params?.goods_id, flag }).then(res => {
             setIsThumb(isThumb => !isThumb)
         })
-    }, [route.params?.goods_id,isThumb])
+    }, [route.params?.goods_id, isThumb])
     //发送留言
     const sendComment = useCallback(({ nativeEvent: { text, eventCount, target } }) => {
         let comment_id = replayInfo.id ? replayInfo.id : ""
@@ -65,11 +65,11 @@ function ProductDetail({ navigation, route, userInfo }) {
     }, [route.params?.goods_id, replayInfo])
     //点击购买事件
     const payConfirm = useCallback(() => {
-        navigation.navigate("messageDetail",{
-            sellId:productDetailData.user.uid,
-            toUid:productDetailData.mer_id,
-            goodsId:route.params.goods_id,
-            chatTicket:productDetailData.chatTicket
+        navigation.navigate("messageDetail", {
+            sellId: productDetailData.user.uid,
+            toUid: productDetailData.mer_id,
+            goodsId: route.params.goods_id,
+            chatTicket: productDetailData.chatTicket
         })
     }, [productDetailData])
     //保存图片到本地
@@ -87,15 +87,7 @@ function ProductDetail({ navigation, route, userInfo }) {
     }, [])
     //查看更多
     const checkMore = useCallback(() => {
-        Alert.alert(
-            '提示',
-            "需开通vip才能查看更多",
-            [
-                { text: 'OK', onPress: () => { } },
-                { text: 'Cancel', onPress: () => { } },
-            ],
 
-        )
     }, [])
     const toInfo = useCallback(() => {
     }, [])
@@ -138,7 +130,7 @@ function ProductDetail({ navigation, route, userInfo }) {
                     </View>
                     <View style={style.imgList}>
                         {productDetailData.images && productDetailData.images.map((item, index) => {
-                            if (index == productDetailData.images.length - 1) {
+                            if (index == productDetailData.images.length - 1 && productDetailData.imagesCount > 3) {
                                 return <LoadMore key={index}>
                                     <TouchableHighlight underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
                                         <FastImage style={[style.detailImg, { marginBottom: 0 }]} source={{ uri: item.att_dir }}></FastImage>
@@ -160,12 +152,17 @@ function ProductDetail({ navigation, route, userInfo }) {
                             imageUrls={productImg}
                         />
                     </Modal>
-                    <TouchableHighlight underlayColor="#fca413" onPress={checkMore} style={style.checkMoreWrap}>
-                        <Text style={style.checkMore}>查看更多</Text>
-                    </TouchableHighlight>
+                    {
+                        productDetailData.imagesCount > 3 ?
+                            <TouchableHighlight underlayColor="#fca413" onPress={checkMore} style={style.checkMoreWrap}>
+                                <Text style={style.checkMore}>查看更多</Text>
+                            </TouchableHighlight> : null
+                    }
+
                     <LeaveMessageList setReplayInfo={setReplayInfo} productDetailData={productDetailData} setIsShowLeaveMessage={setIsShowLeaveMessage}></LeaveMessageList>
                 </ScrollView>
                 <BottomBar
+                    productDetailData={productDetailData}
                     replayInfo={replayInfo}
                     setReplayInfo={setReplayInfo}
                     isShowLeaveMessage={isShowLeaveMessage}
@@ -183,13 +180,13 @@ function ProductDetail({ navigation, route, userInfo }) {
     )
 }
 const UserInfo = memo((props) => {
-    const { productDetailData } = props
+    const { productDetailData = { user: {}, tips: {} } } = props
     return (
         <View style={style.userWrap}>
-            <FastImage style={style.userAvatar} source={{ uri: productDetailData.user && productDetailData.user.avatar }}></FastImage>
+            <FastImage style={style.userAvatar} source={{ uri: productDetailData.user.avatar }}></FastImage>
             <View style={style.userMsg}>
-                <Text numberOfLines={1} ellipsizeMode="tail" style={style.userName}>{productDetailData.user && productDetailData.user.nickname}</Text>
-                <Text style={style.time}>连续3天来过</Text>
+                <Text numberOfLines={1} ellipsizeMode="tail" style={style.userName}>{productDetailData.user.nickname}</Text>
+                <Text style={style.time}>{productDetailData.tips.t == "sign" ? `连续${productDetailData.tips.v}天来过` : `${toDate(productDetailData.tips.v)}来过`}</Text>
             </View>
         </View>
     )
@@ -197,6 +194,7 @@ const UserInfo = memo((props) => {
 //底部栏
 const BottomBar = React.memo(function (props) {
     const {
+        productDetailData,//产品数据
         setReplayInfo,//设置回复人信息
         replayInfo,//回复人信息
         isShowLeaveMessage,//是否显示留言输入框
@@ -250,9 +248,15 @@ const BottomBar = React.memo(function (props) {
                             <Text style={style.bottomMenuText}>点赞</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight style={style.payWrap} underlayColor="#fca413" onPress={payConfirm}>
-                        <Text style={style.pay}>我想要</Text>
-                    </TouchableHighlight>
+                    {
+                        productDetailData.isMaster ? <TouchableHighlight style={style.manageWrap} underlayColor="#fff" onPress={()=>{}}>
+                            <Text style={style.manage}>管理</Text>
+                        </TouchableHighlight> :
+                            <TouchableHighlight style={style.payWrap} underlayColor="#fca413" onPress={payConfirm}>
+                                <Text style={style.pay}>我想要</Text>
+                            </TouchableHighlight>
+                    }
+
                 </View>}
         </>
     )
@@ -285,7 +289,7 @@ const LeaveMessageList = React.memo(function (props) {
         return (
             <>
                 <Item itemData={itemData} setIsShowLeaveMessage={setIsShowLeaveMessage} setReplayInfo={setReplayInfo} type={1}></Item>
-                {itemData.child && itemData.child.map((item,index) =>
+                {itemData.child && itemData.child.map((item, index) =>
                     <View style={style.replayWrap} key={index}>
                         <Item itemData={item} setIsShowLeaveMessage={setIsShowLeaveMessage} setReplayInfo={setReplayInfo} type={2}></Item>
                     </View>
@@ -445,6 +449,20 @@ const style = StyleSheet.create({
     pay: {
         fontSize: setSpText2(14),
         color: "#fff"
+    },
+    manageWrap:{
+        marginLeft: scaleSize(80),
+        flex: 3,
+        height: scaleHeight(25),
+        borderWidth:scaleSize(0.5),
+        borderColor:"#333",
+        borderRadius: scaleSize(20),
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    manage:{
+        fontSize: setSpText2(14),
+        color: "#333"
     },
     menuIcon: {
         marginRight: scaleSize(5),

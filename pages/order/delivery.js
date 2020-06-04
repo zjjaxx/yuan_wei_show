@@ -27,9 +27,9 @@ function Delivery({ navigation }) {
                     </View>
                     <View style={style.deliveryDetailWrap}>
                         {[1, 2, 3, 4, 5, 6, 7, 7, 8].map((item,index)=>
-                            <View style={style.detailItemWrap}>
-                                <View style={[style.dot,index==0?style.redDot:{}]}></View>
-                                <Text style={[style.detailItemText,index==0?{color:"#333"}:{}]}>感谢购买，欢迎下次光临</Text>
+                            <View style={[style.detailItemWrap,index<4?style.activeItemWrap:{}]}>
+                                <View style={[style.dot,index<4?style.redDot:{}]}></View>
+                                <Text style={[style.detailItemText,index<4?{color:"#333"}:{}]}>感谢购买，欢迎下次光临</Text>
                                 <Text style={style.time}>2019-02-15  15:20:52</Text>
                             </View>
                         )}
@@ -95,6 +95,9 @@ const style = StyleSheet.create({
         borderLeftColor:"#999",
         paddingBottom:scaleHeight(20)
     },
+    activeItemWrap:{
+        borderLeftColor:"#fca413",
+    },
     detailItemText:{
         fontSize:setSpText2(14),
         fontWeight:"500",
@@ -121,7 +124,7 @@ const style = StyleSheet.create({
         left:0,
         width:scaleSize(10),
         height:scaleSize(10),
-        backgroundColor:"#f2140c",
+        backgroundColor:"#fca413",
         transform:[{translateX:-scaleSize(5)}],
         borderRadius:scaleSize(5)
     }

@@ -80,7 +80,7 @@ function Order({ navigation, route }) {
                     </View>
 
                     <TouchableHighlight underlayColor="#fff" onPress={payConfirm}>
-                        <LinearGradient useAngle={true} angle={90} colors={["#f2140c", "#f2270c", "#fff"]} style={style.buyBtn}>
+                        <LinearGradient useAngle={true} angle={90} colors={["#fca413", "#fca413"]} style={style.buyBtn}>
                             <Text style={style.buyText}>提交订单</Text>
                         </LinearGradient>
                     </TouchableHighlight>

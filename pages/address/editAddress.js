@@ -1,18 +1,17 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useState, useEffect } from "react"
 import { View, SafeAreaView, StyleSheet, Alert } from "react-native"
 import Header from "../../components/Header"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
-import useAddressData from "../../customUse/addressData";
+import addressData from "../../utils/address"
 import AddressComponent from "./addressComponent"
+import {edit,update} from "../../api/api"
 
-function EditAddress({ navigation }) {
-    const [phone,setPhone]=useState("17855827436")
-    const [real_name]=useState("绿灯")
+function EditAddress({ navigation,route }) {
+    const [phone,setPhone]=useState("1785582743?????6")
+    const [real_name,setRealName]=useState("绿灯")
     const [detail,setAddressDetail]=useState("兰江街道 水东村")
     //选择地址模态框
     const [addressPopupFlag, setAddressPopupFlag] = useState(false)
-    //地址数据
-    const addressData = useAddressData()
     const leftEvent = useCallback(() => {
         navigation.goBack()
     }, [])
@@ -38,11 +37,45 @@ function EditAddress({ navigation }) {
         }
         handleSubmit()
     }, [])
+    //updateAddress
+    const updateAddress=useCallback((values)=>{
+        update({
+            address_id:route.params.address_id,
+            phone:values.phone,
+            real_name:values.real_name,
+            detail:values.detail,
+            pcd:JSON.stringify(addressSelectItem),
+            is_default:isDefault?1:0
+        }).then(({data:{result}})=>{
+            Alert.alert(
+                '提示',
+                result,
+                [
+                    { text: 'OK', onPress: () => {navigation.goBack() } },
+                ],
+            )
+        })
+    },[])
+    useEffect(()=>{
+        if(route.params?.address_id){
+            edit({address_id:route.params.address_id}).then(({data:{result}})=>{
+                setPhone(result.phone)
+                setRealName(result.real_name)
+                setAddressDetail(result.detail)
+                setIsDefault(parseInt(result.is_default)==1?true:false)
+                let province=Object.assign({},result.province,{text:JSON.parse(result.province.text)})
+                let city=Object.assign({},result.city,{text:JSON.parse(result.city.text)})
+                let district=Object.assign({},result.district,{text:JSON.parse(result.district.text)})
+                setAddressSelectItem([province,city,district]) 
+            })
+        }
+    },[route.params?.address_id])
     return (
         <SafeAreaView style={style.safeAreaView}>
             <View style={style.container}>
                 <Header leftEvent={leftEvent} title="编辑收货地址"></Header>
                 <AddressComponent
+                    createAddress={updateAddress}
                     addressPopupFlag={addressPopupFlag}
                     setAddressPopupFlag={setAddressPopupFlag}
                     isDefault={isDefault}

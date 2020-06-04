@@ -31,7 +31,7 @@ function OrderStatus({ navigation }) {
             <View style={[style.statusBar, { height: statusBarHeight, opacity: headerOpacity }]}></View>
             {headerOpacity < 0.5 ? (
                 <View style={[style.headerOne, { top: statusBarHeight, backgroundColor: `rgba(255,255,255,${headerOpacity})` }]}>
-                    <TouchableHighlight style={style.leftWrap} underlayColor="#f2140c" onPress={leftEvent}>
+                    <TouchableHighlight style={style.leftWrap} underlayColor="#fca413" onPress={leftEvent}>
                         <Image style={style.leftIcon} source={require("../../assets/imgs/arrow-left-white.png")}></Image>
                     </TouchableHighlight>
                 </View>
@@ -134,7 +134,7 @@ const BottomBar = memo((props) => {
                         <TouchableHighlight style={style.bottomCancelWrap} underlayColor="#fff" onPress={() => { }}>
                             <Text style={style.cancelPay}>查看物流</Text>
                         </TouchableHighlight>
-                        <TouchableHighlight style={style.bottomPayWrap} underlayColor="#f2140c" onPress={() => { }}>
+                        <TouchableHighlight style={style.bottomPayWrap} underlayColor="#fca413" onPress={() => { }}>
                             <Text style={style.toPayText}>确认收货</Text>
                         </TouchableHighlight>
                     </View>
@@ -199,7 +199,7 @@ const style = StyleSheet.create({
     orderStatusWrap: {
         marginBottom: scaleHeight(10),
         position: "relative",
-        backgroundColor: "#f2140c"
+        backgroundColor: "#fca413"
     },
     orderStatus: {
         marginTop: scaleHeight(20),
@@ -391,7 +391,7 @@ const style = StyleSheet.create({
         borderRadius: scaleSize(15),
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f2140c"
+        backgroundColor: "#fca413"
     },
     toPayText: {
         color: "#fff",

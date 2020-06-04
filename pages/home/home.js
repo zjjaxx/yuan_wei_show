@@ -274,13 +274,13 @@ const RecommandProductItem = memo((props) => {
                 <TouchableHighlight underlayColor="#fff" onPress={() => { }}>
                     <View style={style.bottomOptionItem}>
                         <Image style={style.loveIcon} source={require("../../assets/imgs/love.png")}></Image>
-                        <Text style={style.loveCount}>{productItemData.like}</Text>
+                        <Text style={style.loveCount}>{productItemData.star_num}</Text>
                     </View>
                 </TouchableHighlight>
                 <TouchableHighlight underlayColor="#fff" onPress={() => toProductDetail(1)}>
                     <View style={style.bottomOptionItem}>
                         <Image style={style.commentIcon} source={require("../../assets/imgs/comment.png")}></Image>
-                        <Text style={style.commentCount}>{productItemData.reply}</Text>
+                        <Text style={style.commentCount}>{productItemData.common_num}</Text>
                     </View>
                 </TouchableHighlight>
             </View>

@@ -1,12 +1,20 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { View, Text, Button, SafeAreaView, StyleSheet, Image, TouchableHighlight } from "react-native"
 import { connect } from "react-redux"
 import { logout } from "../../store/action"
 import { scaleHeight, scaleSize, setSpText2 } from "../../utils/ScreenUtil"
+import { info } from "../../api/api"
+import { useFocusEffect } from "@react-navigation/native"
 function Person({ dispatch, navigation }) {
+    const [userInfo, setUserInfo] = useState({})
     const _logout = useCallback(() => {
         dispatch(logout())
     }, [dispatch])
+    useFocusEffect(useCallback(() => {
+        info().then(({ data: { result } }) => {
+            setUserInfo(result)
+        })
+    }, []))
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
@@ -14,34 +22,37 @@ function Person({ dispatch, navigation }) {
                     <Text style={style.headerTitle}>我的</Text>
                 </View>
                 <View style={style.userInfoWrap}>
-                    <Image source={require("../../assets/imgs/avatar.jpeg")} style={style.avatar}></Image>
+                    <Image source={{ uri: userInfo.avatar }} style={style.avatar}></Image>
                     <View style={style.userInfo}>
-                        <Text style={style.name}>Hello DENG</Text>
-                        <Text style={style.phone}>17855827456</Text>
+                        <View style={style.userNameWrap}>
+                            <Text style={style.name}>{userInfo.nickname}</Text>
+                            <Image style={style.vipIcon} source={userInfo.vipCard ?require( "../../assets/imgs/vip.png"):require("../../assets/imgs/vipBgGray.png")}></Image>
+                        </View>
+                        <Text style={style.tip}>{userInfo.vipCard ? 'vip续费' : '充值使你变得更强'}</Text>
                     </View>
                 </View>
                 <View style={style.menuWrap}>
                     <TouchableHighlight style={style.touchWrap} underlayColor="#fff" onPress={() => navigation.navigate("myPublish")}>
                         <View style={style.menuItem}>
-                            <Text style={style.num}>4</Text>
+                            <Text style={style.num}>{userInfo.publishCount}</Text>
                             <Text style={style.menuTitle}>发布</Text>
                         </View>
                     </TouchableHighlight>
                     <TouchableHighlight style={style.touchWrap} underlayColor="#fff" onPress={() => navigation.navigate("unshelve")}>
                         <View style={style.menuItem}>
-                            <Text style={style.num}>44</Text> 
+                            <Text style={style.num}>{userInfo.oversellCount}</Text>
                             <Text style={style.menuTitle}>下架</Text>
                         </View>
                     </TouchableHighlight>
                     <TouchableHighlight style={style.touchWrap} underlayColor="#fff" onPress={() => { }}>
                         <View style={style.menuItem}>
-                            <Text style={style.num}>14</Text>
+                            <Text style={style.num}>{userInfo.fans}</Text>
                             <Text style={style.menuTitle}>粉丝</Text>
                         </View>
                     </TouchableHighlight>
                     <TouchableHighlight style={style.touchWrap} underlayColor="#fff" onPress={() => { }}>
                         <View style={style.menuItem}>
-                            <Text style={style.num}>24</Text>
+                            <Text style={style.num}>{userInfo.attention}</Text>
                             <Text style={style.menuTitle}>关注</Text>
                         </View>
                     </TouchableHighlight>
@@ -82,6 +93,11 @@ const style = StyleSheet.create({
         flex: 1,
         position: "relative"
     },
+    vipIcon: {
+        marginLeft: scaleSize(5),
+        width: scaleSize(35),
+        height: scaleHeight(16)
+    },
     headerWrap: {
         flexDirection: "row",
         alignItems: "center",
@@ -97,6 +113,10 @@ const style = StyleSheet.create({
         paddingHorizontal: scaleSize(15),
         flexDirection: "row",
     },
+    userNameWrap: {
+        flexDirection: "row",
+        alignItems: "center"
+    },
     userInfo: {
         marginLeft: scaleSize(20)
     },
@@ -104,10 +124,10 @@ const style = StyleSheet.create({
         fontSize: setSpText2(16),
         fontWeight: "bold"
     },
-    phone: {
+    tip: {
         marginTop: scaleHeight(8),
         fontSize: setSpText2(12),
-        color: "#999"
+        color: "#fca413"
     },
     avatar: {
         width: scaleSize(50),

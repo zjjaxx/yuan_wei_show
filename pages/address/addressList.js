@@ -3,26 +3,27 @@ import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableHighl
 import Header from "../../components/Header"
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil"
 import { SwipeListView } from 'react-native-swipe-list-view';
-import {address,destroy} from "../../api/api"
+import { address, destroy,set_default } from "../../api/api"
+import { useFocusEffect, BaseRouter } from "@react-navigation/native";
 
-function AddressList({ navigation }) {
-    const [addressList,setAddressList]=useState([])
-    const c_addressList=useMemo(()=>{
-        return addressList.map(item=>{
-            return {key:item.id,...item}
+function AddressList({ navigation,route}) {
+    const [addressList, setAddressList] = useState([])
+    const c_addressList = useMemo(() => {
+        return addressList.map(item => {
+            return { key: item.id+"", ...item }
         })
-    },[addressList])
+    }, [addressList])
     //批量操作
     const [isBatchOperation, setIsBatchOperation] = useState(false)
     //批量选中的地址数组
     const [batchAddressList, setBatchAddressList] = useState([])
     //移除选中地址
     const removeBatchAddressList = useCallback((item) => {
-        setBatchAddressList(batchAddressList=>batchAddressList.filter(_item => _item.id != item.id))
+        setBatchAddressList(batchAddressList => batchAddressList.filter(_item => _item.id != item.id))
     }, [])
     //添加选中数组
     const addBatchAddressList = useCallback((item) => {
-        setBatchAddressList(batchAddressList=>[...batchAddressList,item])
+        setBatchAddressList(batchAddressList => [...batchAddressList, item])
     }, [])
     //返回上一页
     const leftEvent = useCallback(() => {
@@ -34,43 +35,48 @@ function AddressList({ navigation }) {
     }, [isBatchOperation])
     const bottomPress = useCallback(() => {
         if (isBatchOperation) {
-            let address_id=JSON.stringify(batchAddressList.map(item=>item.id))
-            destroy({address_id}).then(res=>{
+            let address_id = JSON.stringify(batchAddressList.map(item => item.id))
+            destroy({ address_id }).then(res => {
                 _api()
             })
         }
         else {
             navigation.navigate("newAddress")
         }
-    }, [isBatchOperation,batchAddressList])
-    const toEditAddress = useCallback(() => {
-        navigation.navigate("editAddress")
+    }, [isBatchOperation, batchAddressList])
+    const toEditAddress = useCallback((addressItemData) => {
+        navigation.navigate("editAddress",{address_id:addressItemData.id})
     }, [])
     //设为默认
-    const setDefault=useCallback((rowMap, rowKey)=>{
+    const setDefault = useCallback((rowMap, rowKey,addressItemData) => {
         if (rowMap[rowKey]) {
             rowMap[rowKey].closeRow();
         }
-    },[])
-    //删除地址
-    const delAddress=useCallback((rowMap, rowKey,dataItem)=>{
-        if (rowMap[rowKey]) {
-            rowMap[rowKey].closeRow();
-        }
-        let address_id=JSON.stringify([dataItem.id])
-        destroy({address_id}).then(res=>{
+        set_default({address_id:addressItemData.id}).then(res=>{
             _api()
         })
-    },[])
+    }, [])
+    //删除地址
+    const delAddress = useCallback((rowMap, rowKey, dataItem) => {
+        if (rowMap[rowKey]) {
+            rowMap[rowKey].closeRow();
+        }
+        let address_id = JSON.stringify([dataItem.id])
+        destroy({ address_id }).then(res => {
+            _api()
+        })
+    }, [])
     //地址列表
-    useEffect(()=>{
-        _api()
-    },[])
-    const _api=useCallback(()=>{
-        address().then(({data:{result}})=>{
+    useFocusEffect(
+        React.useCallback(() => {
+            _api()
+        }, [])
+    )
+    const _api = useCallback(() => {
+        address().then(({ data: { result } }) => {
             setAddressList(result)
         })
-    },[])
+    }, [])
     return (
         <SafeAreaView style={style.safeAreaView}>
             <View style={style.container}>
@@ -84,10 +90,10 @@ function AddressList({ navigation }) {
                     )}
                     renderHiddenItem={(data, rowMap) => (
                         <View style={style.addressOptionMenu}>
-                            <TouchableHighlight style={style.defaultOption} underlayColor="#fff" onPress={() => setDefault(rowMap, data.item.key)}>
+                            <TouchableHighlight style={style.defaultOption} underlayColor="#fff" onPress={() => setDefault(rowMap, data.item.key,data.item)}>
                                 <Text style={style.defaultTitle}>设为默认</Text>
                             </TouchableHighlight>
-                            <TouchableHighlight style={style.delOption} underlayColor="#fff" onPress={()=>delAddress(rowMap, data.item.key,data.item)}>
+                            <TouchableHighlight style={style.delOption} underlayColor="#fff" onPress={() => delAddress(rowMap, data.item.key, data.item)}>
                                 <Text style={style.delTitle}>删除</Text>
                             </TouchableHighlight>
                         </View>
@@ -104,21 +110,21 @@ function AddressList({ navigation }) {
     )
 }
 const AddressItem = memo((props) => {
-    const { isBatchOperation, id, removeBatchAddressList, addBatchAddressList, toEditAddress,addressItemData={} } = props
+    const { isBatchOperation, id, removeBatchAddressList, addBatchAddressList, toEditAddress, addressItemData = {} } = props
     const [isSelect, setIsSelect] = useState(false)
     //取消选中
     const cancelSelect = useCallback(() => {
         setIsSelect(false)
         removeBatchAddressList(addressItemData)
-    },[])
+    }, [])
     //添加选中
     const addSelect = useCallback(() => {
         setIsSelect(true)
         addBatchAddressList(addressItemData)
-    },[])
+    }, [])
 
     return (
-        <TouchableHighlight underlayColor="#fff" onPress={()=>{}}>
+        <TouchableHighlight underlayColor="#fff" onPress={() => { }}>
             <View style={style.addressItemOptionWrap}>
                 {isBatchOperation ? isSelect ?
                     <TouchableHighlight underlayColor="#fff" onPress={cancelSelect} style={{ marginHorizontal: scaleSize(10) }}>
@@ -133,13 +139,13 @@ const AddressItem = memo((props) => {
                     <View style={style.userInfoWrap}>
                         <Text style={style.userName}>{addressItemData.real_name}</Text>
                         <Text style={style.phone}>{addressItemData.phone}</Text>
-                       {addressItemData.is_default?<View style={style.defaultWrap}>
+                        {addressItemData.is_default ? <View style={style.defaultWrap}>
                             <Text style={style.default}>默认</Text>
-                        </View>:null}
+                        </View> : null}
                     </View>
                     <View style={style.addressDetailWrap}>
                         <Text style={style.addressDetail}>{addressItemData.full_address}</Text>
-                        <TouchableHighlight underlayColor="#fff" onPress={toEditAddress}>
+                        <TouchableHighlight underlayColor="#fff" onPress={()=>toEditAddress(addressItemData)}>
                             <Image style={style.editIcon} source={require('../../assets/imgs/edit.png')}></Image>
                         </TouchableHighlight>
                     </View>
@@ -160,8 +166,8 @@ const style = StyleSheet.create({
     batchTitle: {
         marginRight: scaleSize(10)
     },
-    scrollView:{
-        flex:1,
+    scrollView: {
+        flex: 1,
     },
     addressItem: {
         flex: 1,
@@ -222,7 +228,7 @@ const style = StyleSheet.create({
         borderColor: "#333"
     },
     addAddress: {
-        marginBottom:scaleHeight(20),
+        marginBottom: scaleHeight(20),
         marginHorizontal: scaleSize(30),
         height: scaleHeight(28),
         borderRadius: scaleSize(15),

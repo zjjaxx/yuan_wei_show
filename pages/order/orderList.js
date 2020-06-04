@@ -67,6 +67,7 @@ function OrderList({ navigation }) {
                         {orderStatus.map((pageItem, pageIndex) => (
                             <View style={{ flex: 1 }} key={pageIndex} tabLabel={"item" + pageIndex}>
                                 <FlatList
+                                    showsVerticalScrollIndicator={false}
                                     style={style.flatList}
                                     data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                                     renderItem={({ item, index }) => (
@@ -105,7 +106,7 @@ const Tab = memo((props) => {
                 )
             })}
             <Animated.View onLayout={lineRef} style={[style.lineWrap, { left: translateYAnimate }]}>
-                <LinearGradient useAngle={true} angle={90} colors={["#f2140c", "#fff"]} style={style.line}></LinearGradient>
+                <LinearGradient useAngle={true} angle={90} colors={["#fca413", "#fff"]} style={style.line}></LinearGradient>
             </Animated.View>
         </View>
     )

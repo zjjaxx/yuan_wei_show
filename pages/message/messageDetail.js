@@ -54,7 +54,7 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
           let _msg = JSON.parse(payload.d)
           let chatTicket = _msg.msg.chatTicket
           //根据chatTicket 来判断是否是这个人发送给你的消息
-          console.log("charge",chatTicket,route.params.chatTicket)
+          console.log("charge", chatTicket, route.params.chatTicket)
           if (chatTicket == route.params.chatTicket) {
             let _d = JSON.stringify({
               sellId: route.params.sellId,
@@ -427,23 +427,6 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
       console.log(e)
     }
   }, [])
-  //消息接收事件
-  const receive = useCallback(() => {
-    setMessages(messages => ([...messages, {
-      id: `${new Date().getTime()}`,
-      type: 'text',
-      content: '收到一条消息' + new Date().getTime(),
-      targetId: '12345678',
-      chatInfo: {
-        avatar: require('../../assets/imgs/avatar.jpeg'),
-        id: '88886666',
-        nickName: 'Test'
-      },
-      renderTime: true,
-      sendStatus: 1,
-      time: `${new Date().getTime()}`
-    }]))
-  }, [])
 
   const prepareRecordingPath = useCallback((audioPath) => {
     AudioRecorder.prepareRecordingAtPath(audioPath, {
@@ -466,8 +449,8 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
   }, [])
   //立即购买
   const orderConfirm = useCallback(() => {
-    navigation.navigate("order", { goods_id: route.params.goods_id })
-  }, [route.params?.goods_id])
+    navigation.navigate("order", { goods_id: route.params.goodsId })
+  }, [route.params?.goodsId])
   //接收消息
   const receiveMessage = useCallback(e => {
     let parseResult = parseReceiveMessage(e)
@@ -541,7 +524,7 @@ const ProductInfo = memo((props) => {
       <Image style={style.productImg} source={{ uri: productInfoData.image }}></Image>
       <View style={style.productInfo}>
         <Text style={style.price}>￥{productInfoData.price}</Text>
-        <Text style={style.deliveryFee}>含运费{productInfoData.postage}元</Text>
+        <Text style={style.deliveryFee}>{parseFloat(productInfoData.postage) === 0 ? '包邮' : `含运费${productInfoData.postage}元`}</Text>
         <Text style={style.tip}>交易前聊一聊</Text>
       </View>
       <TouchableHighlight underlayColor="#fff" onPress={orderConfirm}>

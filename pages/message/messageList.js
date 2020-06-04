@@ -135,7 +135,7 @@ const MessageItem = function (props) {
                     <Text numberOfLines={1} ellipsizeMode="tail" style={style.message}>{messageDataItem.last_content}</Text>
                     <Text style={style.time}>{toDate(messageDataItem.last_time)}</Text>
                 </View>
-                <Image style={style.pic} source={require("../../assets/imgs/pic1.jpg")}></Image>
+                <Image style={style.pic} source={{uri:messageDataItem.image}}></Image>
             </View>
         </TouchableHighlight>
     )

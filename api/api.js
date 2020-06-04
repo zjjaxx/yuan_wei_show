@@ -12,9 +12,13 @@ export const pay=(data)=>axios.post("/api/v1/order/pay",data)//支付
 export const address=()=>axios.get("/api/v1/address")//地址列表
 export const store=(data)=>axios.post("/api/v1/address/store",data)//新建地址列表
 export const destroy=(data)=>axios.post("/api/v1/address/destroy",data)//删除地址
+export const edit =(data)=>axios.get("/api/v1/address/edit",{params:data}) //编辑地址
+export const update =(data)=>axios.post("/api/v1/address/update",data) //更新地址
+export const set_default =(data)=>axios.post("/api/v1/address/set_default",data) //设置默认地址
 export const category=()=>axios.get("/api/v1/product/category") //分类
 export const tags=(data)=>axios.get("/api/v1/product/tags",{params:data})//获取标签
 export const upload=(data)=>axios.post("/api/v1/image/upload",data)//图片上传
 export const publish=(data)=>axios.post("/api/v1/product/publish",data)//发布
+export const info=()=>axios.get("/api/v1/user/info")//个人中心
 export const activities_v2 = (data) => axios.get("/api/v2/home/activities", { params: data })//活动
 export const area=()=>axios.get("/api/area",{baseURL:"https://ces.weile999.com"})//地址
