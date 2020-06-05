@@ -6,9 +6,16 @@ import ImageUpload from "../../components/ImageUpload"
 import { Formik } from 'formik';
 import * as yup from "yup"
 import { CheckBox } from '@ui-kitten/components';
-import { publish } from "../../api/api"
+import { publish,productEdit} from "../../api/api"
 
 function Publish({ navigation, route }) {
+    const [categories,setCategories]=useState()
+    //请填写产品描述
+    const [publishValue,setPublishValue]=useState("")
+    //产品价格
+    const [price,setPrice]=useState(0)
+    //运费
+    const [deliverFee,setDeliverFee]=useState(0)
     //图片数组
     const [imageList, setImageList] = useState([])
     //标签数组
@@ -34,10 +41,11 @@ function Publish({ navigation, route }) {
     const resetCategories = useCallback(() => {
         navigation.setParams({ categories: "", tags: "", customTags:""})
         setLabelList([])
+        setCategories("")
     }, [])
     //发布事件校验
     const _handleSubmit = useCallback((values, errors, handleSubmit) => {
-        if (!(route.params && route.params.categories)) {
+        if (!categories) {
             Alert.alert(
                 '提示',
                 "请选择分类~",
@@ -84,7 +92,7 @@ function Publish({ navigation, route }) {
             }
         }
         handleSubmit()
-    }, [route.params, imageList, isFreeDelivery])
+    }, [route.params,categories, imageList, isFreeDelivery])
     //发布事件
     const publishEvent = useCallback((values) => {
         let _labelList =labelList.filter(item => item.checked)
@@ -99,7 +107,7 @@ function Publish({ navigation, route }) {
         publish({
             type: 1,
             content: values.publishValue,
-            cat_id: route.params.categories.id,
+            cat_id: categories.id,
             images,
             shipping_fee,
             price: values.price,
@@ -117,21 +125,37 @@ function Publish({ navigation, route }) {
         })
     }, [labelList, imageList, isFreeDelivery])
     //标签数组 
+    useEffect(()=>{
+        if(route.params?.goods_id){
+            productEdit({goods_id:route.params.goods_id}).then(({data:{result}})=>{
+                setImageList(result.images)
+                setLabelList(result.tags.map(item=>({...item,checked:true})))
+                setIsFreeDelivery(parseFloat(result.postage)===0?true:false)
+                setPublishValue(result.store_info)
+                setPrice(result.price)
+                setDeliverFee(result.postage)
+                setCategories({cate_name:result.category,id:result.cate_id})
+            })
+        }
+    },[route.params?.goods_id])
     useEffect(() => {
-        if (route.params?.tags) {
+        if (route.params?.tags||route.params?.categories) {
             setLabelList(route.params.tags.map(item => ({ ...item, checked: false })))
+            setCategories(route.params.categories)
         }
         if(route.params?.customTags){
             let _labelList=route.params.customTags.map(item=>({customTag:item,name:item, checked: true}))
             setLabelList(labelList=>[...labelList,..._labelList])
         }
+       
     }, [route.params?.tags,route.params?.customTags])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS == "android" ? "" : "padding"} enabled >
                 <View style={style.container}>
                     <Formik
-                        initialValues={{ publishValue: '', price: "", deliverFee: "" }}
+                        enableReinitialize
+                        initialValues={{ publishValue, price, deliverFee }}
                         onSubmit={(values) => publishEvent(values)}
                         validationSchema={
                             yup.object().shape({
@@ -166,9 +190,9 @@ function Publish({ navigation, route }) {
                                     />
                                     <ImageUpload imageList={imageList} setImageList={setImageList}></ImageUpload>
                                     <Text style={style.categoriesTitle}>分类</Text>
-                                    {route.params && route.params.categories ? <View style={{ flexDirection: "row" }}>
+                                    {categories ? <View style={{ flexDirection: "row" }}>
                                         <View style={style.selectCategoriesWrap}>
-                                            <Text style={style.categories}>{route.params.categories.cate_name}</Text>
+                                            <Text style={style.categories}>{categories.cate_name}</Text>
                                             <TouchableHighlight style={style.remove} underlayColor="#fca413" onPress={resetCategories}>
                                                 <Image style={style.removeIcon} source={require("../../assets/imgs/removeCategories.png")}></Image>
                                             </TouchableHighlight>
@@ -178,7 +202,7 @@ function Publish({ navigation, route }) {
                                                 <Text style={style.all}>全部  > </Text>
                                             </View>
                                         </TouchableHighlight>}
-                                    {route.params && route.params.tags ? (
+                                    {labelList.length ? (
                                         <>
                                             <Text style={style.categoriesTitle}>标签</Text>
                                             <View style={style.labelListWrap}>

@@ -120,7 +120,7 @@ function ImageUpload(props) {
                                     <Image style={style.errorIcon} source={require("../assets/imgs/error-white.png")}></Image>
                                     <Text style={style.statusText}>加载失败</Text>
                                 </View>
-                                : <Image source={{ uri: item.uri }} style={style.img}></Image>
+                                : <Image source={{ uri: item.att_dir }} style={style.img}></Image>
                     }
                 </View>)}
             </ScrollView>

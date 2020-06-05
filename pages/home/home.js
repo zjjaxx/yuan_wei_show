@@ -23,7 +23,8 @@ import {
 } from 'react-native-update';
 const { appKey } = APP_KEY_CONFIG[Platform.OS];
 import { home } from "../../api/api"
-function Home({ navigation }) {
+import { useFocusEffect } from "@react-navigation/native";
+function Home({ navigation,webSocket }) {
     const listRef = useRef()
     //分页
     const [page, setPage] = useState(0)
@@ -104,14 +105,17 @@ function Home({ navigation }) {
         }
     };
     useEffect(() => {
+        //极光推送
+        JPush.init();
         doCheckUpdate()
     }, [])
     //首页数据请求
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
+        setHomeDataList([])
+        setPage(0)
+        setLastPage(1)
         _api(0)
-        //极光推送
-        JPush.init();
-    }, [])
+    }, []))
     const _api = useCallback((_page) => {
         home({ page: _page + 1 }).then(({ data: { result } }) => {
             if (result.length) {
@@ -277,7 +281,7 @@ const RecommandProductItem = memo((props) => {
                         <Text style={style.loveCount}>{productItemData.star_num}</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight underlayColor="#fff" onPress={() => toProductDetail(1)}>
+                <TouchableHighlight underlayColor="#fff" onPress={() => {}}>
                     <View style={style.bottomOptionItem}>
                         <Image style={style.commentIcon} source={require("../../assets/imgs/comment.png")}></Image>
                         <Text style={style.commentCount}>{productItemData.common_num}</Text>

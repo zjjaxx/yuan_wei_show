@@ -28,7 +28,6 @@ function ProductDetail({ navigation, route, userInfo }) {
     const [isSave, setSave] = useState(false)
     //是否点赞
     const [isThumb, setIsThumb] = useState(false)
-
     //返回事件
     const leftEvent = useCallback(() => {
         navigation.goBack()
@@ -87,7 +86,6 @@ function ProductDetail({ navigation, route, userInfo }) {
     }, [])
     //查看更多
     const checkMore = useCallback(() => {
-
     }, [])
     const toInfo = useCallback(() => {
     }, [])
@@ -162,6 +160,8 @@ function ProductDetail({ navigation, route, userInfo }) {
                     <LeaveMessageList setReplayInfo={setReplayInfo} productDetailData={productDetailData} setIsShowLeaveMessage={setIsShowLeaveMessage}></LeaveMessageList>
                 </ScrollView>
                 <BottomBar
+                    navigation={navigation}
+                    route={route}
                     productDetailData={productDetailData}
                     replayInfo={replayInfo}
                     setReplayInfo={setReplayInfo}
@@ -205,6 +205,8 @@ const BottomBar = React.memo(function (props) {
         toggleSave,//toggle 收藏
         payConfirm, //想要
         sendComment, //发送留言
+        navigation,//
+        route
     } = props
 
     //留言框失去焦点事件
@@ -249,7 +251,7 @@ const BottomBar = React.memo(function (props) {
                         </View>
                     </TouchableHighlight>
                     {
-                        productDetailData.isMaster ? <TouchableHighlight style={style.manageWrap} underlayColor="#fff" onPress={()=>{}}>
+                        productDetailData.isMaster ? <TouchableHighlight style={style.manageWrap} underlayColor="#fff" onPress={()=>{navigation.navigate('publish',{goods_id:route.params.goods_id})}}>
                             <Text style={style.manage}>管理</Text>
                         </TouchableHighlight> :
                             <TouchableHighlight style={style.payWrap} underlayColor="#fca413" onPress={payConfirm}>
