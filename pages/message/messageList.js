@@ -29,9 +29,9 @@ const reducers = (messageList, action) => {
                 return [...messageList, ...chatList.msg]
             //更新消息
             case RECEIVE_UPDATE:
-                let updateItem=JSON.parse(payload.d)
-                let newMessageList=messageList.filter(item=>item.id!=updateItem.id)
-                return [updateItem,...newMessageList]
+                let updateItem = JSON.parse(payload.d)
+                let newMessageList = messageList.filter(item => item.id != updateItem.id)
+                return [updateItem, ...newMessageList]
             //接收消息 error
             case RECEIVE_ERROR:
             default:
@@ -83,16 +83,15 @@ function MessageList({ navigation, webSocket }) {
         dispatch({ type: RECEIVE, payload: parseResult })
     }, [])
     //获取聊天记录
-    useFocusEffect(
-        React.useCallback(() => {
-            webSocket.onmessage = receiveMessage
-            let params = { y: 'index', d: JSON.stringify({ page: page + 1 }) }
-            send(params, webSocket)
-
-            return () => {
-                dispatch({ type: CLEAR })
-            }
-        }, [page,webSocket])
+    useEffect(() => {
+        webSocket.addEventListener("message", receiveMessage)
+        let params = { y: 'index', d: JSON.stringify({ page: page + 1 }) }
+        send(params, webSocket)
+        return () => {
+            dispatch({ type: CLEAR })
+            webSocket.removeEventListener("message", receiveMessage)
+        }
+    }, [page, webSocket]
     )
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -128,14 +127,14 @@ const MessageItem = function (props) {
             <View style={style.messageItem}>
                 <View style={style.avatarWrap}>
                     <Image style={style.avatar} source={{ uri: messageDataItem._avatar }}></Image>
-                   { messageDataItem._unread?<Dot dot={messageDataItem._unread}></Dot>:null}
+                    {messageDataItem._unread ? <Dot dot={messageDataItem._unread}></Dot> : null}
                 </View>
                 <View style={style.messageInfo}>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={style.name}>{messageDataItem._nickname}</Text>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={style.message}>{messageDataItem.last_content}</Text>
                     <Text style={style.time}>{toDate(messageDataItem.last_time)}</Text>
                 </View>
-                <Image style={style.pic} source={{uri:messageDataItem.image}}></Image>
+                <Image style={style.pic} source={{ uri: messageDataItem.image }}></Image>
             </View>
         </TouchableHighlight>
     )
@@ -174,7 +173,7 @@ const style = StyleSheet.create({
         position: "relative"
     },
     avatar: {
-      
+
         height: scaleSize(30),
         width: scaleSize(30),
         borderRadius: scaleSize(4),

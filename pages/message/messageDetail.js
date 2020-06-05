@@ -18,6 +18,7 @@ import {
   RECEIVE_CHAT_MSG,
   RECEIVE,
   SEND,
+  RECEIVE_SYSTEM_MSG
 } from "../../utils/config.js"
 
 const { width, height } = Dimensions.get('window')
@@ -51,10 +52,11 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
           })
         //接收消息添加到消息列表
         case RECEIVE_CHAT_MSG:
+        //接收系统消息
+        case RECEIVE_SYSTEM_MSG:
           let _msg = JSON.parse(payload.d)
           let chatTicket = _msg.msg.chatTicket
           //根据chatTicket 来判断是否是这个人发送给你的消息
-          console.log("charge", chatTicket, route.params.chatTicket)
           if (chatTicket == route.params.chatTicket) {
             let _d = JSON.stringify({
               sellId: route.params.sellId,
@@ -75,7 +77,6 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
           return messageList
       }
     }
-
   }
   const userProfile = {
     id: userInfo.userId + "",
@@ -460,8 +461,7 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
   //获取聊天记录
   useEffect(() => {
     if (route.params?.sellId && route.params?.chatTicket && route.params?.toUid && route.params?.goodsId) {
-      webSocket.onmessage = receiveMessage
-      // webSocket.onclose=onclose
+      webSocket.addEventListener("message", receiveMessage)
       let d = JSON.stringify({
         sellId: route.params.sellId,
         chatTicket: route.params.chatTicket,
@@ -472,6 +472,9 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
       send(params, webSocket)
       let readParams = { y: 'read', d }
       send(readParams, webSocket)
+    }
+    return () => {
+      webSocket.removeEventListener("message", receiveMessage)
     }
   }, [route.params?.sellId, route.params?.chatTicket, route.params?.toUid, route.params?.goodsId, webSocket])
   return (
@@ -511,12 +514,30 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
           voiceLoading={voiceLoading}
           voicePlaying={voicePlaying}
           voiceVolume={voiceVolume}
+          renderSystemMessage={(data) => <SystemMessage orderConfirm={orderConfirm} systemItemData={data}></SystemMessage>}
         />
       </View>
     </SafeAreaView>
 
   )
 }
+const SystemMessage = memo((props) => {
+  const { systemItemData: { message: { content } }, orderConfirm } = props
+  const { msg,status } = JSON.parse(content)
+  const systemMessageEvent = useCallback(() => {
+    if(status==1||status==3){
+       orderConfirm()
+    }
+  }, [])
+  return (
+    <TouchableOpacity activeOpacity={1}  onPress={systemMessageEvent}>
+      <View style={style.systemItemDataWrap}>
+        <Text style={style.systemItemTitle}>{msg.c}</Text>
+        <Text style={style.systemItemDisc}>{msg.d}</Text>
+      </View>
+    </TouchableOpacity>
+  )
+})
 const ProductInfo = memo((props) => {
   const { orderConfirm, productInfoData } = props
   return (
@@ -602,6 +623,25 @@ const style = StyleSheet.create({
   buy: {
     fontSize: setSpText2(14),
     color: "#fff",
-  }
+  },
+  systemItemDataWrap: {
+    backgroundColor: "#fff",
+    marginHorizontal: "auto",
+    alignSelf: "center",
+    width: scaleSize(300),
+    paddingVertical: scaleHeight(10),
+    paddingHorizontal: scaleSize(20),
+    borderRadius: scaleSize(10)
+  },
+  systemItemTitle: {
+    fontSize: setSpText2(16),
+    fontWeight: "500"
+  },
+  systemItemDisc: {
+    fontSize: setSpText2(12),
+    color: "#999",
+    lineHeight: setSpText2(18),
+    marginTop: scaleHeight(10)
+  },
 })
 export default connect(state => state, dispatch => ({ dispatch }))(MessageDetail)
