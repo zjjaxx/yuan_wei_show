@@ -58,7 +58,7 @@ function ImageUpload(props) {
             setImageList(imageList => imageList.map((item, _index) => {
                 if (_index == index) {
                     return {
-                        uri: result.uri,
+                        att_dir: result.att_dir,
                         status: "complate",
                         message: ""
                     }

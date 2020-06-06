@@ -457,10 +457,10 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
     let parseResult = parseReceiveMessage(e)
     console.log("parseResult", parseResult)
     dispatch({ type: RECEIVE, payload: parseResult })
-  }, [])
+  }, []) 
   //获取聊天记录
   useEffect(() => {
-    if (route.params?.sellId && route.params?.chatTicket && route.params?.toUid && route.params?.goodsId) {
+    if (route.params?.sellId && route.params?.chatTicket && route.params?.toUid && route.params?.goodsId&&webSocket) {
       webSocket.addEventListener("message", receiveMessage)
       let d = JSON.stringify({
         sellId: route.params.sellId,
@@ -641,7 +641,7 @@ const style = StyleSheet.create({
     fontSize: setSpText2(12),
     color: "#999",
     lineHeight: setSpText2(18),
-    marginTop: scaleHeight(10)
+    marginTop: scaleHeight(2)
   },
 })
 export default connect(state => state, dispatch => ({ dispatch }))(MessageDetail)

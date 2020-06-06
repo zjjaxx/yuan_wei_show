@@ -20,6 +20,7 @@ export const tags=(data)=>axios.get("/api/v1/product/tags",{params:data})//获�
 export const upload=(data)=>axios.post("/api/v1/image/upload",data)//图片上传
 export const publish=(data)=>axios.post("/api/v1/product/publish",data)//发布
 export const productEdit=(data)=>axios.get("/api/v1/product/edit",{params:data})//编辑发布
+export const productUpdate=(data)=>axios.post("/api/v1/product/update",data)
 export const info=()=>axios.get("/api/v1/user/info")//个人中心
 export const activities_v2 = (data) => axios.get("/api/v2/home/activities", { params: data })//活动
 export const area=()=>axios.get("/api/area",{baseURL:"https://ces.weile999.com"})//地址

@@ -5,7 +5,7 @@ import toDate from "../../utils/toDate"
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { connect } from "react-redux"
 import { send, parseReceiveMessage } from "../../utils/toBuffer"
-import { useFocusEffect } from '@react-navigation/native';
+
 import Dot from "../../components/Dot"
 import {
     RECEIVE_ERROR,
@@ -84,11 +84,12 @@ function MessageList({ navigation, webSocket }) {
     }, [])
     //获取聊天记录
     useEffect(() => {
-        webSocket.addEventListener("message", receiveMessage)
-        let params = { y: 'index', d: JSON.stringify({ page: page + 1 }) }
-        send(params, webSocket)
+        if (webSocket) {
+            webSocket.addEventListener("message", receiveMessage)
+            let params = { y: 'index', d: JSON.stringify({ page: page + 1 }) }
+            send(params, webSocket)
+        }
         return () => {
-            dispatch({ type: CLEAR })
             webSocket.removeEventListener("message", receiveMessage)
         }
     }, [page, webSocket]

@@ -1,4 +1,4 @@
-import React, { useMemo, memo, useCallback, useState, useEffect, useRef } from "react"
+import React, { useMemo, memo, useCallback, useState, useEffect, useRef, useReducer } from "react"
 import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight, Alert } from "react-native"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import { WaterfallList } from "react-native-largelist-v3";
@@ -8,8 +8,10 @@ import { Popover } from '@ui-kitten/components';
 import toDate from "../../utils/toDate"
 import FastImage from 'react-native-fast-image'
 import JPush from 'jpush-react-native';
+import { connect } from "react-redux"
+import { send, parseReceiveMessage } from "../../utils/toBuffer"
 //热更新
-import { APP_KEY_CONFIG } from "../../utils/config"
+import { APP_KEY_CONFIG, CLEAR, ADD_LIST, RECEIVE,RECEIVE_ERROR } from "../../utils/config"
 import {
     isFirstTime,
     isRolledBack,
@@ -24,12 +26,31 @@ import {
 const { appKey } = APP_KEY_CONFIG[Platform.OS];
 import { home } from "../../api/api"
 import { useFocusEffect } from "@react-navigation/native";
-function Home({ navigation,webSocket }) {
+function Home({ navigation, webSocket }) {
     const listRef = useRef()
+    const reducers = (homeDataList, action) => {
+        const { type, payload } = action
+        console.log("payload", payload)
+        //接收消息
+        if (type == RECEIVE) {
+            switch (payload.y) {
+                //接收消息 error
+                case RECEIVE_ERROR:
+                default:
+                    return homeDataList
+            }
+        }
+        else if (type == ADD_LIST) {
+            return [...homeDataList, ...payload]
+        }
+        else if (type == CLEAR) {
+            return []
+        }
+    }
     //分页
     const [page, setPage] = useState(0)
     const [lastPage, setLastPage] = useState(1)
-    const [homeDataList, setHomeDataList] = useState([])
+    const [homeDataList, dispatch] = useReducer(reducers, [])
     //下拉刷新flag
     const [refreshing, setRefreshing] = useState(false)
     //上拉加载
@@ -40,7 +61,7 @@ function Home({ navigation,webSocket }) {
             return
         }
         setRefreshing(true)
-        setHomeDataList([])
+        dispatch({ type: CLEAR })
         setPage(0)
         setLastPage(1)
         _api(0)
@@ -104,22 +125,34 @@ function Home({ navigation,webSocket }) {
             ]);
         }
     };
+    //接收消息推送
+    const receiveMessage = useCallback((e) => {
+        let parseResult = parseReceiveMessage(e)
+        console.log("parseResult", parseResult)
+        dispatch({ type: RECEIVE, payload: parseResult })
+    }, [])
     useEffect(() => {
         //极光推送
         JPush.init();
         doCheckUpdate()
     }, [])
     //首页数据请求
-    useFocusEffect(useCallback(() => {
-        setHomeDataList([])
-        setPage(0)
-        setLastPage(1)
+    useEffect(() => {
         _api(0)
-    }, []))
+    }, [])
+    //接收消息推送
+    useEffect(() => {
+        if (webSocket) {
+            webSocket.addEventListener("message", receiveMessage)
+        }
+        return () => {
+            webSocket.removeEventListener("message", receiveMessage)
+        }
+    }, [webSocket])
     const _api = useCallback((_page) => {
         home({ page: _page + 1 }).then(({ data: { result } }) => {
             if (result.length) {
-                setHomeDataList(homeDataList => [...homeDataList, ...result])
+                dispatch({ type: ADD_LIST, payload: result })
                 setPage(page => page + 1)
                 setLastPage(lastPage => lastPage + 1)
             }
@@ -281,7 +314,7 @@ const RecommandProductItem = memo((props) => {
                         <Text style={style.loveCount}>{productItemData.star_num}</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight underlayColor="#fff" onPress={() => {}}>
+                <TouchableHighlight underlayColor="#fff" onPress={() => { }}>
                     <View style={style.bottomOptionItem}>
                         <Image style={style.commentIcon} source={require("../../assets/imgs/comment.png")}></Image>
                         <Text style={style.commentCount}>{productItemData.common_num}</Text>
@@ -479,4 +512,4 @@ const style = StyleSheet.create({
         height: scaleSize(20)
     }
 })
-export default Home
+export default connect(state => state, dispatch => ({ dispatch }))(Home)

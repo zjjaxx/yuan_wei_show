@@ -6,7 +6,7 @@ import ImageUpload from "../../components/ImageUpload"
 import { Formik } from 'formik';
 import * as yup from "yup"
 import { CheckBox } from '@ui-kitten/components';
-import { publish,productEdit} from "../../api/api"
+import { publish,productEdit,productUpdate} from "../../api/api"
 
 function Publish({ navigation, route }) {
     const [categories,setCategories]=useState()

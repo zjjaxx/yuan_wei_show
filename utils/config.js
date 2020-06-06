@@ -23,7 +23,9 @@ export const RECEIVE_CHAT_MSG = "2002"
 export const RECEIVE_CHAT_LIST = "2003" 
 export const RECEIVE_UPDATE = "2005" 
 export const RECEIVE_SYSTEM_MSG="3001"
+// export const RECEIVE_
 export const RECEIVE = "RECEIVE" 
 export const SEND = "SEND" 
 export const CLEAR = "CLEAR"
+export const ADD_LIST="ADD_LIST"
 
