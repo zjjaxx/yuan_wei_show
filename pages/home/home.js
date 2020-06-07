@@ -11,7 +11,7 @@ import JPush from 'jpush-react-native';
 import { connect } from "react-redux"
 import { send, parseReceiveMessage } from "../../utils/toBuffer"
 //热更新
-import { APP_KEY_CONFIG, CLEAR, ADD_LIST, RECEIVE,RECEIVE_ERROR } from "../../utils/config"
+import { APP_KEY_CONFIG, CLEAR, ADD_LIST, RECEIVE, RECEIVE_ERROR } from "../../utils/config"
 import {
     isFirstTime,
     isRolledBack,
@@ -25,7 +25,7 @@ import {
 } from 'react-native-update';
 const { appKey } = APP_KEY_CONFIG[Platform.OS];
 import { home } from "../../api/api"
-import { useFocusEffect } from "@react-navigation/native";
+
 function Home({ navigation, webSocket }) {
     const listRef = useRef()
     const reducers = (homeDataList, action) => {
@@ -47,7 +47,7 @@ function Home({ navigation, webSocket }) {
             return []
         }
     }
-    //分页
+    // //分页
     const [page, setPage] = useState(0)
     const [lastPage, setLastPage] = useState(1)
     const [homeDataList, dispatch] = useReducer(reducers, [])
@@ -131,24 +131,6 @@ function Home({ navigation, webSocket }) {
         console.log("parseResult", parseResult)
         dispatch({ type: RECEIVE, payload: parseResult })
     }, [])
-    useEffect(() => {
-        //极光推送
-        JPush.init();
-        doCheckUpdate()
-    }, [])
-    //首页数据请求
-    useEffect(() => {
-        _api(0)
-    }, [])
-    //接收消息推送
-    useEffect(() => {
-        if (webSocket) {
-            webSocket.addEventListener("message", receiveMessage)
-        }
-        return () => {
-            webSocket.removeEventListener("message", receiveMessage)
-        }
-    }, [webSocket])
     const _api = useCallback((_page) => {
         home({ page: _page + 1 }).then(({ data: { result } }) => {
             if (result.length) {
@@ -167,6 +149,25 @@ function Home({ navigation, webSocket }) {
                 setIsLoading(false)
             })
     }, [])
+    useEffect(() => {
+        //极光推送
+        // JPush.init();
+        // doCheckUpdate()
+    }, [])
+    //首页数据请求
+    useEffect(() => {
+        _api(0)
+    }, [])
+    //接收消息推送
+    useEffect(() => {
+        // if (webSocket) {
+        //     webSocket.addEventListener("message", receiveMessage)
+        //     return () => {
+        //         webSocket.removeEventListener("message", receiveMessage)
+        //     }
+        // }
+    }, [webSocket])
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>

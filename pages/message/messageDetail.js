@@ -457,10 +457,10 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
     let parseResult = parseReceiveMessage(e)
     console.log("parseResult", parseResult)
     dispatch({ type: RECEIVE, payload: parseResult })
-  }, []) 
+  }, [])
   //获取聊天记录
   useEffect(() => {
-    if (route.params?.sellId && route.params?.chatTicket && route.params?.toUid && route.params?.goodsId&&webSocket) {
+    if (route.params?.sellId && route.params?.chatTicket && route.params?.toUid && route.params?.goodsId && webSocket) {
       webSocket.addEventListener("message", receiveMessage)
       let d = JSON.stringify({
         sellId: route.params.sellId,
@@ -472,9 +472,9 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
       send(params, webSocket)
       let readParams = { y: 'read', d }
       send(readParams, webSocket)
-    }
-    return () => {
-      webSocket.removeEventListener("message", receiveMessage)
+      return () => {
+        webSocket.removeEventListener("message", receiveMessage)
+      }
     }
   }, [route.params?.sellId, route.params?.chatTicket, route.params?.toUid, route.params?.goodsId, webSocket])
   return (
@@ -523,14 +523,14 @@ function MessageDetail({ navigation, webSocket, route, userInfo }) {
 }
 const SystemMessage = memo((props) => {
   const { systemItemData: { message: { content } }, orderConfirm } = props
-  const { msg,status } = JSON.parse(content)
+  const { msg, status } = JSON.parse(content)
   const systemMessageEvent = useCallback(() => {
-    if(status==1||status==3){
-       orderConfirm()
+    if (status == 1 || status == 3) {
+      orderConfirm()
     }
   }, [])
   return (
-    <TouchableOpacity activeOpacity={1}  onPress={systemMessageEvent}>
+    <TouchableOpacity activeOpacity={1} onPress={systemMessageEvent}>
       <View style={style.systemItemDataWrap}>
         <Text style={style.systemItemTitle}>{msg.c}</Text>
         <Text style={style.systemItemDisc}>{msg.d}</Text>

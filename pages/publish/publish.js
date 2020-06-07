@@ -102,7 +102,7 @@ function Publish({ navigation, route }) {
             platform,
             customTags
         })
-        let images = JSON.stringify(imageList.map(item => item.uri))
+        let images = JSON.stringify(imageList.map(item => item.att_dir))
         let shipping_fee = isFreeDelivery ? 0 : values.deliverFee
         publish({
             type: 1,
