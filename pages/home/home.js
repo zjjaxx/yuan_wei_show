@@ -151,8 +151,8 @@ function Home({ navigation, webSocket }) {
     }, [])
     useEffect(() => {
         //极光推送
-        // JPush.init();
-        // doCheckUpdate()
+        JPush.init();
+        doCheckUpdate()
     }, [])
     //首页数据请求
     useEffect(() => {
@@ -160,12 +160,12 @@ function Home({ navigation, webSocket }) {
     }, [])
     //接收消息推送
     useEffect(() => {
-        // if (webSocket) {
-        //     webSocket.addEventListener("message", receiveMessage)
-        //     return () => {
-        //         webSocket.removeEventListener("message", receiveMessage)
-        //     }
-        // }
+        if (webSocket) {
+            webSocket.addEventListener("message", receiveMessage)
+            return () => {
+                webSocket.removeEventListener("message", receiveMessage)
+            }
+        }
     }, [webSocket])
 
     return (
