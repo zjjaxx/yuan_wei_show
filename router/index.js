@@ -26,6 +26,7 @@ import MyPublishScreen from "../pages/publish/myPublish"
 import UnshelveScreen from "../pages/person/unshelve"
 import CustomTagsScreen from "../pages/publish/customTags"
 import MembersScreen from "../pages/person/members"
+import InfoScreen from "../pages/person/info"
 import { connect } from "react-redux"
 import { asyncToken } from "../store/action"
 import SplashScreen from 'react-native-splash-screen'
@@ -95,6 +96,7 @@ function AppStackScreen({ isLoading, isLogin, dispatch }) {
                         <AppStack.Screen name="unshelve" component={UnshelveScreen}></AppStack.Screen>
                         <AppStack.Screen name="customTags" component={CustomTagsScreen}></AppStack.Screen>
                         <AppStack.Screen name="members" component={MembersScreen}></AppStack.Screen>
+                        <AppStack.Screen name="info" component={InfoScreen}></AppStack.Screen>
                     </>
                 ) : (
                         <>

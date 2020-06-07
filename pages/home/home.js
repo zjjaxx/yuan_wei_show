@@ -1,5 +1,5 @@
 import React, { useMemo, memo, useCallback, useState, useEffect, useRef, useReducer } from "react"
-import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight, Alert } from "react-native"
+import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight, Alert,TouchableOpacity } from "react-native"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import { WaterfallList } from "react-native-largelist-v3";
 import RefreshHeader from "../../components/RefreshHeader"
@@ -149,6 +149,10 @@ function Home({ navigation, webSocket }) {
                 setIsLoading(false)
             })
     }, [])
+    //跳转个人中心
+    const toInfo=useCallback(()=>{
+        navigation.navigate("info")
+    },[])
     useEffect(() => {
         //极光推送
         JPush.init();
@@ -184,7 +188,7 @@ function Home({ navigation, webSocket }) {
                     heightForItem={(item, index) => calcItemHeight(item, index)}
                     numColumns={1}
                     loadingFooter={ChineseWithLastDateFooter}
-                    renderItem={(item, index) => <RecommandProductItem productItemData={item} toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
+                    renderItem={(item, index) => <RecommandProductItem toInfo={toInfo} productItemData={item} toProductDetail={_toProductDetail} index={index} key={index}></RecommandProductItem>}
                     refreshHeader={RefreshHeader}
                     onRefresh={() =>
                         setTimeout(() => {
@@ -203,10 +207,10 @@ function Home({ navigation, webSocket }) {
 }
 //推荐Item
 const RecommandProductItem = memo((props) => {
-    const { index, toProductDetail, productItemData } = props
+    const { index,toInfo, toProductDetail, productItemData } = props
     //推荐头部组件
     const RecommandHeader = memo((props) => {
-        const { productItemData } = props
+        const { productItemData,toInfo } = props
         const [menuSelect, setMenuSelect,] = useState(false)
         const showPopup = useCallback(() => {
             setMenuSelect(true)
@@ -217,11 +221,15 @@ const RecommandProductItem = memo((props) => {
 
         return (
             <View style={style.recommonHeaderWrap}>
-                <FastImage source={{ uri: productItemData.user.avatar }} style={style.avatar}></FastImage>
-                <View style={style.nickerWrap}>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={style.nick}>{productItemData.user.nickname}</Text>
-                    <Text style={style.time}>{toDate(productItemData.add_time)}</Text>
-                </View>
+                <TouchableOpacity activeOpacity={1} onPress={toInfo}>
+                    <FastImage source={{ uri: productItemData.user.avatar }} style={style.avatar}></FastImage>
+                </TouchableOpacity>
+                <TouchableOpacity  style={style.nickerWrap} activeOpacity={1} onPress={toInfo}>
+                    <View style={{flex:1,justifyContent:"center"}}>
+                        <Text numberOfLines={1} ellipsizeMode="tail" style={style.nick}>{productItemData.user.nickname}</Text>
+                        <Text style={style.time}>{toDate(productItemData.add_time)}</Text>
+                    </View>
+                </TouchableOpacity>
                 <Popover
                     placement="left"
                     visible={menuSelect}
@@ -303,7 +311,7 @@ const RecommandProductItem = memo((props) => {
     })
     return (
         <View style={{ flex: 1, paddingHorizontal: scaleSize(15) }}>
-            <RecommandHeader productItemData={productItemData}></RecommandHeader>
+            <RecommandHeader toInfo={toInfo} productItemData={productItemData}></RecommandHeader>
             <Text numberOfLines={2} ellipsizeMode="tail" style={style.comment}>{productItemData.store_info}</Text>
             <TouchableHighlight underlayColor="#fff" onPress={() => toProductDetail(productItemData.id)}>
                 <ImgList images_total={productItemData.images_info.images_total} imgList={productItemData.images_info.images}></ImgList>
@@ -366,7 +374,6 @@ const style = StyleSheet.create({
         height: scaleHeight(50),
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between"
     },
     avatar: {
         marginRight: scaleSize(8),
