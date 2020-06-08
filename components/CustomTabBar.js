@@ -60,12 +60,14 @@ export default CustomTabBar
 const style = StyleSheet.create({
     scrollWrap: {
         height:scaleHeight(50),
-        flexGrow:0
+        flexGrow:0,
+        width:scaleSize(375)
     },
     tabWrap: {
         flexDirection: "row",
         height: scaleHeight(50),
-        backgroundColor: "#fff"
+        backgroundColor: "#fff",
+        minWidth:scaleSize(375)
     },
     tabItemWrap:{
         width: scaleSize(75),

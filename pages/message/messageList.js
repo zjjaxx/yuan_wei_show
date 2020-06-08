@@ -85,6 +85,7 @@ function MessageList({ navigation, webSocket }) {
     //获取聊天记录
     useEffect(() => {
         if (webSocket) {
+            dispatch({type:CLEAR})
             webSocket.addEventListener("message", receiveMessage)
             let params = { y: 'index', d: JSON.stringify({ page: page + 1 }) }
             send(params, webSocket)

@@ -23,6 +23,8 @@ export const RECEIVE_CHAT_MSG = "2002"
 export const RECEIVE_CHAT_LIST = "2003" 
 export const RECEIVE_UPDATE = "2005" 
 export const RECEIVE_SYSTEM_MSG="3001"
+export const RECEIVE_UPDATE_HOME_THUMB_ADD="4002"
+export const RECEIVE_UPDATE_HOME_COMMENT_ADD="4003"
 // export const RECEIVE_
 export const RECEIVE = "RECEIVE" 
 export const SEND = "SEND" 

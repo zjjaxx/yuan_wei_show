@@ -48,18 +48,7 @@ function ProductDetail({ navigation, route, userInfo }) {
         let comment_id = replayInfo.id ? replayInfo.id : ""
         comment({ goods_id: route.params?.goods_id, comment_id, content: text })
             .then(({ data: { result } }) => {
-                Alert.alert(
-                    '提示',
-                    result,
-                    [
-                        {
-                            text: 'OK', onPress: () => {
-                                _api(route.params.goods_id)
-                            }
-                        },
-                    ],
-
-                )
+                _api(route.params.goods_id)
             })
     }, [route.params?.goods_id, replayInfo])
     //点击购买事件

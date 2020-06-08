@@ -11,7 +11,7 @@ import JPush from 'jpush-react-native';
 import { connect } from "react-redux"
 import { send, parseReceiveMessage } from "../../utils/toBuffer"
 //热更新
-import { APP_KEY_CONFIG, CLEAR, ADD_LIST, RECEIVE, RECEIVE_ERROR } from "../../utils/config"
+import { APP_KEY_CONFIG, CLEAR, ADD_LIST, RECEIVE, RECEIVE_ERROR,RECEIVE_UPDATE_HOME_COMMENT_ADD,RECEIVE_UPDATE_HOME_THUMB_ADD } from "../../utils/config"
 import {
     isFirstTime,
     isRolledBack,
@@ -34,6 +34,28 @@ function Home({ navigation, webSocket }) {
         //接收消息
         if (type == RECEIVE) {
             switch (payload.y) {
+                //更新首页数据 评论+1
+                case RECEIVE_UPDATE_HOME_COMMENT_ADD:
+                    const updateData=JSON.parse(payload.d)
+                    return homeDataList.map(item=>{
+                        if(item.id==updateData.goods_id){
+                            return {...item,common_num:item.common_num+1}
+                        }
+                        else{
+                            return item
+                        }
+                    })
+                //更新首页数据 点赞+1
+                case RECEIVE_UPDATE_HOME_THUMB_ADD:
+                    const updateThumbData=JSON.parse(payload.d)
+                    return homeDataList.map(item=>{
+                        if(item.id==updateThumbData.goods_id){
+                            return {...item,star_num:item.star_num+1}
+                        }
+                        else{
+                            return item
+                        }
+                    })
                 //接收消息 error
                 case RECEIVE_ERROR:
                 default:
