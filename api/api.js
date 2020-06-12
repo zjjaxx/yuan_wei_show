@@ -7,6 +7,7 @@ export const home=(data)=>axios.get("/api/v1/home",{params:data})//首页数据
 export const productDetail=(data)=>axios.get("/api/v1/product/detail",{params:data})//产品详情
 export const comment=(data)=>axios.post("/api/v1/product/comment",data)//留言
 export const like=(data)=>axios.post("/api/v1/product/like",data)//点赞
+export const collect=(data)=>axios.post("/api/v1/product/collect",data)//收藏
 export const create=(data)=>axios.get("/api/v1/order/create",{params:data})//创建订单详情
 export const pay=(data)=>axios.post("/api/v1/order/pay",data)//支付
 export const address=()=>axios.get("/api/v1/address")//地址列表

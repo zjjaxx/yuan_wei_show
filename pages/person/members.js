@@ -5,7 +5,7 @@ import Header from "../../components/Header"
 //阴影
 import { BoxShadow } from 'react-native-shadow'
 import { TouchableOpacity } from "react-native-gesture-handler"
-import { useNodeListRect } from "../../customUse/useClientRect"
+import { useNodeListRect,useNodeRect } from "../../customUse/useClientRect"
 import { pay } from "../../api/api"
 import Alipay from '@0x5e/react-native-alipay';
 const { width: viewportWidth } = Dimensions.get('window');
@@ -13,47 +13,38 @@ function Members({ navigation }) {
     const [tabList, setTabList] = useState([])
     const scrollRef = useRef()
     const [tabIndex, setTabIndex] = useState(0)
-    //refs
-    // console.log("tabList", tabList)
-    // const [tabInfo, tabListRefs] = useNodeListRect(tabList.length||1)
-    // console.log("tabInfo", tabInfo)
     //tab 切换 
-    // const scrollMove = useCallback((index) => {
-    //     let distance = tabInfo.width * index - viewportWidth / 2 + tabInfo.width / 2
-    //     scrollRef.current.scrollTo({ x: distance, animated: true })
-    // }, [tabInfo])
+    const scrollMove = useCallback((index,tabItemWidth) => {
+        let distance = tabItemWidth * index - viewportWidth / 2 + tabItemWidth / 2
+        scrollRef.current.scrollTo({ x: distance, animated: true })
+    }, [])
     //支付
     const payConfirm = useCallback(() => {
         // APP支付
-        pay({ goods_id: route.params.goods_id, pay_type: 1 }).then(({ data: { result } }) => {
-            let orderStr = result.config
-            return Alipay.pay(orderStr)
-        })
-            .then(response => {
-                Alert.alert(
-                    '提示',
-                    "支付成功",
-                    [
-                        { text: 'OK', onPress: () => { navigation.goBack() } },
-                    ],
-                )
-            })
-            .catch(res => {
-                console.log("res", res)
-            })
-    }, [route.params?.goods_id])
-    const _tabChange = useCallback((index) => {
+        // pay({ goods_id: route.params.goods_id, pay_type: 1 }).then(({ data: { result } }) => {
+        //     let orderStr = result.config
+        //     return Alipay.pay(orderStr)
+        // })
+        //     .then(response => {
+        //         Alert.alert(
+        //             '提示',
+        //             "支付成功",
+        //             [
+        //                 { text: 'OK', onPress: () => { navigation.goBack() } },
+        //             ],
+        //         )
+        //     })
+        //     .catch(res => {
+        //         console.log("res", res)
+        //     })
+    }, [])
+    const _tabChange = useCallback((index,tabItemWidth=0) => {
         setTabIndex(index)
+        scrollMove(index,tabItemWidth)
     }, [])
     useEffect(() => {
         setTabList([1, 2, 3, 4, 5, 6, 7, 8, 9])
     }, [])
-    // useEffect(() => {
-    //     if (tabInfo) {
-    //         scrollMove(tabIndex)
-    //     }
-    // }, [tabIndex,tabInfo])
-
     return (
         <SafeAreaView style={style.safeAreaView}>
             <View style={style.memberContainer}>
@@ -102,10 +93,10 @@ function Members({ navigation }) {
 }
 const TabItem = memo((props) => {
     const { _tabChange, tabIndex, tabItemData, index, tabListRefs } = props
+    const [tabItemInfo,tabItemRef]=useNodeRect()
     return (
-        // onLayout={tabListRefs[index]}
         <BoxShadow setting={shadowOpt} >
-            <TouchableOpacity style={style.tabItemWrap} opacity={1} onPress={() => _tabChange(index)}>
+            <TouchableOpacity onLayout={tabItemRef}  style={style.tabItemWrap} opacity={1} onPress={() => _tabChange(index,tabItemInfo&&tabItemInfo.width)}>
                 <View style={[style.tabItemWrap, tabIndex == index ? style.selectItemWrap : {}]}>
                     <Text style={style.itemTitle}>连续包月</Text>
                     <View style={[style.itemContentWrap, tabIndex == index ? { backgroundColor: "#fefae9" } : {}]}>

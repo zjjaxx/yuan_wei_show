@@ -7,7 +7,7 @@ import Carousel from 'react-native-snap-carousel';
 import { sliderWidth, itemWidth } from '../../swiperLib/SliderEntry.style';
 import LoadMore from "../../components/LoadMore"
 import ImageViewer from 'react-native-image-zoom-viewer'
-import { productDetail, comment, like } from "../../api/api"
+import { productDetail, comment, like,collect } from "../../api/api"
 import FastImage from 'react-native-fast-image'
 import { connect } from "react-redux"
 import toDate from "../../utils/toDate"
@@ -34,8 +34,11 @@ function ProductDetail({ navigation, route, userInfo }) {
     }, [])
     //收藏事件
     const toggleSave = useCallback(() => {
-        setSave(isSave => !isSave)
-    }, [isSave])
+        let flag = isSave ? 0 : 1
+        collect({ goods_id: route.params?.goods_id, flag }).then(res => {
+            setSave(isSave => !isSave)
+        })
+    }, [route.params?.goods_id,isSave])
     //点赞
     const toggleLove = useCallback(() => {
         let flag = isThumb ? 0 : 1
@@ -82,6 +85,7 @@ function ProductDetail({ navigation, route, userInfo }) {
         productDetail({ goods_id }).then(({ data: { result } }) => {
             setProductDetailData(result)
             setIsThumb(result.isLike)
+            setSave(result.isCollect)
         })
     }, [])
     //产品详情数据
