@@ -35,7 +35,7 @@ let CustomTabBar = function (props, customTabRef) {
             <TouchableHighlight underlayColor="#fff" onPress={() => _tabChange(index)}>
                 <View onLayout={tabListRefs[index]} style={style.tabItemWrap}>
                     <View  style={[style.item, tabIndex == index ? style.activeItem : {}]} >
-                        <Text style={style.itemName}>{tabItemData}</Text>
+                        <Text style={[style.itemName,tabIndex == index ? style.activeItemName : {}]}>{tabItemData}</Text>
                     </View>
                 </View>
             </TouchableHighlight>
@@ -84,6 +84,9 @@ const style = StyleSheet.create({
     itemName: {
         fontSize: setSpText2(16),
         fontWeight: "500"
+    },
+    activeItemName:{
+        color:"#fff"
     },
     activeItem: {
         backgroundColor: "#fca413",

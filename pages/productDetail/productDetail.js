@@ -1,5 +1,5 @@
 import React, { useCallback, useState, memo, useEffect, useMemo } from "react"
-import { Text, View, StyleSheet, Image, ScrollView, TouchableHighlight, SafeAreaView, TextInput, KeyboardAvoidingView, Modal, Alert } from "react-native"
+import { Text, View, StyleSheet, Image, ScrollView, TouchableHighlight, SafeAreaView, TextInput, KeyboardAvoidingView, Modal, Alert, Animated } from "react-native"
 import Header from "../../components/Header"
 import CameraRoll from "@react-native-community/cameraroll";
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
@@ -7,12 +7,24 @@ import Carousel from 'react-native-snap-carousel';
 import { sliderWidth, itemWidth } from '../../swiperLib/SliderEntry.style';
 import LoadMore from "../../components/LoadMore"
 import ImageViewer from 'react-native-image-zoom-viewer'
-import { productDetail, comment, like,collect } from "../../api/api"
+import { productDetail, comment, like, collect } from "../../api/api"
 import FastImage from 'react-native-fast-image'
 import { connect } from "react-redux"
 import toDate from "../../utils/toDate"
+//骨架屏
+import {
+    Placeholder,
+    PlaceholderMedia,
+    PlaceholderLine,
+    ShineOverlay,
+    Progressive
+} from "rn-placeholder";
 
 function ProductDetail({ navigation, route, userInfo }) {
+    //骨架屏透明度
+    const [opacityAnimate] = useState(new Animated.Value(1))
+    //骨架屏flag
+    const [showSkeleton, setShowSkeleton] = useState(true)
     const [productDetailData, setProductDetailData] = useState({ user: {}, tips: {} })
     //是否预览
     const [imgPreviewFlag, setImgPreviewFlag] = useState(false)
@@ -32,13 +44,25 @@ function ProductDetail({ navigation, route, userInfo }) {
     const leftEvent = useCallback(() => {
         navigation.goBack()
     }, [])
+    const closeSkeleton = useCallback(() => {
+        Animated.spring(                  // 随时间变化而执行动画
+            opacityAnimate,                       // 动画中的变量值
+            {
+                toValue: 0,                   // 透明度最终变为1，即完全不透明
+                duration: 3000        // 让动画持续一段时间
+            }
+        ).start((res) => {
+            console.log("result", res)
+            setShowSkeleton(false)
+        });
+    }, [opacityAnimate])
     //收藏事件
     const toggleSave = useCallback(() => {
         let flag = isSave ? 0 : 1
         collect({ goods_id: route.params?.goods_id, flag }).then(res => {
             setSave(isSave => !isSave)
         })
-    }, [route.params?.goods_id,isSave])
+    }, [route.params?.goods_id, isSave])
     //点赞
     const toggleLove = useCallback(() => {
         let flag = isThumb ? 0 : 1
@@ -86,6 +110,7 @@ function ProductDetail({ navigation, route, userInfo }) {
             setProductDetailData(result)
             setIsThumb(result.isLike)
             setSave(result.isCollect)
+            closeSkeleton()
         })
     }, [])
     //产品详情数据
@@ -110,64 +135,91 @@ function ProductDetail({ navigation, route, userInfo }) {
             <View style={style.container}>
                 <Header title="产品详情" leftEvent={leftEvent} right={<Image style={style.share} source={require("../../assets/imgs/share.png")}></Image>}>
                 </Header>
-                <ScrollView style={style.scrollView}>
-                    <TouchableHighlight underlayColor="#fff" onPress={toInfo}>
-                        <UserInfo productDetailData={productDetailData}></UserInfo>
-                    </TouchableHighlight>
-                    <Text style={style.productDisc}>{productDetailData.store_info}</Text>
-                    <View style={style.priceWrap}>
-                        <Text style={style.price}>￥ {productDetailData.price}</Text>
-                        <Text style={style.deliveryFee}>包邮</Text>
-                    </View>
-                    <View style={style.imgList}>
-                        {productDetailData.images && productDetailData.images.map((item, index) => {
-                            if (index == productDetailData.images.length - 1 && productDetailData.imagesCount > 3) {
-                                return <LoadMore key={index}>
-                                    <TouchableHighlight underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
-                                        <FastImage style={[style.detailImg, { marginBottom: 0 }]} source={{ uri: item.att_dir }}></FastImage>
+                {showSkeleton ? <Animated.View style={[style.skeleton, { opacity: opacityAnimate }]}>
+                    <Placeholder
+                        Animation={Progressive}
+                        Left={PlaceholderMedia}
+                    >
+                        <PlaceholderLine width={80} />
+                        <PlaceholderLine width={30} />
+                    </Placeholder>
+                    {[1, 2].map(item => <Placeholder
+                        style={{ marginBottom: scaleHeight(20) }}
+                        Animation={Progressive}
+                    >
+                        <PlaceholderLine width={80} />
+                        <PlaceholderLine />
+                        <PlaceholderLine width={30} />
+                    </Placeholder>)}
+                    <View style={style.imgPlaceHolder}></View>
+                    {[1, 2].map(item => <Placeholder
+                        Animation={Progressive}
+                        Left={PlaceholderMedia}
+                    >
+                        <PlaceholderLine width={80} />
+                        <PlaceholderLine width={30} />
+                    </Placeholder>)}
+                </Animated.View> : null
+                }
+                <>
+                    <ScrollView style={style.scrollView}>
+                        <TouchableHighlight underlayColor="#fff" onPress={toInfo}>
+                            <UserInfo productDetailData={productDetailData}></UserInfo>
+                        </TouchableHighlight>
+                        <Text style={style.productDisc}>{productDetailData.store_info}</Text>
+                        <View style={style.priceWrap}>
+                            <Text style={style.price}>￥ {productDetailData.price}</Text>
+                            <Text style={style.deliveryFee}>包邮</Text>
+                        </View>
+                        <View style={style.imgList}>
+                            {productDetailData.images && productDetailData.images.map((item, index) => {
+                                if (index == productDetailData.images.length - 1 && productDetailData.imagesCount > 3) {
+                                    return <LoadMore key={index}>
+                                        <TouchableHighlight underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
+                                            <FastImage style={[style.detailImg, { marginBottom: 0 }]} source={{ uri: item.att_dir }}></FastImage>
+                                        </TouchableHighlight>
+                                    </LoadMore>
+                                }
+                                else {
+                                    return <TouchableHighlight key={index} underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
+                                        <FastImage style={style.detailImg} source={{ uri: item.att_dir }}></FastImage>
                                     </TouchableHighlight>
-                                </LoadMore>
-                            }
-                            else {
-                                return <TouchableHighlight key={index} underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
-                                    <FastImage style={style.detailImg} source={{ uri: item.att_dir }}></FastImage>
-                                </TouchableHighlight>
-                            }
-                        })}
-                    </View>
-                    <Modal visible={imgPreviewFlag} transparent={true}>
-                        <ImageViewer
-                            onSave={_onSaveToCamera}
-                            menus={({ cancel, saveToLocal }) => <CustomMenus cancel={cancel} saveToLocal={saveToLocal}></CustomMenus>}
-                            onClick={() => setImgPreviewFlag(false)}
-                            imageUrls={productImg}
-                        />
-                    </Modal>
-                    {
-                        productDetailData.imagesCount > 3 ?
-                            <TouchableHighlight underlayColor="#fca413" onPress={checkMore} style={style.checkMoreWrap}>
-                                <Text style={style.checkMore}>查看更多</Text>
-                            </TouchableHighlight> : null
-                    }
-
-                    <LeaveMessageList setReplayInfo={setReplayInfo} productDetailData={productDetailData} setIsShowLeaveMessage={setIsShowLeaveMessage}></LeaveMessageList>
-                </ScrollView>
-                <BottomBar
-                    navigation={navigation}
-                    route={route}
-                    productDetailData={productDetailData}
-                    replayInfo={replayInfo}
-                    setReplayInfo={setReplayInfo}
-                    isShowLeaveMessage={isShowLeaveMessage}
-                    setIsShowLeaveMessage={setIsShowLeaveMessage}
-                    sendComment={sendComment}
-                    toggleLove={toggleLove}
-                    isThumb={isThumb}
-                    isSave={isSave}
-                    toggleSave={toggleSave}
-                    payConfirm={payConfirm}
-                >
-                </BottomBar>
+                                }
+                            })}
+                        </View>
+                        <Modal visible={imgPreviewFlag} transparent={true}>
+                            <ImageViewer
+                                onSave={_onSaveToCamera}
+                                menus={({ cancel, saveToLocal }) => <CustomMenus cancel={cancel} saveToLocal={saveToLocal}></CustomMenus>}
+                                onClick={() => setImgPreviewFlag(false)}
+                                imageUrls={productImg}
+                            />
+                        </Modal>
+                        {
+                            productDetailData.imagesCount > 3 ?
+                                <TouchableHighlight underlayColor="#fca413" onPress={checkMore} style={style.checkMoreWrap}>
+                                    <Text style={style.checkMore}>查看更多</Text>
+                                </TouchableHighlight> : null
+                        }
+                        <LeaveMessageList setReplayInfo={setReplayInfo} productDetailData={productDetailData} setIsShowLeaveMessage={setIsShowLeaveMessage}></LeaveMessageList>
+                    </ScrollView>
+                    <BottomBar
+                        navigation={navigation}
+                        route={route}
+                        productDetailData={productDetailData}
+                        replayInfo={replayInfo}
+                        setReplayInfo={setReplayInfo}
+                        isShowLeaveMessage={isShowLeaveMessage}
+                        setIsShowLeaveMessage={setIsShowLeaveMessage}
+                        sendComment={sendComment}
+                        toggleLove={toggleLove}
+                        isThumb={isThumb}
+                        isSave={isSave}
+                        toggleSave={toggleSave}
+                        payConfirm={payConfirm}
+                    >
+                    </BottomBar>
+                </>
             </View>
         </SafeAreaView>
     )
@@ -212,7 +264,7 @@ const BottomBar = React.memo(function (props) {
         <>
             {isShowLeaveMessage ? <KeyboardAvoidingView keyboardVerticalOffset={scaleHeight(32)} behavior={Platform.OS == "android" ? '' : 'position'} enabled contentContainerStyle={{ backgroundColor: "#fff" }}>
                 <View style={style.leaveInputWrap}>
-                    <Image style={style.avatar} source={require("../../assets/imgs/avatar.jpeg")}></Image>
+                    <FastImage style={style.avatar} source={require("../../assets/imgs/avatar.jpeg")}></FastImage>
                     <TextInput
                         autoFocus={true}
                         style={style.leaveInput}
@@ -244,7 +296,7 @@ const BottomBar = React.memo(function (props) {
                         </View>
                     </TouchableHighlight>
                     {
-                        productDetailData.isMaster ? <TouchableHighlight style={style.manageWrap} underlayColor="#fff" onPress={()=>{navigation.navigate('publish',{goods_id:route.params.goods_id})}}>
+                        productDetailData.isMaster ? <TouchableHighlight style={style.manageWrap} underlayColor="#fff" onPress={() => { navigation.navigate('publish', { goods_id: route.params.goods_id }) }}>
                             <Text style={style.manage}>管理</Text>
                         </TouchableHighlight> :
                             <TouchableHighlight style={style.payWrap} underlayColor="#fca413" onPress={payConfirm}>
@@ -305,13 +357,29 @@ const LeaveMessageList = React.memo(function (props) {
 })
 const style = StyleSheet.create({
     container: {
+        position: "relative",
         flex: 1,
         backgroundColor: "#fff"
+    },
+    skeleton: {
+        position: "absolute",
+        top: scaleHeight(50),
+        right: scaleSize(15),
+        left: scaleSize(15),
+        height: "100%",
+        backgroundColor: "#fff",
+        zIndex: 100
+    },
+    imgPlaceHolder: {
+        marginBottom: scaleHeight(20),
+        height: scaleSize(280),
+        borderRadius: scaleSize(5),
+        backgroundColor: "#eee"
     },
     userWrap: {
         flexDirection: "row",
         paddingHorizontal: scaleSize(10),
-        paddingVertical: scaleHeight(4)
+        paddingVertical: scaleHeight(4),
     },
     userAvatar: {
         marginRight: scaleSize(10),
@@ -445,17 +513,17 @@ const style = StyleSheet.create({
         fontSize: setSpText2(14),
         color: "#fff"
     },
-    manageWrap:{
+    manageWrap: {
         marginLeft: scaleSize(80),
         flex: 3,
         height: scaleHeight(25),
-        borderWidth:scaleSize(0.5),
-        borderColor:"#333",
+        borderWidth: scaleSize(0.5),
+        borderColor: "#333",
         borderRadius: scaleSize(20),
         justifyContent: "center",
         alignItems: "center"
     },
-    manage:{
+    manage: {
         fontSize: setSpText2(14),
         color: "#333"
     },

@@ -7,6 +7,7 @@ import ProductItemLarge from "../../components/ProductItemLarge"
 import CustomTab from "../../components/CustomTabBar"
 import { useNodeRect } from "../../customUse/useClientRect"
 import { getNodeInfo } from "../../utils/common"
+import { color } from "react-native-reanimated";
 function Info({ navigation }) {
     const refs = new Array(2).fill(null).map(item => useRef())
     const [listHeight, setListHeight] = useState(0)
@@ -168,11 +169,12 @@ const style = StyleSheet.create({
         height: scaleHeight(15),
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#fbcc7a"
+        backgroundColor: "#fca413"
     },
     careText: {
         fontSize: setSpText2(14),
-        fontWeight: "500"
+        fontWeight: "500",
+        color:"#fff"
     },
     name: {
         marginTop: scaleHeight(10),

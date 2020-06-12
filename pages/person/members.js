@@ -15,7 +15,7 @@ function Members({ navigation }) {
     const [tabIndex, setTabIndex] = useState(0)
     //tab 切换 
     const scrollMove = useCallback((index,tabItemWidth) => {
-        let distance = tabItemWidth * index - viewportWidth / 2 + tabItemWidth / 2
+        let distance = scaleSize(15)+(tabItemWidth+scaleSize(20)) * index - viewportWidth / 2 + tabItemWidth / 2
         scrollRef.current.scrollTo({ x: distance, animated: true })
     }, [])
     //支付
