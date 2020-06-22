@@ -1,4 +1,4 @@
-import React, { useRef, useState, memo, useCallback } from "react"
+import React, { useRef, useState, memo, useCallback, useEffect } from "react"
 import { View, Text, SafeAreaView, StyleSheet, TouchableHighlight, Image, ScrollView, FlatList } from "react-native"
 import CustomTab from "../../components/CustomTabBar"
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -6,31 +6,73 @@ import { scaleHeight, scaleSize, setSpText2 } from "../../utils/ScreenUtil"
 import { sliderWidth, itemWidth } from '../../swiperLib/SliderEntry.style';
 import Carousel from 'react-native-snap-carousel';
 import ProductItemLarge from "../../components/ProductItemLarge"
-const mockData = [0, 1, 2]
+import { categoryHome } from "../../api/api"
 function Category({ navigation }) {
+    //轮播图
+    const [banners, setBanners] = useState([])
+    //请求状态
+    const [isLoading, setIsLoading] = useState(false)
+    //产品列表
+    const [productList, setProductList] = useState([])
     //分类句柄
     const scrollTabRef = useRef()
     //tab索引
     const [tabIndex, setTabIndex] = useState(0)
     //tab数组
-    const [tabList, setTabList] = useState(["全部", "球鞋", "女装", "男装", "数码", "家电", "手机"])
+    const [tabList, setTabList] = useState([{ cate_name: "全部", id: 0 }])
     //自定义tab header 句柄
     const customTabRef = useRef()
-    //tab切换
+    //tab切换 
     const tabChange = useCallback(({ i, from }) => {
         if (i != from) {
             setTabIndex(i)
+            if (productList.length&&!productList[i].list.length) {
+                _api(tabList[i].id, productList[i].currentPage, false, i)
+            }
         }
-    }, [])
-    const toProductDetail=useCallback(()=>{
+    }, [tabList, productList])
+    const toProductDetail = useCallback(() => {
         navigation.navigate("productDetail")
-    },[])
+    }, [])
+    //api 请求
+    const _api = useCallback((type, currentPage, init = false, index) => {
+        categoryHome({ type, page: currentPage + 1 }).then(({ data: { result } }) => {
+            if (init) {
+                setBanners(result.banners)
+                setTabList([...tabList, ...result.cate])
+                setProductList(result.cate.map((item, index) => {
+                    if (index == 0) {
+                        return { currentPage: 0, list: result.products }
+                    }
+                    else {
+                        return { currentPage: 0, list: [] }
+                    }
+                }))
+            }
+            else {
+                setProductList((item, _index) => {
+                    if (_index == index) {
+                        return {
+                            currentPage: item.currentPage + 1,
+                            list: [...item.list, result.products]
+                        }
+                    }
+                    else {
+                        return item
+                    }
+                })
+            }
+        })
+    }, [tabList])
+    useEffect(() => {
+        _api(0, 0, true, 0)
+    }, [])
     return (
         <SafeAreaView style={style.safeAreaView}>
             <View style={style.container}>
                 <View style={style.headerWrap}>
                     <Text style={style.headerTitle}>分类</Text>
-                    <TouchableHighlight underlayColor="#fff" onPress={() => {navigation.navigate("search") }}>
+                    <TouchableHighlight underlayColor="#fff" onPress={() => { navigation.navigate("search") }}>
                         <Image style={style.search} source={require("../../assets/imgs/search.png")}></Image>
                     </TouchableHighlight>
                 </View>
@@ -41,21 +83,21 @@ function Category({ navigation }) {
                     renderTabBar={() => <CustomTab ref={customTabRef} tabIndex={tabIndex} scrollTabRef={scrollTabRef} tabList={tabList} tabChange={tabChange}></CustomTab>}
                     onChangeTab={tabChange}
                 >
-                    {tabList.map((pageItem, pageIndex) => {
+                    {productList.map((pageItem, pageIndex) => {
                         if (pageIndex == 0) {
-                            return <Recommand toProductDetail={toProductDetail} tabLabel={"item" + pageIndex} key={pageIndex}></Recommand>
+                            return <Recommand banners={banners} itemData={pageItem.list} toProductDetail={toProductDetail} tabLabel={"item" + pageIndex} key={pageIndex}></Recommand>
                         }
                         else {
                             return (
                                 <View style={{ flex: 1 }} key={pageIndex} tabLabel={"item" + pageIndex}>
                                     <FlatList
-                                        showsVerticalScrollIndicator = {false}
+                                        showsVerticalScrollIndicator={false}
                                         style={style.flatList}
                                         data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                                         numColumns={2}
                                         columnWrapperStyle={style.flatListWrapperStyle}
                                         renderItem={({ item, index }) => (
-                                            <ProductItemLarge productPress={()=>toProductDetail()} item={item}></ProductItemLarge>
+                                            <ProductItemLarge productPress={() => toProductDetail()} item={item}></ProductItemLarge>
                                         )}
                                     />
                                 </View>
@@ -68,28 +110,28 @@ function Category({ navigation }) {
     )
 }
 const Recommand = memo((props) => {
-    const {toProductDetail} =props
+    const { toProductDetail, banners, itemData } = props
     return (<ScrollView showsVerticalScrollIndicator={false} style={style.scrollView}>
-        <Swiper></Swiper>
+        <Swiper banners={banners}></Swiper>
         <Text style={style.recommandText}>为你推荐</Text>
         <View style={style.recommandProductWrap}>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(item => <ProductItemLarge productPress={()=>toProductDetail()}></ProductItemLarge>)}
+            {itemData.map(item => <ProductItemLarge productData={item} productPress={() => toProductDetail()}></ProductItemLarge>)}
         </View>
     </ScrollView>)
 })
 //轮播图 画廊
 const Swiper = React.memo(function (props) {
-    // const { banners } = props
+    const { banners } = props
     // const [slider, setSlider] = useState(0)
     const _renderItemWithParallax = function ({ item, index }, parallaxProps) {
         return (
-            <Image key={index} style={style.swiperProductImg} source={require("../../assets/imgs/pic1.jpg")} />
+            <Image key={index} style={style.swiperProductImg} source={{ uri: item.image }} />
         );
     }
     return (
         <View style={style.swiperWrapper}>
             <Carousel
-                data={mockData}
+                data={banners}
                 renderItem={_renderItemWithParallax}
                 sliderWidth={sliderWidth}
                 itemWidth={itemWidth}

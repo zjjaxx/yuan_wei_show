@@ -25,3 +25,4 @@ export const productUpdate=(data)=>axios.post("/api/v1/product/update",data)
 export const info=()=>axios.get("/api/v1/user/info")//个人中心
 export const activities_v2 = (data) => axios.get("/api/v2/home/activities", { params: data })//活动
 export const area=()=>axios.get("/api/area",{baseURL:"https://ces.weile999.com"})//地址
+export const categoryHome=(data)=>axios.get("/api/v1/category",{params:data})//首页分类

@@ -5,8 +5,6 @@ import { useNodeListRect } from "../customUse/useClientRect"
 const { width: viewportWidth } = Dimensions.get('window');
 let CustomTabBar = function (props, customTabRef) {
     const { tabList, tabIndex, tabChange,scrollTabRef} = props
-    //refs
-    const [tabInfo, tabListRefs] = useNodeListRect(tabList.length)
     const scrollRef = useRef()
     useImperativeHandle(customTabRef, () => {
         return {
@@ -15,25 +13,20 @@ let CustomTabBar = function (props, customTabRef) {
             }
         }
     })
-    useEffect(()=>{
-        if(tabInfo){
-            scrollMove(tabIndex)
-        }
-    },[tabIndex,tabInfo])
     //tab 切换 
-    const scrollMove = useCallback((index) => {
-        let distance = tabInfo.width * index - viewportWidth / 2 + tabInfo.width / 2
+    const scrollMove = useCallback((index,tabWidth) => {
+        let distance = tabWidth * index - viewportWidth / 2 + tabWidth / 2
         scrollRef.current.scrollTo({ x: distance, animated: true })
-    }, [tabInfo])
+    }, [])
     const _tabChange = useCallback((index) => {
         scrollTabRef.current.goToPage(index)
         tabChange({i:index, from:tabIndex})
     }, [tabIndex])
     const TabItem = React.memo(function (props) {
-        const { _tabChange, index, tabIndex, tabItemData, tabListRefs } = props
+        const { _tabChange, index, tabIndex, tabItemData } = props
         return (
             <TouchableHighlight underlayColor="#fff" onPress={() => _tabChange(index)}>
-                <View onLayout={tabListRefs[index]} style={style.tabItemWrap}>
+                <View style={style.tabItemWrap}>
                     <View  style={[style.item, tabIndex == index ? style.activeItem : {}]} >
                         <Text style={[style.itemName,tabIndex == index ? style.activeItemName : {}]}>{tabItemData}</Text>
                     </View>
@@ -50,7 +43,7 @@ let CustomTabBar = function (props, customTabRef) {
         alwaysBounceHorizontal={false}>
         <View style={style.tabWrap}>
             {
-                tabList.map((item, index) => <TabItem tabListRefs={tabListRefs} key={index} _tabChange={_tabChange} tabIndex={tabIndex} tabItemData={item} index={index}></TabItem>)
+                tabList.map((item, index) => <TabItem  key={index} _tabChange={_tabChange} tabIndex={tabIndex} tabItemData={item.cate_name} index={index}></TabItem>)
             }
         </View>
     </ScrollView>)
