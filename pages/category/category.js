@@ -6,12 +6,11 @@ import { scaleHeight, scaleSize, setSpText2 } from "../../utils/ScreenUtil"
 import { sliderWidth, itemWidth } from '../../swiperLib/SliderEntry.style';
 import Carousel from 'react-native-snap-carousel';
 import ProductItemLarge from "../../components/ProductItemLarge"
+import ProductList from "../../components/ProductList";
 import { categoryHome } from "../../api/api"
 function Category({ navigation }) {
     //轮播图
     const [banners, setBanners] = useState([])
-    //请求状态
-    const [isLoading, setIsLoading] = useState(false)
     //产品列表
     const [productList, setProductList] = useState([])
     //分类句柄
@@ -26,47 +25,12 @@ function Category({ navigation }) {
     const tabChange = useCallback(({ i, from }) => {
         if (i != from) {
             setTabIndex(i)
-            if (productList.length&&!productList[i].list.length) {
-                _api(tabList[i].id, productList[i].currentPage, false, i)
-            }
         }
     }, [tabList, productList])
     const toProductDetail = useCallback(() => {
         navigation.navigate("productDetail")
     }, [])
-    //api 请求
-    const _api = useCallback((type, currentPage, init = false, index) => {
-        categoryHome({ type, page: currentPage + 1 }).then(({ data: { result } }) => {
-            if (init) {
-                setBanners(result.banners)
-                setTabList([...tabList, ...result.cate])
-                setProductList(result.cate.map((item, index) => {
-                    if (index == 0) {
-                        return { currentPage: 0, list: result.products }
-                    }
-                    else {
-                        return { currentPage: 0, list: [] }
-                    }
-                }))
-            }
-            else {
-                setProductList((item, _index) => {
-                    if (_index == index) {
-                        return {
-                            currentPage: item.currentPage + 1,
-                            list: [...item.list, result.products]
-                        }
-                    }
-                    else {
-                        return item
-                    }
-                })
-            }
-        })
-    }, [tabList])
-    useEffect(() => {
-        _api(0, 0, true, 0)
-    }, [])
+  
     return (
         <SafeAreaView style={style.safeAreaView}>
             <View style={style.container}>
@@ -83,25 +47,12 @@ function Category({ navigation }) {
                     renderTabBar={() => <CustomTab ref={customTabRef} tabIndex={tabIndex} scrollTabRef={scrollTabRef} tabList={tabList} tabChange={tabChange}></CustomTab>}
                     onChangeTab={tabChange}
                 >
-                    {productList.map((pageItem, pageIndex) => {
+                    {tabList.map((pageItem, pageIndex) => {
                         if (pageIndex == 0) {
                             return <Recommand banners={banners} itemData={pageItem.list} toProductDetail={toProductDetail} tabLabel={"item" + pageIndex} key={pageIndex}></Recommand>
                         }
                         else {
-                            return (
-                                <View style={{ flex: 1 }} key={pageIndex} tabLabel={"item" + pageIndex}>
-                                    <FlatList
-                                        showsVerticalScrollIndicator={false}
-                                        style={style.flatList}
-                                        data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                                        numColumns={2}
-                                        columnWrapperStyle={style.flatListWrapperStyle}
-                                        renderItem={({ item, index }) => (
-                                            <ProductItemLarge productPress={() => toProductDetail()} item={item}></ProductItemLarge>
-                                        )}
-                                    />
-                                </View>
-                            )
+                            return <ProductList type={pageItem.id}></ProductList>
                         }
                     })}
                 </ScrollableTabView>
@@ -202,12 +153,6 @@ const style = StyleSheet.create({
     sliderContentContainer: {
         paddingVertical: scaleSize(8)
     },
-    flatList: {
-        flex: 1
-    },
-    flatListWrapperStyle: {
-        paddingHorizontal: scaleSize(10),
-        justifyContent: "space-between"
-    },
+  
 })
 

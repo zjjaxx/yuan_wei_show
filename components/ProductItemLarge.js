@@ -2,13 +2,13 @@ import React, { memo } from "react"
 import { View, Text, Image, StyleSheet, TouchableHighlight } from "react-native"
 import { scaleHeight, scaleSize, setSpText2 } from "../utils/ScreenUtil"
 import toDate from "../utils/toDate"
-import {categoryHome} from "../api/api"
+import FastImage from 'react-native-fast-image'
 const ProductItemLarge = memo((props) => {
     const { productPress,productData } = props
     return (
         <TouchableHighlight underlayColor="#fff" onPress={() => productPress()}>
             <View style={style.orderItemWrap}>
-                <Image style={style.productImg} source={require("../assets/imgs/pic2.jpg")}></Image>
+                <FastImage style={style.productImg} source={require("../assets/imgs/pic2.jpg")}></FastImage>
                 <Text numberOfLines={2} ellipsizeMode="tail" style={style.productName}>经费为奇偶发文件违反Joe忘记佛物文件分为福建欧文金佛if鸡尾酒佛物文件覅危机诶偶极矩覅为我而激发简欧风纪委IE积分范围缴费金额为物金佛文件覅偶忘记 </Text>
                 {/* <View style={style.labelList}>
                     {[1, 2].map((item,index) => 
@@ -20,7 +20,7 @@ const ProductItemLarge = memo((props) => {
                     <Text style={style.priceTail}>.00</Text>
                 </View>
                 <View style={style.sellerInfoWrap}>
-                    <Image style={style.sellerIcon} source={require("../assets/imgs/alipay.png")}></Image>
+                    <FastImage style={style.sellerIcon} source={require("../assets/imgs/alipay.png")}></FastImage>
                     <View style={style.sellerInfo}>
                         <Text numberOfLines={1} ellipsizeMode="tail" style={style.sellerName}>积分我佛教哦付金额为见覅偶为奇偶if金额为我佛教为凶我</Text>
                         <Text style={style.time}>{toDate()}</Text>
