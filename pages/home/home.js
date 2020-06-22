@@ -96,6 +96,7 @@ function Home({ navigation, webSocket }) {
     //上拉加载更多事件
     const _scrollEnd = useCallback(() => {
         if (page >= lastPage || isLoading) {
+            listRef.current.endLoading();
             return
         }
         setIsLoading(true)
