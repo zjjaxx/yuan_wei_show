@@ -11,7 +11,7 @@ import { categoryHome } from "../../api/api"
 function Category({ navigation }) {
     //轮播图
     const [banners, setBanners] = useState([])
-    //产品列表
+    //首页产品列表
     const [productList, setProductList] = useState([])
     //分类句柄
     const scrollTabRef = useRef()
@@ -26,11 +26,17 @@ function Category({ navigation }) {
         if (i != from) {
             setTabIndex(i)
         }
-    }, [tabList, productList])
+    }, [])
     const toProductDetail = useCallback(() => {
         navigation.navigate("productDetail")
     }, [])
-  
+    useEffect(()=>{
+        categoryHome({type:0,page:1}).then(({data:{result}})=>{
+            setBanners(result.banners)
+            setTabList([...tabList,...result.cate])
+            setProductList(result.products)
+        })
+    },[])
     return (
         <SafeAreaView style={style.safeAreaView}>
             <View style={style.container}>
@@ -49,7 +55,7 @@ function Category({ navigation }) {
                 >
                     {tabList.map((pageItem, pageIndex) => {
                         if (pageIndex == 0) {
-                            return <Recommand banners={banners} itemData={pageItem.list} toProductDetail={toProductDetail} tabLabel={"item" + pageIndex} key={pageIndex}></Recommand>
+                            return <Recommand banners={banners} itemData={productList} toProductDetail={toProductDetail} tabLabel={"item" + pageIndex} key={pageIndex}></Recommand>
                         }
                         else {
                             return <ProductList type={pageItem.id}></ProductList>
