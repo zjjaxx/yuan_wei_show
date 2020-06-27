@@ -25,6 +25,7 @@ function Category({ navigation }) {
     const tabChange = useCallback(({ i, from }) => {
         if (i != from) {
             setTabIndex(i)
+            customTabRef.current.scrollMove(i)
         }
     }, [])
     const toProductDetail = useCallback(() => {
@@ -55,10 +56,10 @@ function Category({ navigation }) {
                 >
                     {tabList.map((pageItem, pageIndex) => {
                         if (pageIndex == 0) {
-                            return <Recommand banners={banners} itemData={productList} toProductDetail={toProductDetail} tabLabel={"item" + pageIndex} key={pageIndex}></Recommand>
+                            return <Recommand key={pageIndex} banners={banners} itemData={productList} toProductDetail={toProductDetail} tabLabel={"item" + pageIndex} key={pageIndex}></Recommand>
                         }
                         else {
-                            return <ProductList type={pageItem.id}></ProductList>
+                            return <ProductList key={pageIndex} type={pageItem.id}></ProductList>
                         }
                     })}
                 </ScrollableTabView>
@@ -79,7 +80,6 @@ const Recommand = memo((props) => {
 //轮播图 画廊
 const Swiper = React.memo(function (props) {
     const { banners } = props
-    // const [slider, setSlider] = useState(0)
     const _renderItemWithParallax = function ({ item, index }, parallaxProps) {
         return (
             <Image key={index} style={style.swiperProductImg} source={{ uri: item.image }} />

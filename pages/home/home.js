@@ -30,7 +30,6 @@ function Home({ navigation, webSocket }) {
     const listRef = useRef()
     const reducers = (homeDataList, action) => {
         const { type, payload } = action
-        console.log("payload", payload)
         //接收消息
         if (type == RECEIVE) {
             switch (payload.y) {

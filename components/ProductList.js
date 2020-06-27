@@ -6,6 +6,7 @@ import ProductItemLarge from "../components/ProductItemLarge"
 import { ChineseWithLastDateFooter } from "react-native-spring-scrollview/Customize";
 import { WaterfallList } from "react-native-largelist-v3";
 import RefreshHeader from "../components/RefreshHeader"
+import {scaleSize} from "../utils/ScreenUtil.js"
 const ProductList = memo((props) => {
     const listRef = useRef()
     const [currentPage, setCurrentPage] = useState(0)
@@ -16,7 +17,7 @@ const ProductList = memo((props) => {
     const [isLoading, setIsLoading] = useState(false)
     const { type } = props
     const calcItemHeight = useCallback((item, index) => {
-        return scaleHeight(180)
+        return scaleHeight(260)
     }, [])
     const _onRefresh = useCallback(() => {
         if (refreshing) {
@@ -40,7 +41,7 @@ const ProductList = memo((props) => {
         })
     }, [currentPage, type])
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1,paddingHorizontal:scaleSize(5) }}>
                <WaterfallList
                     style={{ flex: 1 }}
                     ref={listRef}
