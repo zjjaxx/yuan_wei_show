@@ -3,8 +3,6 @@ import { Text, View, StyleSheet, Image, ScrollView, TouchableHighlight, SafeArea
 import Header from "../../components/Header"
 import CameraRoll from "@react-native-community/cameraroll";
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
-import Carousel from 'react-native-snap-carousel';
-import { sliderWidth, itemWidth } from '../../swiperLib/SliderEntry.style';
 import LoadMore from "../../components/LoadMore"
 import ImageViewer from 'react-native-image-zoom-viewer'
 import { productDetail, comment, like, collect } from "../../api/api"
@@ -21,6 +19,8 @@ import {
 } from "rn-placeholder";
 
 function ProductDetail({ navigation, route, userInfo }) {
+    //图片预览初始化索引
+    const [imageViewerInitIndex,setImageViewerInitIndex]=useState(0)
     //骨架屏透明度
     const [opacityAnimate] = useState(new Animated.Value(1))
     //骨架屏flag
@@ -100,6 +100,11 @@ function ProductDetail({ navigation, route, userInfo }) {
             )
         })
     }, [])
+    //点击预览图片
+    const tapImage=useCallback((index)=>{
+        setImgPreviewFlag(true)
+        setImageViewerInitIndex(index)
+    },[])
     //查看更多
     const checkMore = useCallback(() => {
     }, [])
@@ -175,13 +180,13 @@ function ProductDetail({ navigation, route, userInfo }) {
                             {productDetailData.images && productDetailData.images.map((item, index) => {
                                 if (index == productDetailData.images.length - 1 && productDetailData.imagesCount > 3) {
                                     return <LoadMore key={index}>
-                                        <TouchableHighlight underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
+                                        <TouchableHighlight underlayColor="#fff" onPress={() => tapImage(index)}>
                                             <FastImage style={[style.detailImg, { marginBottom: 0 }]} source={{ uri: item.att_dir }}></FastImage>
                                         </TouchableHighlight>
                                     </LoadMore>
                                 }
                                 else {
-                                    return <TouchableHighlight key={index} underlayColor="#fff" onPress={() => setImgPreviewFlag(true)}>
+                                    return <TouchableHighlight key={index} underlayColor="#fff" onPress={() => tapImage(index)}>
                                         <FastImage style={style.detailImg} source={{ uri: item.att_dir }}></FastImage>
                                     </TouchableHighlight>
                                 }
@@ -189,6 +194,7 @@ function ProductDetail({ navigation, route, userInfo }) {
                         </View>
                         <Modal visible={imgPreviewFlag} transparent={true}>
                             <ImageViewer
+                                index={imageViewerInitIndex}
                                 onSave={_onSaveToCamera}
                                 menus={({ cancel, saveToLocal }) => <CustomMenus cancel={cancel} saveToLocal={saveToLocal}></CustomMenus>}
                                 onClick={() => setImgPreviewFlag(false)}
