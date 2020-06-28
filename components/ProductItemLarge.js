@@ -4,26 +4,26 @@ import { scaleHeight, scaleSize, setSpText2 } from "../utils/ScreenUtil"
 import toDate from "../utils/toDate"
 import FastImage from 'react-native-fast-image'
 const ProductItemLarge = memo((props) => {
-    const { productPress,productData } = props
+    const { productPress,productData={_price:{},user:{}} } = props
     return (
         <TouchableHighlight underlayColor="#fff" onPress={() => productPress()}>
             <View style={style.orderItemWrap}>
-                <FastImage style={style.productImg} source={require("../assets/imgs/pic2.jpg")}></FastImage>
-                <Text numberOfLines={2} ellipsizeMode="tail" style={style.productName}>经费为奇偶发文件违反Joe忘记佛物文件分为福建欧文金佛if鸡尾酒佛物文件覅危机诶偶极矩覅为我而激发简欧风纪委IE积分范围缴费金额为物金佛文件覅偶忘记 </Text>
+                <FastImage style={style.productImg} source={{uri:productData.image}}></FastImage>
+                <Text numberOfLines={2} ellipsizeMode="tail" style={style.productName}>{productData.store_name} </Text>
                 {/* <View style={style.labelList}>
                     {[1, 2].map((item,index) => 
                         <Text key={index} style={style.label}>潮流</Text>
                     )}
                 </View> */}
                 <View style={style.productPriceWrap}>
-                    <Text style={style.price}>￥78</Text>
-                    <Text style={style.priceTail}>.00</Text>
+                    <Text style={style.price}>￥{productData._price.i}</Text>
+                    <Text style={style.priceTail}>.{productData._price.d}</Text>
                 </View>
                 <View style={style.sellerInfoWrap}>
-                    <FastImage style={style.sellerIcon} source={require("../assets/imgs/alipay.png")}></FastImage>
+                    <FastImage style={style.sellerIcon} source={{uri:productData.user.avatar}}></FastImage>
                     <View style={style.sellerInfo}>
-                        <Text numberOfLines={1} ellipsizeMode="tail" style={style.sellerName}>积分我佛教哦付金额为见覅偶为奇偶if金额为我佛教为凶我</Text>
-                        <Text style={style.time}>{toDate()}</Text>
+                        <Text numberOfLines={1} ellipsizeMode="tail" style={style.sellerName}>{productData.user.nickname}</Text>
+                        <Text style={style.time}>{toDate(productData.user.last_time)}</Text>
                     </View>
                 </View>
             </View>

@@ -8,45 +8,64 @@ import { WaterfallList } from "react-native-largelist-v3";
 import RefreshHeader from "../components/RefreshHeader"
 import {scaleSize} from "../utils/ScreenUtil.js"
 const ProductList = memo((props) => {
+    const { type } = props
+    const [productList,setProductList]=useState([])
+    //列表ref
     const listRef = useRef()
+    //当前页
     const [currentPage, setCurrentPage] = useState(0)
+    //最后一页
     const [lastPage, setLastPage] = useState(1)
     //下拉刷新flag
     const [refreshing, setRefreshing] = useState(false)
     //上拉加载
     const [isLoading, setIsLoading] = useState(false)
-    const { type } = props
-    const calcItemHeight = useCallback((item, index) => {
-        return scaleHeight(260)
-    }, [])
+    //下拉刷新
     const _onRefresh = useCallback(() => {
         if (refreshing) {
             return
         }
         setRefreshing(true)
-        setPage(0)
+        setCurrentPage(0)
         setLastPage(1)
-    }, [refreshing])
+    }, [refreshing,currentPage])
+    //下拉加载
     const _scrollEnd = useCallback(() => {
         if (currentPage >= lastPage || isLoading) {
             listRef.current.endLoading();
             return
         }
         setIsLoading(true)
-        _api(currentPage)
+        _api()
     }, [currentPage, lastPage, isLoading])
-    useEffect(() => {
+    //api接口
+    const _api=useCallback(()=>{
         categoryHome({ page: currentPage+1, type: type }).then(({data:{result}})=>{
-
+            if (result.products.length) {
+                setProductList(productList=>[...productList,...result.products])
+                setCurrentPage(page => page + 1)
+                setLastPage(lastPage => lastPage + 1)
+            }
+            else {
+                setLastPage(currentPage)
+            }
+        }) .finally(res => {
+            listRef.current.endRefresh();
+            listRef.current.endLoading();
+            setRefreshing(false)
+            setIsLoading(false)
         })
-    }, [currentPage, type])
+    },[currentPage])
+    useEffect(() => {
+       _api()
+    }, [currentPage])
     return (
         <View style={{ flex: 1,paddingHorizontal:scaleSize(5) }}>
                <WaterfallList
                     style={{ flex: 1 }}
                     ref={listRef}
-                    data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                    heightForItem={(item, index) => calcItemHeight(item, index)}
+                    data={productList}
+                    heightForItem={(item, index) =>scaleHeight(260)}
                     numColumns={2}
                     loadingFooter={ChineseWithLastDateFooter}
                     renderItem={(item, index) => <ProductItemLarge productPress={() => toProductDetail()} productData={item}></ProductItemLarge>}
