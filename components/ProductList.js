@@ -8,7 +8,7 @@ import { WaterfallList } from "react-native-largelist-v3";
 import RefreshHeader from "../components/RefreshHeader"
 import {scaleSize} from "../utils/ScreenUtil.js"
 const ProductList = memo((props) => {
-    const { type } = props
+    const { type,toProductDetail } = props
     const [productList,setProductList]=useState([])
     //列表ref
     const listRef = useRef()
@@ -22,6 +22,7 @@ const ProductList = memo((props) => {
     const [isLoading, setIsLoading] = useState(false)
     //下拉刷新
     const _onRefresh = useCallback(() => {
+        listRef.current.endRefresh();
         if (refreshing) {
             return
         }
@@ -31,8 +32,8 @@ const ProductList = memo((props) => {
     }, [refreshing,currentPage])
     //下拉加载
     const _scrollEnd = useCallback(() => {
+        listRef.current.endLoading();
         if (currentPage >= lastPage || isLoading) {
-            listRef.current.endLoading();
             return
         }
         setIsLoading(true)
@@ -50,8 +51,6 @@ const ProductList = memo((props) => {
                 setLastPage(currentPage)
             }
         }) .finally(res => {
-            listRef.current.endRefresh();
-            listRef.current.endLoading();
             setRefreshing(false)
             setIsLoading(false)
         })
@@ -62,13 +61,14 @@ const ProductList = memo((props) => {
     return (
         <View style={{ flex: 1,paddingHorizontal:scaleSize(5) }}>
                <WaterfallList
+                    showsVerticalScrollIndicator={false}
                     style={{ flex: 1 }}
                     ref={listRef}
                     data={productList}
                     heightForItem={(item, index) =>scaleHeight(260)}
                     numColumns={2}
                     loadingFooter={ChineseWithLastDateFooter}
-                    renderItem={(item, index) => <ProductItemLarge productPress={() => toProductDetail()} productData={item}></ProductItemLarge>}
+                    renderItem={(item, index) => <ProductItemLarge toProductDetail={toProductDetail} productData={item}></ProductItemLarge>}
                     refreshHeader={RefreshHeader}
                     onRefresh={() =>
                         setTimeout(() => {

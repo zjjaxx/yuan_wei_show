@@ -4,11 +4,11 @@ import { scaleHeight, scaleSize, setSpText2 } from "../utils/ScreenUtil"
 import toDate from "../utils/toDate"
 import FastImage from 'react-native-fast-image'
 const ProductItemLarge = memo((props) => {
-    const { productPress,productData={_price:{},user:{}} } = props
+    const { toProductDetail, productData = { _price: {}, user: {} } } = props
     return (
-        <TouchableHighlight underlayColor="#fff" onPress={() => productPress()}>
+        <TouchableHighlight underlayColor="#fff" onPress={() => toProductDetail(productData)}>
             <View style={style.orderItemWrap}>
-                <FastImage style={style.productImg} source={{uri:productData.image}}></FastImage>
+                <FastImage style={style.productImg} source={{ uri: productData.image }}></FastImage>
                 <Text numberOfLines={2} ellipsizeMode="tail" style={style.productName}>{productData.store_name} </Text>
                 {/* <View style={style.labelList}>
                     {[1, 2].map((item,index) => 
@@ -19,13 +19,13 @@ const ProductItemLarge = memo((props) => {
                     <Text style={style.price}>￥{productData._price.i}</Text>
                     <Text style={style.priceTail}>.{productData._price.d}</Text>
                 </View>
-                <View style={style.sellerInfoWrap}>
-                    <FastImage style={style.sellerIcon} source={{uri:productData.user.avatar}}></FastImage>
+                {productData.user && <View style={style.sellerInfoWrap}>
+                    <FastImage style={style.sellerIcon} source={{ uri: productData.user.avatar }}></FastImage>
                     <View style={style.sellerInfo}>
                         <Text numberOfLines={1} ellipsizeMode="tail" style={style.sellerName}>{productData.user.nickname}</Text>
                         <Text style={style.time}>{toDate(productData.user.last_time)}</Text>
                     </View>
-                </View>
+                </View>}
             </View>
         </TouchableHighlight>
     )
@@ -48,7 +48,8 @@ const style = StyleSheet.create({
     productName: {
         marginHorizontal: scaleSize(5),
         marginTop: scaleHeight(10),
-        fontSize: setSpText2(14)
+        fontSize: setSpText2(14),
+        height: scaleHeight(28)
     },
     productPriceWrap: {
         marginHorizontal: scaleSize(5),
@@ -56,30 +57,30 @@ const style = StyleSheet.create({
         flexDirection: "row",
         alignItems: "flex-end"
     },
-    sellerInfoWrap:{
+    sellerInfoWrap: {
         marginTop: scaleHeight(10),
         marginHorizontal: scaleSize(5),
-        flexDirection:"row",
-        alignItems:"center"
+        flexDirection: "row",
+        alignItems: "center"
     },
-    sellerIcon:{
-        marginRight:scaleSize(5),
-        borderRadius:scaleSize(15),
-        width:scaleSize(30),
-        height:scaleSize(30)
+    sellerIcon: {
+        marginRight: scaleSize(5),
+        borderRadius: scaleSize(15),
+        width: scaleSize(30),
+        height: scaleSize(30)
     },
-    sellerInfo:{
-        marginRight:scaleSize(5),
-        flex:1
+    sellerInfo: {
+        marginRight: scaleSize(5),
+        flex: 1
     },
-    sellerName:{
-       
-        fontSize:setSpText2(12)
+    sellerName: {
+
+        fontSize: setSpText2(12)
     },
-    time:{
-        marginTop:scaleHeight(5),
-        fontSize:setSpText2(10),
-        color:"#999"
+    time: {
+        marginTop: scaleHeight(5),
+        fontSize: setSpText2(10),
+        color: "#999"
     },
     price: {
         fontSize: setSpText2(16),

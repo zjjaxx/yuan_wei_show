@@ -78,6 +78,7 @@ function Home({ navigation, webSocket }) {
     const [isLoading, setIsLoading] = useState(false)
     //下拉刷新事件
     const _onRefresh = useCallback(() => {
+        listRef.current.endRefresh();
         if (refreshing) {
             return
         }
@@ -94,8 +95,8 @@ function Home({ navigation, webSocket }) {
     }, [])
     //上拉加载更多事件
     const _scrollEnd = useCallback(() => {
+        listRef.current.endLoading();
         if (page >= lastPage || isLoading) {
-            listRef.current.endLoading();
             return
         }
         setIsLoading(true)
@@ -165,15 +166,13 @@ function Home({ navigation, webSocket }) {
             }
         })
             .finally(res => {
-                listRef.current.endRefresh();
-                listRef.current.endLoading();
                 setRefreshing(false)
                 setIsLoading(false)
             })
     }, [])
     //跳转个人中心
-    const toInfo=useCallback(()=>{
-        navigation.navigate("info")
+    const toInfo=useCallback((item)=>{
+        navigation.navigate("info",{uid:item.uid})
     },[])
     useEffect(() => {
         //极光推送
@@ -243,7 +242,7 @@ const RecommandProductItem = memo((props) => {
 
         return (
             <View style={style.recommonHeaderWrap}>
-                <TouchableOpacity activeOpacity={1} onPress={toInfo}>
+                <TouchableOpacity activeOpacity={1} onPress={()=>toInfo(productItemData.user)}>
                     <FastImage source={{ uri: productItemData.user.avatar }} style={style.avatar}></FastImage>
                 </TouchableOpacity>
                 <TouchableOpacity  style={style.nickerWrap} activeOpacity={1} onPress={toInfo}>

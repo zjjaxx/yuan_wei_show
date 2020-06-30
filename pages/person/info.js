@@ -5,14 +5,16 @@ import { scaleHeight, scaleSize, setSpText2 } from "../../utils/ScreenUtil"
 import Header from "../../components/Header"
 import ProductItemLarge from "../../components/ProductItemLarge"
 import CustomTab from "../../components/CustomTabBar"
-import { useNodeRect } from "../../customUse/useClientRect"
 import { getNodeInfo } from "../../utils/common"
-import { color } from "react-native-reanimated";
-function Info({ navigation }) {
+import {profile} from "../../api/api"
+
+function Info({ navigation,route }) {
+    //个人信息
+    const [personInfo,setPersonInfo]=useState({})
     const refs = new Array(2).fill(null).map(item => useRef())
     const [listHeight, setListHeight] = useState(0)
     //发布产品数据列表
-    const [publishListData, setPublishListData] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    const [publishListData, setPublishListData] = useState([])
     //品论数据列表
     const [commentListData, setCommentListData] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     //tab句柄
@@ -20,12 +22,20 @@ function Info({ navigation }) {
     // scroll tab 句柄
     const scrollTabRef = useRef()
     // tablist 数据
-    const [tabList, setTabList] = useState(["发布", "留言"])
+    const [tabList, setTabList] = useState([{cate_name:"发布"}, {cate_name:"留言"}])
     // tabindex 索引
     const [tabIndex, setTabIndex] = useState(0)
-    const toProductDetail = useCallback(() => {
-
+    const toProductDetail = useCallback((item) => {
+        navigation.navigate("productDetail",{goods_id:item.id})
     }, [])
+    useEffect(()=>{
+        if(route.params?.uid){
+            profile({uid:route.params?.uid}).then(({data:{result}})=>{
+                setPersonInfo(result)
+                setPublishListData(result.goods)
+            })
+        }
+    },[route.params?.uid])
     //tab切换
     const tabChange = useCallback(({ i, from }) => {
         if (i != from) {
@@ -45,19 +55,19 @@ function Info({ navigation }) {
                 <Header leftEvent={() => { navigation.goBack() }}></Header>
                 <ScrollView style={style.scrollView} stickyHeaderIndices={[3]}>
                     <View style={style.infoWrap}>
-                        <Image source={require("../../assets/imgs/alipay.png")} style={style.avatar}></Image>
+                        <Image source={{uri:personInfo.avatar}} style={style.avatar}></Image>
                         <View style={style.infoContentWrap}>
                             <View style={style.infoContent}>
                                 <View style={style.thumbUpWrap}>
-                                    <Text style={style.count}>1375</Text>
+                                    <Text style={style.count}>{personInfo.like}</Text>
                                     <Text style={style.label}>超赞</Text>
                                 </View>
                                 <View style={style.careWrap}>
-                                    <Text style={style.count}>65</Text>
+                                    <Text style={style.count}>{personInfo.attention}</Text>
                                     <Text style={style.label}>关注</Text>
                                 </View>
                                 <View style={style.fansWrap}>
-                                    <Text style={style.count}>7485</Text>
+                                    <Text style={style.count}>{personInfo.fans}</Text>
                                     <Text style={style.label}>粉丝</Text>
                                 </View>
                             </View>
@@ -67,7 +77,7 @@ function Info({ navigation }) {
                         </View>
                     </View>
                     <Text style={style.name}>
-                        切格瓦拉 * 手工艺人
+                        {personInfo.nickname}
                     </Text>
                     <Text style={style.disc}>
                         喜欢的话就来关注我吧
@@ -87,7 +97,7 @@ const PublishList = memo((props) => {
     const { publishListData, toProductDetail, refs } = props
     return (
         <View ref={refs[0]} style={style.publishListWrapperStyle}>
-            {publishListData.map(item => <ProductItemLarge productPress={toProductDetail} item={item}></ProductItemLarge>)}
+            {publishListData.map(item => <ProductItemLarge key={item.id} productData={item} toProductDetail={toProductDetail} item={item}></ProductItemLarge>)}
         </View>
     )
 })
@@ -195,7 +205,8 @@ const style = StyleSheet.create({
         paddingHorizontal: scaleSize(10),
         justifyContent: "space-between",
         flexDirection: "row",
-        flexWrap: "wrap"
+        flexWrap: "wrap",
+        backgroundColor:"#f6f6f6"
     },
     // commentListWrapperStyle:{
     //     paddingHorizontal: scaleSize(10),

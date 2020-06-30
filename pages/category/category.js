@@ -28,8 +28,8 @@ function Category({ navigation }) {
             customTabRef.current.scrollMove(i)
         }
     }, [])
-    const toProductDetail = useCallback(() => {
-        navigation.navigate("productDetail")
+    const toProductDetail = useCallback((item) => {
+        navigation.navigate("productDetail",{goods_id:item.id})
     }, [])
     useEffect(()=>{
         categoryHome({type:0,page:1}).then(({data:{result}})=>{
@@ -59,7 +59,7 @@ function Category({ navigation }) {
                             return <Recommand key={pageIndex} banners={banners} itemData={productList} toProductDetail={toProductDetail} tabLabel={"item" + pageIndex} key={pageIndex}></Recommand>
                         }
                         else {
-                            return <ProductList key={pageIndex} type={pageItem.id}></ProductList>
+                            return <ProductList toProductDetail={toProductDetail}  key={pageIndex} type={pageItem.id}></ProductList>
                         }
                     })}
                 </ScrollableTabView>
@@ -73,7 +73,7 @@ const Recommand = memo((props) => {
         <Swiper banners={banners}></Swiper>
         <Text style={style.recommandText}>为你推荐</Text>
         <View style={style.recommandProductWrap}>
-            {itemData.map(item => <ProductItemLarge productData={item} productPress={() => toProductDetail()}></ProductItemLarge>)}
+            {itemData.map(item => <ProductItemLarge productData={item} toProductDetail={toProductDetail}></ProductItemLarge>)}
         </View>
     </ScrollView>)
 })
