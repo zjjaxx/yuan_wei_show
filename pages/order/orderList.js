@@ -1,8 +1,10 @@
-import React, { useCallback, createContext, memo } from "react"
+import React, { useCallback, createContext, memo,useEffect} from "react"
 import { View, Text, SafeAreaView, TouchableHighlight, FlatList, StyleSheet, Image } from "react-native"
 import { scaleHeight, scaleSize, setSpText2 } from "../../utils/ScreenUtil"
 import Header from "../../components/Header"
 const Context = createContext()
+import {usePage} from "../../customUse/usePage.js"
+import {order_list} from "../../api/api.js"
 function OrderList({ navigation }) {
     const leftEvent = useCallback(() => {
         navigation.goBack()
@@ -11,6 +13,23 @@ function OrderList({ navigation }) {
     const toOrderStatus = useCallback(() => {
         navigation.navigate("orderState")
     }, [])
+    const _api=useCallback((page)=>{
+        order_list({page:page+1}).then(({data:{result}})=>{
+            if(result.length){
+                setList(list=>[...list,...result])
+                setCurrentPage(page=>page+1)
+            }
+            else{
+                setIsFinish(true)
+            }
+        }).finally(()=>{
+            setIsLoading(false)
+        })
+    },[])
+    const {list,setList,loadMore,setIsFinish,setIsLoading,setCurrentPage}=usePage(_api)
+    useEffect(() => {
+        _api(0)
+    },[])
     return (
         <SafeAreaView style={style.safeAreaView}>
             <View style={style.container}>
@@ -18,9 +37,10 @@ function OrderList({ navigation }) {
                 <Context.Provider value={{
                 }}>
                     <FlatList
+                        onEndReached={loadMore}
                         showsVerticalScrollIndicator={false}
                         style={style.flatList}
-                        data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                        data={list}
                         renderItem={({ item, index }) => (
                             <OrderItem toOrderStatus={toOrderStatus} item={item}></OrderItem>
                         )}
@@ -37,22 +57,22 @@ const OrderItem = memo((props) => {
     return (
         <TouchableHighlight key={index} underlayColor="#fff" onPress={() => toOrderStatus()}>
             <View style={style.orderItemWrap}>
-                <View style={style.orderItemHeader}>
-                    <Image style={style.sellerIcon} source={require("../../assets/imgs/avatar.jpeg")}></Image>
-                    <Text style={style.name} numberOfLines={1} ellipsizeMode="tail">小可爱</Text>
-                </View>
+                {/* <View style={style.orderItemHeader}>
+                    <Image style={style.sellerIcon} source={{uri:item.image}}></Image>
+                    <Text style={style.name} numberOfLines={1} ellipsizeMode="tail">{item.}</Text>
+                </View> */}
                 <View style={style.orderItemInfo}>
-                    <Image style={style.productImg} source={require("../../assets/imgs/pic3.jpg")}></Image>
-                    <Text style={style.productName} numberOfLines={2} ellipsizeMode="tail">见覅偶尔玩家佛我我if叫我我交付物金额非叫我我见附件为佛我经济分解为of及文件夹违法未接诶飞机</Text>
+                    <Image style={style.productImg} source={{uri:item.image}}></Image>
+            <Text style={style.productName} numberOfLines={2} ellipsizeMode="tail">{item.store_name}</Text>
                     <View style={style.orderItemInfoRight}>
                         <View style={style.priceWrap}>
-                            <Text style={style.price}>￥39</Text>
-                            <Text style={style.priceTail}>.00</Text>
+                            <Text style={style.price}>￥{item._pay_price.i}</Text>
+                            <Text style={style.priceTail}>.{item._pay_price.d}</Text>
                         </View>
                         <Text style={style.productNum}>共五件</Text>
                     </View>
                 </View>
-                <BottomBar type={2}></BottomBar>
+                <BottomBar type={item.status}></BottomBar>
             </View>
         </TouchableHighlight >
     )
@@ -172,7 +192,7 @@ const style = StyleSheet.create({
         borderRadius: scaleSize(5)
     },
     orderItemInfoRight: {
-        justifyContent: "flex-end"
+        alignItems: "flex-end"
     },
     priceWrap: {
         flexDirection: "row",

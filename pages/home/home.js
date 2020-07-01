@@ -1,5 +1,5 @@
 import React, { useMemo, memo, useCallback, useState, useEffect, useRef, useReducer } from "react"
-import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight, Alert,TouchableOpacity } from "react-native"
+import { View, Text, StyleSheet, Image, FlatList, SafeAreaView, TouchableHighlight, Alert, TouchableOpacity } from "react-native"
 import { scaleSize, setSpText2, scaleHeight } from "../../utils/ScreenUtil"
 import { WaterfallList } from "react-native-largelist-v3";
 import RefreshHeader from "../../components/RefreshHeader"
@@ -11,7 +11,7 @@ import JPush from 'jpush-react-native';
 import { connect } from "react-redux"
 import { send, parseReceiveMessage } from "../../utils/toBuffer"
 //热更新
-import { APP_KEY_CONFIG, CLEAR, ADD_LIST, RECEIVE, RECEIVE_ERROR,RECEIVE_UPDATE_HOME_COMMENT_ADD,RECEIVE_UPDATE_HOME_THUMB_ADD } from "../../utils/config"
+import { APP_KEY_CONFIG, CLEAR, ADD_LIST, RECEIVE, RECEIVE_ERROR, RECEIVE_UPDATE_HOME_COMMENT_ADD, RECEIVE_UPDATE_HOME_THUMB_ADD } from "../../utils/config"
 import {
     isFirstTime,
     isRolledBack,
@@ -25,6 +25,7 @@ import {
 } from 'react-native-update';
 const { appKey } = APP_KEY_CONFIG[Platform.OS];
 import { home } from "../../api/api"
+import { usePage } from "../../customUse/usePage.js"
 
 function Home({ navigation, webSocket }) {
     const listRef = useRef()
@@ -35,23 +36,23 @@ function Home({ navigation, webSocket }) {
             switch (payload.y) {
                 //更新首页数据 评论+1
                 case RECEIVE_UPDATE_HOME_COMMENT_ADD:
-                    const updateData=JSON.parse(payload.d)
-                    return homeDataList.map(item=>{
-                        if(item.id==updateData.goods_id){
-                            return {...item,common_num:item.common_num+1}
+                    const updateData = JSON.parse(payload.d)
+                    return homeDataList.map(item => {
+                        if (item.id == updateData.goods_id) {
+                            return { ...item, common_num: item.common_num + 1 }
                         }
-                        else{
+                        else {
                             return item
                         }
                     })
                 //更新首页数据 点赞+1
                 case RECEIVE_UPDATE_HOME_THUMB_ADD:
-                    const updateThumbData=JSON.parse(payload.d)
-                    return homeDataList.map(item=>{
-                        if(item.id==updateThumbData.goods_id){
-                            return {...item,star_num:item.star_num+1}
+                    const updateThumbData = JSON.parse(payload.d)
+                    return homeDataList.map(item => {
+                        if (item.id == updateThumbData.goods_id) {
+                            return { ...item, star_num: item.star_num + 1 }
                         }
-                        else{
+                        else {
                             return item
                         }
                     })
@@ -68,40 +69,14 @@ function Home({ navigation, webSocket }) {
             return []
         }
     }
-    // //分页
-    const [page, setPage] = useState(0)
-    const [lastPage, setLastPage] = useState(1)
     const [homeDataList, dispatch] = useReducer(reducers, [])
-    //下拉刷新flag
-    const [refreshing, setRefreshing] = useState(false)
-    //上拉加载
-    const [isLoading, setIsLoading] = useState(false)
-    //下拉刷新事件
-    const _onRefresh = useCallback(() => {
-        listRef.current.endRefresh();
-        if (refreshing) {
-            return
-        }
-        setRefreshing(true)
-        dispatch({ type: CLEAR })
-        setPage(0)
-        setLastPage(1)
-        _api(0)
-    }, [refreshing])
+
     const calcItemHeight = useCallback((item, index) => {
         let height1 = scaleHeight(50) + setSpText2(36) + scaleHeight(140) + scaleHeight(8) + scaleHeight(30)
         let height2 = scaleHeight(50) + setSpText2(36) + scaleHeight(180) + scaleHeight(8) + scaleHeight(30)
         return item.images_info.images_total == 2 ? height1 : height2
     }, [])
-    //上拉加载更多事件
-    const _scrollEnd = useCallback(() => {
-        listRef.current.endLoading();
-        if (page >= lastPage || isLoading) {
-            return
-        }
-        setIsLoading(true)
-        _api(page)
-    }, [page, lastPage, isLoading])
+
     //跳转产品详情页
     const _toProductDetail = useCallback((goods_id) => {
         navigation.navigate("productDetail", { goods_id })
@@ -158,22 +133,23 @@ function Home({ navigation, webSocket }) {
         home({ page: _page + 1 }).then(({ data: { result } }) => {
             if (result.length) {
                 dispatch({ type: ADD_LIST, payload: result })
-                setPage(page => page + 1)
-                setLastPage(lastPage => lastPage + 1)
+                setCurrentPage(page => page + 1)
             }
             else {
-                setLastPage(page)
+                setIsFinish(true)
             }
         })
             .finally(res => {
-                setRefreshing(false)
                 setIsLoading(false)
             })
     }, [])
     //跳转个人中心
-    const toInfo=useCallback((item)=>{
-        navigation.navigate("info",{uid:item.uid})
-    },[])
+    const toInfo = useCallback((item) => {
+        navigation.navigate("info", { uid: item.uid })
+    }, [])
+    const { setIsLoading,setIsFinish, refresh, loadMore,setCurrentPage } = usePage(_api, () => {
+        dispatch({ type: CLEAR })
+    })
     useEffect(() => {
         //极光推送
         JPush.init();
@@ -213,12 +189,14 @@ function Home({ navigation, webSocket }) {
                     refreshHeader={RefreshHeader}
                     onRefresh={() =>
                         setTimeout(() => {
-                            _onRefresh()
+                            listRef.current.endRefresh();
+                            refresh()
                         }, 1000)
                     }
                     onLoading={() => {
                         setTimeout(() => {
-                            _scrollEnd()
+                            listRef.current.endLoading();
+                            loadMore()
                         }, 1000)
                     }}
                 />
@@ -228,10 +206,10 @@ function Home({ navigation, webSocket }) {
 }
 //推荐Item
 const RecommandProductItem = memo((props) => {
-    const { index,toInfo, toProductDetail, productItemData } = props
+    const { index, toInfo, toProductDetail, productItemData } = props
     //推荐头部组件
     const RecommandHeader = memo((props) => {
-        const { productItemData,toInfo } = props
+        const { productItemData, toInfo } = props
         const [menuSelect, setMenuSelect,] = useState(false)
         const showPopup = useCallback(() => {
             setMenuSelect(true)
@@ -242,11 +220,11 @@ const RecommandProductItem = memo((props) => {
 
         return (
             <View style={style.recommonHeaderWrap}>
-                <TouchableOpacity activeOpacity={1} onPress={()=>toInfo(productItemData.user)}>
+                <TouchableOpacity activeOpacity={1} onPress={() => toInfo(productItemData.user)}>
                     <FastImage source={{ uri: productItemData.user.avatar }} style={style.avatar}></FastImage>
                 </TouchableOpacity>
-                <TouchableOpacity  style={style.nickerWrap} activeOpacity={1} onPress={toInfo}>
-                    <View style={{flex:1,justifyContent:"center"}}>
+                <TouchableOpacity style={style.nickerWrap} activeOpacity={1} onPress={toInfo}>
+                    <View style={{ flex: 1, justifyContent: "center" }}>
                         <Text numberOfLines={1} ellipsizeMode="tail" style={style.nick}>{productItemData.user.nickname}</Text>
                         <Text style={style.time}>{toDate(productItemData.add_time)}</Text>
                     </View>

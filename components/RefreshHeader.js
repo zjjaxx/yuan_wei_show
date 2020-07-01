@@ -19,7 +19,7 @@ class ZRefreshHeader extends RefreshHeader {
             inputRange: [0, ZRefreshHeader.height],
             outputRange: ["0deg", "180deg"]
         });
-        return <ImageBackground source={require("../assets/imgs/refresh_bg.jpg")} style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        return <ImageBackground source={require("../assets/imgs/refresh_bg.jpg")} style={{marginVertical:scaleHeight(10), flex: 1, justifyContent: "center", alignItems: "center" }}>
             <Animated.Image
                 source={require("../assets/imgs/avatar.jpeg")}
                 style={{

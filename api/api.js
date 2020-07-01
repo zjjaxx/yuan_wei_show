@@ -27,3 +27,5 @@ export const activities_v2 = (data) => axios.get("/api/v2/home/activities", { pa
 export const area=()=>axios.get("/api/area",{baseURL:"https://ces.weile999.com"})//地址
 export const categoryHome=(data)=>axios.get("/api/v1/category",{params:data})//首页分类
 export const profile=(data)=>axios.get("/api/v1/user/profile",{params:data})//详细个人中心
+export const order_list=(data)=>axios.get("/api/v1/user/order_list",{params:data})//订单列表
+
