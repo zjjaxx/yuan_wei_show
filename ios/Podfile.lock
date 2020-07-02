@@ -250,6 +250,14 @@ PODS:
     - React-cxxreact (= 0.62.2)
     - React-jsi (= 0.62.2)
   - React-jsinspector (0.62.2)
+  - react-native-camera (3.31.0):
+    - React
+    - react-native-camera/RCT (= 3.31.0)
+    - react-native-camera/RN (= 3.31.0)
+  - react-native-camera/RCT (3.31.0):
+    - React
+  - react-native-camera/RN (3.31.0):
+    - React
   - react-native-cameraroll (1.7.1):
     - React
   - react-native-safe-area-context (0.7.3):
@@ -412,6 +420,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-camera (from `../node_modules/react-native-camera`)
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-spinkit (from `../node_modules/react-native-spinkit`)
@@ -500,6 +509,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-camera:
+    :path: "../node_modules/react-native-camera"
   react-native-cameraroll:
     :path: "../node_modules/@react-native-community/cameraroll"
   react-native-safe-area-context:
@@ -590,6 +601,7 @@ SPEC CHECKSUMS:
   React-jsi: b6dc94a6a12ff98e8877287a0b7620d365201161
   React-jsiexecutor: 1540d1c01bb493ae3124ed83351b1b6a155db7da
   React-jsinspector: 512e560d0e985d0e8c479a54a4e5c147a9c83493
+  react-native-camera: b5c8c7a71feecfdd5b39f0dbbf6b64b957ed55f2
   react-native-cameraroll: 53663a679e973ff98b60708d93a9f203d7b41b8d
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db

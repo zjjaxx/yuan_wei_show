@@ -5424,6 +5424,13 @@ react-native-audio@^4.3.0:
   resolved "https://registry.npm.taobao.org/react-native-audio/download/react-native-audio-4.3.0.tgz#fae22b81f6a4dda706fd4837d0c6a89c66cf2e7e"
   integrity sha1-+uIrgfak3acG/Ug30MaonGbPLn4=
 
+react-native-camera@^3.31.0:
+  version "3.31.0"
+  resolved "https://registry.npm.taobao.org/react-native-camera/download/react-native-camera-3.31.0.tgz#7b9b4dd30b6d1363bdffed4ce0a0bef93c3ebf87"
+  integrity sha1-e5tN0wttE2O9/+1M4KC++Tw+v4c=
+  dependencies:
+    prop-types "^15.6.2"
+
 react-native-easy-chat-ui@^0.4.6:
   version "0.4.6"
   resolved "https://registry.npm.taobao.org/react-native-easy-chat-ui/download/react-native-easy-chat-ui-0.4.6.tgz#22adbf186a2c72901c300dc117843b3e14b3a476"

@@ -55,7 +55,7 @@ function Login({ dispatch, navigation, device_code }) {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={style.container}>
-                <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/yuanwei.png")}></Image>
+                <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/logo.png")}></Image>
                 <Formik
                     initialValues={{ mobile: '', password: "" }}
                     onSubmit={values => setLogin(values)}

@@ -99,7 +99,7 @@ function ForgetPassword({ dispatch, navigation, device_code }) {
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <KeyboardAvoidingView behavior={Platform.OS == "android" ?"":"padding"} style={{ flex: 1 }}>
                 <ScrollView style={style.container}>
-                    <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/yuanwei.png")}></Image>
+                    <Image resizeMode="stretch" style={style.logo} source={require("../../assets/imgs/logo.png")}></Image>
                     <Formik
                         initialValues={{ mobile: '', password: "", confirm_password: "", msgCode: "" }}
                         onSubmit={values => setLogin(values)}

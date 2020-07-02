@@ -2,6 +2,8 @@ import React, { useEffect, useCallback, useState, createContext, memo } from "re
 import { View, Text, SafeAreaView, StyleSheet, FlatList, TouchableHighlight, Image, TextInput } from "react-native"
 import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil.js"
 import Header from "../../components/Header.js"
+import { RNCamera } from 'react-native-camera'
+import { TouchableOpacity } from "react-native-gesture-handler"
 
 function DeliveryProduct({ navigation }) {
     const [deliveryNumber, setDeliveryNumber] = useState()
@@ -24,7 +26,9 @@ function DeliveryProduct({ navigation }) {
                         <Text style={style.deliveryTip}>快递单号</Text>
                         <TextInput value={deliveryNumber} placeholder="请输入快递单号" onChangeText={changeText} style={style.deliveryInput}></TextInput>
                     </View>
-                    <Image style={style.scan} source={require("../../assets/imgs/scan.png")}></Image>
+                    <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate("scanView")}>
+                        <Image style={style.scan} source={require("../../assets/imgs/scan.png")}></Image>
+                    </TouchableHighlight>
                 </View>
                 <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate('deliverCompanyList')}>
                     <View style={[style.formItemWrap, { borderBottomWidth: 0 }]}>

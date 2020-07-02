@@ -140,6 +140,7 @@ android {
                   JPUSH_APPKEY: "b4c224bc3d43ed15847b3348",         //在此替换你的APPKey
                   JPUSH_CHANNEL: "d88ae2774e5035134d9bc771"        //在此替换你的channel
         ]
+        missingDimensionStrategy 'react-native-camera', 'general' // <--- insert this line
     }
     splits {
         abi {
