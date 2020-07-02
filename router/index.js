@@ -29,6 +29,7 @@ import MembersScreen from "../pages/person/members"
 import InfoScreen from "../pages/person/info"
 import MySellerScreen from "../pages/person/mySeller.js"
 import DeliveryProductScreen from "../pages/person/deliveryProduct.js"
+import DeliverCompanyListScreen from "../pages/person/deliveryCompanyList.js"
 import { connect } from "react-redux"
 import { asyncToken } from "../store/action"
 import SplashScreen from 'react-native-splash-screen'
@@ -99,8 +100,9 @@ function AppStackScreen({ isLoading, isLogin, dispatch }) {
                         <AppStack.Screen name="customTags" component={CustomTagsScreen}></AppStack.Screen>
                         <AppStack.Screen name="members" component={MembersScreen}></AppStack.Screen>
                         <AppStack.Screen name="info" component={InfoScreen}></AppStack.Screen>
-                        <AppStack.Screen name="mySeller" component={ MySellerScreen}></AppStack.Screen>
-                        <AppStack.Screen name="deliveryProduct" component={ DeliveryProductScreen}></AppStack.Screen>
+                        <AppStack.Screen name="mySeller" component={MySellerScreen}></AppStack.Screen>
+                        <AppStack.Screen name="deliveryProduct" component={DeliveryProductScreen}></AppStack.Screen>
+                        <AppStack.Screen name="deliverCompanyList" component={DeliverCompanyListScreen}></AppStack.Screen>
                     </>
                 ) : (
                         <>

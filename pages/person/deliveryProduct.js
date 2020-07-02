@@ -26,13 +26,15 @@ function DeliveryProduct({ navigation }) {
                     </View>
                     <Image style={style.scan} source={require("../../assets/imgs/scan.png")}></Image>
                 </View>
-                <View style={[style.formItemWrap, { borderBottomWidth: 0 }]}>
-                    <View style={style.deliveryInfo}>
-                        <Text style={style.deliveryTip}>快递公司</Text>
-                        <Text style={style.deliverCompanyName}>请选择快递公司</Text>
+                <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate('deliverCompanyList')}>
+                    <View style={[style.formItemWrap, { borderBottomWidth: 0 }]}>
+                        <View style={style.deliveryInfo}>
+                            <Text style={style.deliveryTip}>快递公司</Text>
+                            <Text style={style.deliverCompanyName}>请选择快递公司</Text>
+                        </View>
+                        <Image style={style.arrow} source={require("../../assets/imgs/arrow-right-gray.png")}></Image>
                     </View>
-                    <Image style={style.arrow} source={require("../../assets/imgs/arrow-right-gray.png")}></Image>
-                </View>
+                </TouchableHighlight>
             </View>
             <TouchableHighlight style={style.saveWrap} underlayColor="#fca413" onPress={() => submit()}>
                 <Text style={style.saveTitle}>保存</Text>
