@@ -1,11 +1,11 @@
-import React, { useCallback, createContext, memo, useEffect,useContext } from "react"
-import { View, Text, SafeAreaView, TouchableHighlight, FlatList, StyleSheet, Image } from "react-native"
-import { scaleHeight, scaleSize, setSpText2 } from "../../utils/ScreenUtil"
-import Header from "../../components/Header"
-const Context = createContext()
+import React, { useEffect, useCallback, createContext,useContext, memo } from "react"
+import { View, Text, SafeAreaView, StyleSheet, FlatList, TouchableHighlight, Image } from "react-native"
+import { scaleSize, scaleHeight, setSpText2 } from "../../utils/ScreenUtil.js"
 import { usePage } from "../../customUse/usePage.js"
+import Header from "../../components/Header.js"
 import { order_list } from "../../api/api.js"
-function OrderList({ navigation }) {
+const Context = createContext()
+function MySeller({ navigation }) {
     const leftEvent = useCallback(() => {
         navigation.goBack()
     }, [])
@@ -26,44 +26,34 @@ function OrderList({ navigation }) {
             setIsLoading(false)
         })
     }, [])
-    //提醒发货
-    const tipDelivery=useCallback(()=>{
-        Alert.alert(
-            '提示',
-            "已提醒发货",
-            [
-                { text: 'OK', onPress: () => { } },
-            ],
-
-        )
+    //去发货
+    const toDelivery=useCallback(()=>{
+        navigation.navigate("deliveryProduct")
     },[])
-    const { list, setList, loadMore, setIsFinish, setIsLoading, setCurrentPage } = usePage(_api)
+    const { list, setList, setIsLoading, setCurrentPage, setIsFinish, loadMore } = usePage(_api)
     useEffect(() => {
         _api(0)
     }, [])
     return (
         <SafeAreaView style={style.safeAreaView}>
-            <View style={style.container}>
-                <Header leftEvent={leftEvent} title="我的订单"></Header>
-                <Context.Provider value={{
-                    tipDelivery
-                }}>
-                    <FlatList
-                        onEndReached={loadMore}
-                        showsVerticalScrollIndicator={false}
-                        style={style.flatList}
-                        data={list}
-                        renderItem={({ item, index }) => (
-                            <OrderItem toOrderStatus={toOrderStatus} item={item}></OrderItem>
-                        )}
-                    />
+            <Header leftEvent={leftEvent} title="我卖出的"></Header>
+            <Context.Provider value={{
+                toDelivery
+            }}>
+                <FlatList
+                    onEndReached={loadMore}
+                    showsVerticalScrollIndicator={false}
+                    style={style.flatList}
+                    data={list}
+                    renderItem={({ item, index }) => (
+                        <OrderItem toOrderStatus={toOrderStatus} item={item}></OrderItem>
+                    )}
+                />
 
-                </Context.Provider>
-            </View>
+            </Context.Provider>
         </SafeAreaView>
     )
 }
-
 const OrderItem = memo((props) => {
     const { index, item, toOrderStatus } = props
     return (
@@ -90,8 +80,8 @@ const OrderItem = memo((props) => {
     )
 })
 const BottomBar = memo((props) => {
-    const { type } = props
-    const {tipDelivery} =useContext(Context)
+    const { type, } = props
+    const {toDelivery}=useContext(Context)
     const _renderItem = () => {
         switch (type) {
             case 0:
@@ -103,8 +93,8 @@ const BottomBar = memo((props) => {
                                 <Text style={style.connectText}>联系卖家</Text>
                             </View>
                         </TouchableHighlight>
-                        <TouchableHighlight style={style.remainPay} underlayColor="#fff" onPress={() => { }}>
-                            <Text style={style.remainPayText}>去支付</Text>
+                        <TouchableHighlight style={style.remainPay} underlayColor="#fff" onPress={() => toDelivery()}>
+                            <Text style={style.remainPayText}>去发货</Text>
                         </TouchableHighlight>
                     </View>
                 )
@@ -117,7 +107,7 @@ const BottomBar = memo((props) => {
                                 <Text style={style.connectText}>联系卖家</Text>
                             </View>
                         </TouchableHighlight>
-                        <TouchableHighlight style={style.remainPay} underlayColor="#fff" onPress={tipDelivery}>
+                        <TouchableHighlight style={style.remainPay} underlayColor="#fff" onPress={() => { }}>
                             <Text style={style.remainPayText}>提醒发货</Text>
                         </TouchableHighlight>
                     </View>
@@ -150,39 +140,10 @@ const BottomBar = memo((props) => {
     }
     return _renderItem()
 })
-export default OrderList
 const style = StyleSheet.create({
     safeAreaView: {
         flex: 1,
         backgroundColor: "#fff"
-    },
-    container: {
-        flex: 1
-    },
-    viewPager: {
-        flex: 1
-    },
-    tabWrap: {
-        position: "relative",
-        height: scaleHeight(30),
-        flexDirection: "row",
-    },
-    tabItem: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    tabTitle: {
-        fontSize: setSpText2(14),
-    },
-    lineWrap: {
-        position: "absolute",
-        bottom: 0,
-    },
-    line: {
-        width: scaleSize(25),
-        height: scaleHeight(3),
-        borderRadius: scaleSize(2.5)
     },
     flatList: {
         flex: 1
@@ -286,3 +247,4 @@ const style = StyleSheet.create({
         color: "#333"
     }
 })
+export default MySeller

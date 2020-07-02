@@ -302,7 +302,7 @@ const BottomBar = React.memo(function (props) {
                         </View>
                     </TouchableHighlight>
                     {
-                        productDetailData.isMaster ? <TouchableHighlight style={style.manageWrap} underlayColor="#fff" onPress={() => { navigation.navigate('publish', { goods_id: route.params.goods_id }) }}>
+                        productDetailData.isMaster ? <TouchableHighlight style={style.manageWrap} underlayColor="#fff" onPress={() => { navigation.navigate('publish', { goods_id: route.params.goods_id,edit:true }) }}>
                             <Text style={style.manage}>管理</Text>
                         </TouchableHighlight> :
                             <TouchableHighlight style={style.payWrap} underlayColor="#fca413" onPress={payConfirm}>

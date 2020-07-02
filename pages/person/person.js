@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { View, Text, Button, SafeAreaView, StyleSheet, Image, TouchableHighlight,TouchableOpacity} from "react-native"
+import { View, Text, Button, SafeAreaView, StyleSheet, Image, TouchableHighlight, TouchableOpacity } from "react-native"
 import { connect } from "react-redux"
 import { logout } from "../../store/action"
 import { scaleHeight, scaleSize, setSpText2 } from "../../utils/ScreenUtil"
@@ -10,9 +10,9 @@ function Person({ dispatch, navigation }) {
     const _logout = useCallback(() => {
         dispatch(logout())
     }, [dispatch])
-    const toCharge=useCallback(()=>{
+    const toCharge = useCallback(() => {
         navigation.navigate("members")
-    },[userInfo])
+    }, [userInfo])
     useFocusEffect(useCallback(() => {
         info().then(({ data: { result } }) => {
             setUserInfo(result)
@@ -29,10 +29,10 @@ function Person({ dispatch, navigation }) {
                     <View style={style.userInfo}>
                         <View style={style.userNameWrap}>
                             <Text style={style.name}>{userInfo.nickname}</Text>
-                            <Image style={style.vipIcon} source={userInfo.vipCard ?require( "../../assets/imgs/vip.png"):require("../../assets/imgs/vipBgGray.png")}></Image>
+                            <Image style={style.vipIcon} source={userInfo.vipCard ? require("../../assets/imgs/vip.png") : require("../../assets/imgs/vipBgGray.png")}></Image>
                         </View>
                         <TouchableOpacity activeOpacity={1} onPress={toCharge}>
-                        <Text style={style.tip}>{userInfo.vipCard ? 'vip续费' : '充值使你变得更强'}</Text>
+                            <Text style={style.tip}>{userInfo.vipCard ? 'vip续费' : '充值使你变得更强'}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -74,11 +74,13 @@ function Person({ dispatch, navigation }) {
                     <Text style={style.menuListText}>我的收藏</Text>
                     <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right.png")}></Image>
                 </View>
-                <View style={style.menuListItem}>
-                    <Image style={style.menuListIcon} source={require("../../assets/imgs/icon_seller.png")}></Image>
-                    <Text style={style.menuListText}>我的出售</Text>
-                    <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right.png")}></Image>
-                </View>
+                <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate("mySeller")}>
+                    <View style={style.menuListItem}>
+                        <Image style={style.menuListIcon} source={require("../../assets/imgs/icon_seller.png")}></Image>
+                        <Text style={style.menuListText}>我的出售</Text>
+                        <Image style={style.arrowRight} source={require("../../assets/imgs/arrow-right.png")}></Image>
+                    </View>
+                </TouchableHighlight>
                 <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate("addressList")}>
                     <View style={style.menuListItem}>
                         <Image style={style.menuListIcon} source={require("../../assets/imgs/location.png")}></Image>

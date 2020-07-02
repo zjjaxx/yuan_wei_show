@@ -6,16 +6,16 @@ import ImageUpload from "../../components/ImageUpload"
 import { Formik } from 'formik';
 import * as yup from "yup"
 import { CheckBox } from '@ui-kitten/components';
-import { publish,productEdit,productUpdate} from "../../api/api"
+import { publish, productEdit, productUpdate } from "../../api/api"
 
 function Publish({ navigation, route }) {
-    const [categories,setCategories]=useState()
+    const [categories, setCategories] = useState()
     //请填写产品描述
-    const [publishValue,setPublishValue]=useState("")
+    const [publishValue, setPublishValue] = useState("")
     //产品价格
-    const [price,setPrice]=useState(0)
+    const [price, setPrice] = useState(0)
     //运费
-    const [deliverFee,setDeliverFee]=useState(0)
+    const [deliverFee, setDeliverFee] = useState(0)
     //图片数组
     const [imageList, setImageList] = useState([])
     //标签数组
@@ -39,7 +39,7 @@ function Publish({ navigation, route }) {
     }, [])
     //重置分类
     const resetCategories = useCallback(() => {
-        navigation.setParams({ categories: "", tags: "", customTags:""})
+        navigation.setParams({ categories: "", tags: "", customTags: "" })
         setLabelList([])
         setCategories("")
     }, [])
@@ -92,63 +92,88 @@ function Publish({ navigation, route }) {
             }
         }
         handleSubmit()
-    }, [route.params,categories, imageList, isFreeDelivery])
+    }, [route.params, categories, imageList, isFreeDelivery])
     //发布事件
     const publishEvent = useCallback((values) => {
-        let _labelList =labelList.filter(item => item.checked)
-        let platform=_labelList.filter(item=>item.id)||[]
-        let customTags=_labelList.filter(item=>!item.id)||[]
-        let tagList=JSON.stringify({
+        let _labelList = labelList.filter(item => item.checked)
+        let platform = _labelList.filter(item => item.id) || []
+        let customTags = _labelList.filter(item => !item.id) || []
+        let tagList = JSON.stringify({
             platform,
             customTags
         })
         let images = JSON.stringify(imageList.map(item => item.att_dir))
         let shipping_fee = isFreeDelivery ? 0 : values.deliverFee
-        publish({
-            type: 1,
-            content: values.publishValue,
-            cat_id: categories.id,
-            images,
-            shipping_fee,
-            price: values.price,
-            tags: tagList
-        }).then(({data:{result}}) => {
-            Alert.alert(
-                '提示',
-                result,
-                [
-                    { text: 'OK', onPress: () => { navigation.goBack()} },
-                ],
+        if (route.params?.edit) {
+            productUpdate({
+                goods_id:route.params?.goods_id,
+                type: 1,
+                content: values.publishValue,
+                cat_id: categories.id,
+                images,
+                shipping_fee,
+                price: values.price,
+                tags: tagList
+            }).then(({ data: { result } }) => {
+                Alert.alert(
+                    '提示',
+                    result,
+                    [
+                        { text: 'OK', onPress: () => { navigation.goBack() } },
+                    ],
 
-            )
+                )
 
-        })
-    }, [labelList, imageList, isFreeDelivery])
+            })
+        }
+        else {
+            publish({
+                type: 1,
+                content: values.publishValue,
+                cat_id: categories.id,
+                images,
+                shipping_fee,
+                price: values.price,
+                tags: tagList
+            }).then(({ data: { result } }) => {
+                Alert.alert(
+                    '提示',
+                    result,
+                    [
+                        { text: 'OK', onPress: () => { navigation.goBack() } },
+                    ],
+
+                )
+
+            })
+        }
+
+    }, [labelList, imageList,categories, isFreeDelivery, route.params?.edit,route.params?.goods_id])
     //标签数组 
-    useEffect(()=>{
-        if(route.params?.goods_id){
-            productEdit({goods_id:route.params.goods_id}).then(({data:{result}})=>{
+    useEffect(() => {
+        if (route.params?.goods_id) {
+            productEdit({ goods_id: route.params.goods_id }).then(({ data: { result } }) => {
                 setImageList(result.images)
-                setLabelList(result.tags.map(item=>({...item,checked:true})))
-                setIsFreeDelivery(parseFloat(result.postage)===0?true:false)
+                setLabelList(result.tags.map(item => ({ ...item, checked: true })))
+                setIsFreeDelivery(parseFloat(result.postage) === 0 ? true : false)
                 setPublishValue(result.store_info)
                 setPrice(result.price)
                 setDeliverFee(result.postage)
-                setCategories({cate_name:result.category,id:result.cate_id})
+                setCategories({ cate_name: result.category, id: result.cate_id })
             })
         }
-    },[route.params?.goods_id])
+    }, [route.params?.goods_id])
     useEffect(() => {
-        if (route.params?.tags||route.params?.categories) {
+        if (route.params?.tags || route.params?.categories) {
             setLabelList(route.params.tags.map(item => ({ ...item, checked: false })))
             setCategories(route.params.categories)
         }
-        if(route.params?.customTags){
-            let _labelList=route.params.customTags.map(item=>({customTag:item,name:item, checked: true}))
-            setLabelList(labelList=>[...labelList,..._labelList])
+        if (route.params?.customTags) {
+            let _labelList = route.params.customTags.map(item => ({ customTag: item, name: item, checked: true }))
+            setLabelList(labelList => [...labelList, ..._labelList])
         }
-       
-    }, [route.params?.tags,route.params?.customTags])
+
+    }, [route.params?.tags, route.params?.customTags])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS == "android" ? "" : "padding"} enabled >
@@ -197,9 +222,9 @@ function Publish({ navigation, route }) {
                                                 <Image style={style.removeIcon} source={require("../../assets/imgs/removeCategories.png")}></Image>
                                             </TouchableHighlight>
                                         </View>
-                                    </View> : <TouchableHighlight underlayColor="#fff" onPress={()=>navigation.navigate("categories")}>
+                                    </View> : <TouchableHighlight underlayColor="#fff" onPress={() => navigation.navigate("categories")}>
                                             <View style={style.categoriesWrap}>
-                                                <Text style={style.all}>全部  > </Text>
+                                                <Text style={style.all}>全部 ></Text>
                                             </View>
                                         </TouchableHighlight>}
                                     {labelList.length ? (
@@ -304,7 +329,7 @@ const style = StyleSheet.create({
         paddingVertical: scaleHeight(10),
         flexDirection: "row",
         flexWrap: "wrap",
-        alignItems:"center"
+        alignItems: "center"
     },
     checkbox: {
         marginBottom: scaleHeight(10)
